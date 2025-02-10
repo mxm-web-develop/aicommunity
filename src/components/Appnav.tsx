@@ -1,4 +1,3 @@
-
 'use client'
 
 import * as React from "react"
@@ -10,17 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useEffect } from "react";
-
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator"
 import { uid } from 'uid';
+
 interface DialogNavigationProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   data: NavItem[];
 }
+
 // 定义导航项类型
 interface NavItem {
   _id: string;

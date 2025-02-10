@@ -7,5 +7,5 @@ import { redirect } from "next/navigation";
 // import { useEffect } from "react";
 
 export default async function Root() {
-  redirect('/home')
+  redirect('./home')
 }

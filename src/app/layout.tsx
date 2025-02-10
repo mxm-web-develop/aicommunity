@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import type { Viewport } from 'next'
-import localFont from "next/font/local";
+// import { Inter } from 'next/font/google';
+// import localFont from "next/font/local";
 import "./globals.css";
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { Sidebar } from "lucide-react";
+import { Providers } from "@/lib/ThemeProvider";
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
+// const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "MxM Ai",
@@ -30,18 +34,15 @@ export const viewport: Viewport = {
 }
 export default function RootLayout({
   children,
-
-}: Readonly<{
+}: {
   children: React.ReactNode;
-
-}>) {
-
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-theme-dark`}
-      >
-        {children}
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className="min-h-screen bg-white dark:bg-gray-900 font-sans">
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

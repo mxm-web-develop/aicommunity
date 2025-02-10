@@ -21,6 +21,10 @@
 
 ## 首页
 ### 导航
+  单点登录
+  主题色切换
+  Ai应用
+
 ### banner
 ### 推荐应用
 ### footer
@@ -86,7 +90,7 @@ MINIO_BUCKET_NAME=test
     "github": "https://www.zjfintech.com",
     "demo": "https://www.zjfintech.com",
   },
-  "banner":{
+  "banner"?:{
     "status": 1,
     "title": "小鲸智能客服",
     "description": "小鲸智能客服是一款智能客服系统，提供智能化的解决方案。",
@@ -136,6 +140,7 @@ MINIO_BUCKET_NAME=test
   }
 ]
 ```
+
 
 ### 事件 event
 
