@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import { readJSONFile } from "@/scripts/getdata"
+import { readJSONFile } from "@/lib/getdata"
 
 const ChatApp = dynamic(() =>
   import('@/components/Chatapp').then((mod) => mod.default), {

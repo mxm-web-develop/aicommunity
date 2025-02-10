@@ -6,7 +6,7 @@
 
 ## 服务端渲染 {app}
 
-- /home
+- /{root}
 - /applications
 - /application/{id}
 
@@ -140,6 +140,18 @@ MINIO_BUCKET_NAME=test
   }
 ]
 ```
+
+### 热门推荐 recommend
+
+```json  
+  {
+    "application":["applicationId1","applicationId2"]
+  }
+
+```
+
+
+
 
 
 ### 事件 event

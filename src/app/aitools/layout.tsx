@@ -1,4 +1,4 @@
-import { readJSONFile } from "@/scripts/getdata"
+import { readJSONFile } from "@/lib/getdata"
 import Header from "../(serverComponents)/Header"
 
 export default async function RootLayout({

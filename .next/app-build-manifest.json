@@ -21,11 +21,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(root)/page.js"
     ],
-    "/(root)/home/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(root)/home/page.js"
-    ],
     "/(root)/applications/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

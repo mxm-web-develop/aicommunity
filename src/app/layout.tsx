@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="min-h-screen bg-white dark:bg-gray-900 font-sans">
+      <body className="min-h-screen font-sans">
         <Providers>
           {children}
         </Providers>

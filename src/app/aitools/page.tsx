@@ -1,4 +1,4 @@
-import { readJSONFile } from "@/scripts/getdata";
+import { readJSONFile } from "@/lib/getdata";
 import { Star } from 'lucide-react';
 import Fuse from 'fuse.js';
 import Search from "./Search";

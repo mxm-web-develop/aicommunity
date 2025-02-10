@@ -1,7 +1,9 @@
 // import Header from '@/components/layout/Header';
 // import Sidebar from '@/components/layout/Sidebar';
 // import Footer from '@/components/layout/Footer';
-
+import { ThemeToggle } from '@/components/ToggleTheme';
+import { UserAvatar } from '@/components/UserAvatar';
+import Navbar from '@/scomponents/Navbar';
 export default function AppLayout({
   children,
 }: Readonly<{
@@ -9,8 +11,19 @@ export default function AppLayout({
 }>) {
   return (
     <div className="flex min-h-screen flex-col">
-      <header>
-        header  123123m123k12k3k123k
+      <header className='relative w-full bg-secondary'>
+        <div className='flex justify-between py-3 items-center w-full px-20'>
+        <div className='left'>
+          <span className='text-primary cursor-pointer'>logo</span>
+          
+        </div>
+        <div className='right gap-x-2 flex items-center justify-end'>
+         <Navbar /> 
+        <ThemeToggle />
+        <UserAvatar />
+        </div>
+        </div>
+     
       </header>
       
       <div className="flex flex-1">
@@ -24,8 +37,10 @@ export default function AppLayout({
         </main>
       </div>
 
-      <footer>
-        footer
+      <footer className='relative w-full bg-secondary'>
+        <div className='flex justify-center py-3 items-center w-full px-20'>
+          <span>footer</span>
+        </div>
       </footer>
     </div>
   );
