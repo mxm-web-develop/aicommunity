@@ -11,10 +11,23 @@ export default {
   theme: {
     extend: {
       screens: {
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
+        //默认手机端
+        md: '768px',    // 平板竖屏 (如 iPad Mini)
+        lg: '1024px',   // 平板横屏/小笔记本 (如 iPad Pro)
         xl: "1536px",
+      },
+      container: {
+        center: true,     // 自动水平居中
+        padding: {        // 不同断点下的水平内边距
+          DEFAULT: '1rem',
+          sm: '2rem',
+          lg: '4rem',
+        },
+        screens: {        // 容器在不同断点下的最大宽度
+          md: '720px',    // 平板竖屏稍微收一点
+          lg: '984px',    // 笔记本稍微收一点
+          xl: '1440px',   // 桌面稍微收一点
+        }
       },
       colors: {
         background: "hsl(var(--background))",
