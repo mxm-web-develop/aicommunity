@@ -21,10 +21,9 @@
 
 ## 首页
 ### 导航
-  单点登录
-  主题色切换
-  Ai应用
 
+  主题色切换
+ 
 ### banner
 ### 推荐应用
 ### footer
@@ -71,10 +70,25 @@ MINIO_BUCKET_NAME=test
 ```json
 {
   "id": "1",
-  "name": "中电金信AI研究院",
+  "name": "中电金信",
+  "subGroup":["AI","AI+"],  
   "logo": "https://www.zjfintech.com/logo.png",
   "description": "中电金信是一家专注于金融科技的公司，提供智能化的解决方案。",
   "url": "https://www.zjfintech.com"
+}
+```
+
+### 富文本资源 richText
+
+```json
+{
+  "id": "post_1",
+  "type":"document",
+  "content": "富文本内容...",
+  "format": "markdown",
+  "size": 1024,  // 存储内容大小（字节），用于监控
+  "createdAt": "2024-03-20T10:00:00Z",
+  "updatedAt": "2024-03-20T10:00:00Z"
 }
 ```
 
@@ -83,7 +97,10 @@ MINIO_BUCKET_NAME=test
 ```json
 {
   "id": "1",
-  "organizationId": "1",
+  "organization": {
+    "id": "1",
+    "group":0,  
+  },
   "network": "gientech",
   "links":{
     "website": "https://www.zjfintech.com",
@@ -100,15 +117,12 @@ MINIO_BUCKET_NAME=test
   "tag":["智能会话"，"银行金融"],
   "name": "小鲸智能客服",
   "status": 1,
-  "info": {
-    "logo": "https://www.zjfintech.com/logo.png 选填",
-    "coverImg": "https://www.zjfintech.com/cover.png 选填",
-    "short": "小鲸智能客服是一款智能客服系统，提供智能化的解决方案。500字以内",
-    "post": "小鲸智能客服是一款智能客服系统，提供智能化的解决方案。markdown|html|string格式富文本显示",
-  },
+  "shortIntro": "小鲸智能客服是一款智能客服系统，提供智能化的解决方案。500字以内",
+  "richPostId": "post_1",
   "assets":[{
     "id": "1",
     "name": "小鲸智能客服白皮书",
+    "size": 1024,
     "format": "pdf",
     "url": "https://www.zjfintech.com/icon.pdf",
   }],
@@ -145,7 +159,7 @@ MINIO_BUCKET_NAME=test
 
 ```json  
   {
-    "application":["applicationId1","applicationId2"]
+    "applications":["applicationId1","applicationId2"]
   }
 
 ```
