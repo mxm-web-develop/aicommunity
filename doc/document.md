@@ -78,7 +78,7 @@ MINIO_BUCKET_NAME=test
 }
 ```
 
-### 富文本资源 richText
+### 富文本资源 richPosts
 
 ```json
 {
