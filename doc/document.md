@@ -140,6 +140,10 @@ MINIO_BUCKET_NAME=test
 [
   {
     "id": "1",
+    "organization":{
+      "id": "1",
+      "group":0,  
+    },
     "label": "技术支持",
     "name": "张三",
     "email": "zhangsan@zjfintech.com"
