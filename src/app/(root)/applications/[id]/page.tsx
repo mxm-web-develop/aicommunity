@@ -4,7 +4,9 @@ interface ApplicationPageProps {
   };
 }
 
-export default async function ApplicationPage({ params }: ApplicationPageProps) {
+export default async function ApplicationPage({
+  params
+}: ApplicationPageProps) {
   const { id } = await params;
 
   return (
