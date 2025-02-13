@@ -11,13 +11,13 @@ export default function AppLayout({
 }>) {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className='relative w-full bg-background '>
+      <header className='flex-none relative z-100 w-full bg-background '>
         <div className='flex justify-between py-3 items-center h-[56px] box-border w-full px-[10px]'>
         <div className='left'>
           <span className='text-primary cursor-pointer'>
           <Image
           src={homeBg}
-          alt="Home background"
+          alt="logo"
           className="h-[28px] w-[180px]"  // 使用 brightness 或其他滤镜
           priority
         />
@@ -30,12 +30,12 @@ export default function AppLayout({
         </div>
         </div>
       </header>
-        <main className=" min-h-[95vh] w-full bg-secondary">
+        <main className=" min-h-[95vh]  w-full bg-secondary">
           {children}
         </main>
       <footer className='relative w-full bg-background'>
-        <div className='flex justify-center py-3 items-center w-full px-20'>
-          <span>footer</span>
+        <div className='flex  text-xs text-muted-foreground  justify-center py-3 items-center w-full px-20'>
+          <span>©2021 GienTech Technology Co.,Ltd.All rights reserved.</span>
         </div>
       </footer>
     </div>

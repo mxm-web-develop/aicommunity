@@ -12,6 +12,7 @@ interface ILinks {
 interface IBanner {
   status: number;
   title: string;
+  coverImg:string;
   description: string;
   url: string;
 }
@@ -26,14 +27,11 @@ interface IAsset {
 
 // 应用接口
 export interface IApplication extends Document {
-  organization: {
-    id: string;
-    group: number;
-  };
+  organizationId: string;
   network: string;
   links: ILinks;
   banner?: IBanner;
-  contact: string[];
+  contact: any[];
   classify: number;
   tags: string[];
   name: string;
@@ -50,10 +48,7 @@ export interface IApplication extends Document {
 
 const ApplicationSchema = new Schema<IApplication>(
   {
-    organization: {
-      id: { type: String, required: true },
-      group: { type: Number, required: false },
-    },
+    organizationId: { type: String, required: true },
     network: { type: String, default: 'gientech' },
     links: {
       website: { type: String, required: false },
@@ -62,6 +57,7 @@ const ApplicationSchema = new Schema<IApplication>(
     },
     banner: {
       status: { type: Number, default: 0 },
+      coverImg: { type: String, required: false },
       title: String,
       description: String,
       url: String,

@@ -46,9 +46,24 @@ export async function POST(request: NextRequest) {
     const applicationId = formData.get("applicationId") as string;
     const overwrite = formData.get("overwrite") === "true";
 
-    if (!file || !applicationId) {
+    if (!file) {
       return NextResponse.json(
-        { error: "缺少必要参数" },
+        { error: "缺少文件" },
+        { status: 400 }
+      );
+    }
+
+    if (!applicationId) {
+      return NextResponse.json(
+        { error: "缺少应用ID" },
+        { status: 400 }
+      );
+    }
+
+    // 验证 applicationId 格式
+    if (!validatePathComponent(applicationId)) {
+      return NextResponse.json(
+        { error: "应用ID格式不正确" },
         { status: 400 }
       );
     }
