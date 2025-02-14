@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_CHAT_URL: process.env.NEXT_PUBLIC_CHAT_URL,
     NEXT_PUBLIC_CHAT_TOKEN: process.env.NEXT_PUBLIC_CHAT_TOKEN,
-    NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK,
+    NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -15,11 +15,11 @@ const nextConfig: NextConfig = {
         ...config.resolve.fallback,
         fs: false,
         net: false,
-        tls: false,
+        tls: false
       };
     }
     return config;
-  },
+  }
   // experimental: {
   //   esmExternals: "loose",
   // },
