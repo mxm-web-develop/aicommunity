@@ -87,7 +87,7 @@ export const allRow = {
   content: "全部"
 };
 
-export const cardList = new Array(100)
+export const cardList = new Array(80)
   .fill(1)
   .map((_: any, idx: number) => ({
     cardId: idx + 1,

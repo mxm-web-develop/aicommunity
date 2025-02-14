@@ -27,22 +27,28 @@ export default function Applications(props: any) {
   const [category, setCategory] = useState<string>(categorys[0].key);
   const [scene, setScene] = useState<number>(allRow.id);
   const curCardList = useMemo(() => {
+    let _list = [] as any[];
     switch (category) {
       case allRow.id.toString():
-        return scene === allRow.id
-          ? cardList
-          : cardList.filter((j: any) => j.sceneId === scene);
+        _list =
+          scene === allRow.id
+            ? cardList
+            : cardList.filter((j: any) => j.sceneId === scene);
+        break;
       default:
-        return scene === allRow.id
-          ? cardList.filter((j: any) =>
-              sceneList
-                .filter((i: any) => i.type === category)
-                .map((i: any) => i.id)
-                .includes(j.sceneId)
-            )
-          : cardList.filter((j: any) => j.sceneId === scene);
+        _list =
+          scene === allRow.id
+            ? cardList.filter((j: any) =>
+                sceneList
+                  .filter((i: any) => i.type === category)
+                  .map((i: any) => i.id)
+                  .includes(j.sceneId)
+              )
+            : cardList.filter((j: any) => j.sceneId === scene);
+        break;
     }
-  }, [cardList, scene, category]);
+    return _list.filter((i: any) => JSON.stringify(i).indexOf(keyWord) >= 0);
+  }, [cardList, scene, category, keyWord]);
 
   const searchHandler = () => {
     console.log("搜索关键字:", keyWord);
