@@ -1,4 +1,4 @@
-import Applications from "@/components/ui/applications";
+import Applications from "@/components/ui/applications/applications";
 // import { categorys, getData } from "@/constants";
 
 // export async function getStaticProps() {

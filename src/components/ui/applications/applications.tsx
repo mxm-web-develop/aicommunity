@@ -1,28 +1,14 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
-// import { useRouter } from "next/router";
 import applicationsBanner from "@/static/img/applications_bg.png";
 import IconSearch from "@/static/img/icon-search.png";
-import AppCategory from "@/components/ui/application-category";
-import AppItem from "@/components/ui/application-item";
+import AppCategory from "./application-category";
+import AppItem from "./application-item";
 import { categorys, sceneList, cardList, allRow } from "@/constants";
 
 const ENTER_KEY = "Enter";
-
-export async function getStaticProps() {
-  return {
-    props: {
-      sceneList,
-      categorys
-    },
-    fallback: false
-  };
-}
-
 export default function Applications(props: any) {
-  // const { sceneList, categorys } = props;
-  // const router = useRouter();
   const [keyWord, setKeyWord] = useState<string>("");
   const [category, setCategory] = useState<string>(categorys[0].key);
   const [scene, setScene] = useState<number>(allRow.id);
