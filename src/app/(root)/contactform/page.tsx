@@ -7,6 +7,8 @@ interface Contact {
   label: string
   name?: string
   email?: string
+  organizationId?: string
+  department?: string
 }
 
 export default function ContactForm() {
@@ -61,7 +63,9 @@ export default function ContactForm() {
     const contactData = {
       label: formData.get('label'),
       name: formData.get('name') || undefined,
-      email: formData.get('email') || undefined
+      email: formData.get('email') || undefined,
+      organizationId: formData.get('organizationId') || undefined,
+      department: formData.get('department') || undefined
     }
 
     try {
@@ -161,6 +165,35 @@ export default function ContactForm() {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              所属组织
+            </label>
+            <select
+              name="organizationId"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">请选择组织</option>
+              {organizations.map((org) => (
+                <option key={org} value={org}>
+                  {org}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              部门
+            </label>
+            <input
+              name="department"
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="请输入部门"
+            />
+          </div>
+
           <div className="flex justify-end space-x-3">
             <button
               type="reset"
@@ -193,8 +226,15 @@ export default function ContactForm() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-medium">{contact.label}</h3>
+                    <span className="text-gray-500 text-sm">ID: {contact._id}</span>
                     {contact.name && <p className="text-gray-500 text-sm">姓名: {contact.name}</p>}
                     {contact.email && <p className="text-gray-500 text-sm">邮箱: {contact.email}</p>}
+                    {contact.organizationId && (
+                      <p className="text-gray-500 text-sm">组织: {contact.organizationId}</p>
+                    )}
+                    {contact.department && (
+                      <p className="text-gray-500 text-sm">部门: {contact.department}</p>
+                    )}
                   </div>
                   <button
                     onClick={() => handleDelete(contact._id)}
