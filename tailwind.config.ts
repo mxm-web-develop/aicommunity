@@ -79,7 +79,8 @@ export default {
         sm: "calc(var(--radius) - 4px)"
       },
       boxShadow: {
-        sidebar: "0px 0px 8px 6px #E7E8EB33"
+        sidebar: "0px 0px 8px 6px #E7E8EB",
+        cardHover: "3px 8px 12px 6px #8D9BC1"
       },
       fontSize: {
         llg: "20px"
