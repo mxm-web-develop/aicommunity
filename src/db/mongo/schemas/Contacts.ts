@@ -4,6 +4,8 @@ export interface IContact extends Document {
   label: string;
   name: string;
   email: string;
+  organizationId?: string;
+  department?:string;
 }
 
 const ContactSchema = new Schema({
@@ -11,6 +13,8 @@ const ContactSchema = new Schema({
     trim: true,  // 自动删除首尾空格
     minlength: [1, '名称至少需要1个字符'],
     maxlength: [50, '名称不能超过50个字符'] },
+  organizationId: { type: String, required: false },
+  department: { type: String, required: false },
   name: { type: String, required: false,trim: true,  // 自动删除首尾空格
     minlength: [1, '名称至少需要1个字符'],
     maxlength: [50, '名称不能超过50个字符'] },

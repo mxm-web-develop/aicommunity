@@ -23,6 +23,13 @@ export async function POST(request: NextRequest) {
     await connectToDatabase();
     const body = await request.json();
     
+    if (!body.name) {
+      return NextResponse.json(
+        { error: 'Organization name is required' },
+        { status: 400 }
+      );
+    }
+    
     const organization = new Organization(body);
     await organization.save();
 
@@ -46,6 +53,13 @@ export async function PUT(request: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: 'Organization ID is required' },
+        { status: 400 }
+      );
+    }
+
+    if ('name' in updateData && !updateData.name) {
+      return NextResponse.json(
+        { error: 'Organization name cannot be empty' },
         { status: 400 }
       );
     }
