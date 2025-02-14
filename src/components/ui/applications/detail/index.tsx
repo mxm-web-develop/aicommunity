@@ -33,7 +33,7 @@ export default function ApplicationDetail(props: IAppDetail) {
       case detailTabs[1].key:
         return <DetailAssets />;
       case detailTabs[2].key:
-        return <DetailContacts />;
+        return <DetailContacts detail={itemData.detail} />;
     }
   }, [curTab, itemData]);
 
