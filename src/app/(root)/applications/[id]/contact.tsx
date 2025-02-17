@@ -1,5 +1,3 @@
-"use client";
-import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import DetailContactBg from "@/static/img/detail-contact-bg.png";
 import IconPerson from "@/static/img/icon-person.png";

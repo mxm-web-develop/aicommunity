@@ -1,5 +1,3 @@
-"use client";
-import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import IconFilePdf from "@/static/img/icon-pdf.png";
 import IconView from "@/static/img/icon-view.png";

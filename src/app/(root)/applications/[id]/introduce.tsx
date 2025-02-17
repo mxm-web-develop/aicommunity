@@ -1,6 +1,4 @@
-"use client";
-import React, { useState } from "react";
-import AppItem from "../application-item";
+import AppItem from "../item";
 
 interface IAppDetailIntroduce {
   sameTypeItems: any[];
@@ -18,7 +16,7 @@ export default function DetailIntroduce(props: IAppDetailIntroduce) {
             background: "linear-gradient(179.8deg, #E9EEFF 0.17%, #FFFFFF 8.4%)"
           }}
         >
-          <div className="flex-1  min-h-[calc(100vh-350px)]">
+          <div className="flex-1  min-h-[calc(100vh-350px)] p-6">
             detail.fileUrl:{detail.fileUrl}
           </div>
         </div>
