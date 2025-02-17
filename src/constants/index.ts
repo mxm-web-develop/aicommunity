@@ -115,7 +115,7 @@ export const cardList = new Array(80)
             .join(""),
           filePath,
           fileSize: Number((Math.random() * 10 + 1).toFixed(1)) + "M",
-          updateDate: new Date().toDateString()
+          updateTime: new Date().toDateString()
         }))
     }
   }))
