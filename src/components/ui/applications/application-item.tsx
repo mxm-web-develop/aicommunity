@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import IconOrganization from "@/static/img/icon-organization.png";
+import { useEffect, useState } from "react";
 
 interface IAppItem {
   itemData: any;
@@ -11,6 +12,12 @@ interface IAppItem {
 
 const ApplicationItem = (props: IAppItem) => {
   const { itemData, onClick, hoverStyle = true } = props;
+  const [scene, setScene] = useState(itemData.scene);
+
+  useEffect(() => {
+    setScene(itemData.scene);
+  }, [itemData.scene]);
+
   const cardClickHandler = () => {
     onClick && onClick();
   };
@@ -39,12 +46,13 @@ const ApplicationItem = (props: IAppItem) => {
               {itemData.organization}
             </div>
             <div>
-              <span
-                className="inline-block  rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
-                title={itemData.scene}
-              >
-                {itemData.scene}
-              </span>
+            <span
+  className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
+  title={scene}  // 这里服务器端渲染的是 "AI+ - 数据3"
+  
+>
+  {scene}        // 而客户端渲染的是 "AI - 数据6"
+</span>
             </div>
           </div>
         </div>

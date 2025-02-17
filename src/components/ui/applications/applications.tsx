@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
 import IconSearch from "@/static/img/icon-search.png";
@@ -12,7 +12,9 @@ export default function Applications(props: any) {
   const [keyWord, setKeyWord] = useState<string>("");
   const [category, setCategory] = useState<string>(categorys[0].key);
   const [scene, setScene] = useState<number>(allRow.id);
-  const curCardList = useMemo(() => {
+  const [filteredList, setFilteredList] = useState(cardList);
+
+  useEffect(() => {
     let _list = [] as any[];
     switch (category) {
       case allRow.id.toString():
@@ -33,7 +35,10 @@ export default function Applications(props: any) {
             : cardList.filter((j: any) => j.sceneId === scene);
         break;
     }
-    return _list.filter((i: any) => JSON.stringify(i).indexOf(keyWord) >= 0);
+    const filtered = _list.filter((i: any) => 
+      JSON.stringify(i).indexOf(keyWord) >= 0
+    );
+    setFilteredList(filtered);
   }, [cardList, scene, category, keyWord]);
 
   const searchHandler = () => {
@@ -109,9 +114,9 @@ export default function Applications(props: any) {
             />
           </div>
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(curCardList || []).map((i: any, idx: number) => (
+            {(filteredList || []).map((i: any, idx: number) => (
               <AppItem
-                key={`card-${category}-${scene}-${i.cardId}-${idx}`}
+                key={`card-${i.cardId}-${idx}`}
                 itemData={i}
                 onClick={itemClickHandler(i)}
               />
