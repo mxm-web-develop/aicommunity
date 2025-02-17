@@ -34,6 +34,7 @@ export interface IApplication extends Document {
   contact: any[];
   classify: number;
   tags: string[];
+  keywords?: string[];
   name: string;
   status: number;
   shortIntro: string;
@@ -50,6 +51,7 @@ const ApplicationSchema = new Schema<IApplication>(
   {
     organizationId: { type: String, required: true },
     network: { type: String, default: 'gientech' },
+    keywords: { type: [String], required: false },
     links: {
       website: { type: String, required: false },
       github: { type: String, required: false },
