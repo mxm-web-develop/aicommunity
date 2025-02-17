@@ -1,11 +1,19 @@
+import dynamic from "next/dynamic";
 import AppItem from "../item";
+import FileView from "@/components/FileView";
 
 interface IAppDetailIntroduce {
   sameTypeItems: any[];
   detail: any;
 }
+
+const FileViewCmp = dynamic(() =>
+  import("@/components/FileView").then((mod) => mod.default)
+);
+
 export default function DetailIntroduce(props: IAppDetailIntroduce) {
   const { sameTypeItems, detail } = props;
+
   return (
     <div className="w-full">
       <div className="flex mb-4 items-start">
@@ -17,7 +25,8 @@ export default function DetailIntroduce(props: IAppDetailIntroduce) {
           }}
         >
           <div className="flex-1  min-h-[calc(100vh-350px)] p-6">
-            detail.fileUrl:{detail.fileUrl}
+            {detail.fileUrl}
+            {/* <FileViewCmp fileSuffix="pdf" filePath={detail.fileUrl} /> */}
           </div>
         </div>
         <div

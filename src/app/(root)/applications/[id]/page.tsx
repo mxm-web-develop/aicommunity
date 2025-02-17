@@ -38,22 +38,6 @@ const ApplicationPage = async ({
       )
     : [];
 
-  const RenderContent = () => {
-    switch (type) {
-      case detailTabs[0].key:
-        return (
-          <DetailIntroduce
-            sameTypeItems={sameTypeItems}
-            detail={itemData.detail}
-          />
-        );
-      case detailTabs[1].key:
-        return <DetailAssets detail={itemData.detail} />;
-      case detailTabs[2].key:
-        return <DetailContacts detail={itemData.detail} />;
-    }
-  };
-
   return (
     <div className="w-full">
       <div className="select-none h-[248px] relative w-full mb-4">
@@ -125,7 +109,16 @@ const ApplicationPage = async ({
         />
       </div>
       <div className="container">
-        <RenderContent />
+        {type === detailTabs[0].key ? (
+          <DetailIntroduce
+            sameTypeItems={sameTypeItems}
+            detail={itemData.detail}
+          />
+        ) : type === detailTabs[1].key ? (
+          <DetailAssets detail={itemData.detail} />
+        ) : type === detailTabs[1].key ? (
+          <DetailContacts detail={itemData.detail} />
+        ) : null}
       </div>
     </div>
   );
