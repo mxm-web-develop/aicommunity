@@ -10,7 +10,7 @@ import { categorys, sceneList, cardList, allRow } from "@/constants";
 const ENTER_KEY = "Enter";
 export default function Applications(props: any) {
   const [keyWord, setKeyWord] = useState<string>("");
-  const [category, setCategory] = useState<string>(categorys[0].key);
+  const [category, setCategory] = useState<string>(String(categorys[0].key));
   const [scene, setScene] = useState<number>(allRow.id);
   const curCardList = useMemo(() => {
     let _list = [] as any[];

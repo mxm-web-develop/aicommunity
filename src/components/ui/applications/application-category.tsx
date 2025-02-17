@@ -12,8 +12,8 @@ interface IAppCategory {
 
 const ApplicationCategory = (props: IAppCategory) => {
   const { sceneList, sceneChangeHandler } = props;
-  const [category, setCategory] = useState<string>(categorys[0].key);
-  const [scene, setScene] = useState<number>(allRow.id);
+  const [category, setCategory] = useState<string>(String(categorys[0].key));
+  const [scene, setScene] = useState<number>(Number(allRow.id));
 
   const categoryList = useMemo(() => {
     const _sceneList = [...sceneList];
@@ -45,7 +45,7 @@ const ApplicationCategory = (props: IAppCategory) => {
     if (categoryList.length) {
       setScene(categoryList[0].id);
     } else {
-      setScene(allRow.id);
+      setScene(Number(allRow.id));
     }
   }, [categoryList]);
 
