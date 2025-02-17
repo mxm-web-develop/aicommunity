@@ -99,16 +99,17 @@ export default function Applications(props: any) {
           priority
         />
       </div>
-      <div className="container mx-auto">
-        <div className="flex mb-10 items-start">
-          <div className="w-[194px] md:w-[234px] lg:w-[334px] bg-white rounded-xl p-5 mr-8 shadow-sidebar">
+      <div className="container">
+        <div className="flex mb-10 items-start ">
+          <div className="flex-1 max-w-[334px] min-w-[194px] bg-white rounded-xl p-5 mr-8 shadow-sidebar">
             <div className="font-bold text-llg text-[#333]">全部产品</div>
             <AppCategory
               sceneList={sceneList}
               sceneChangeHandler={sceneChangeHandler}
             />
           </div>
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(curCardList || []).map((i: any, idx: number) => (
               <AppItem
                 key={`card-${category}-${scene}-${i.cardId}-${idx}`}

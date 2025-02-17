@@ -98,12 +98,13 @@ export const cardList = new Array(80)
     sceneId: Math.floor(Math.random() * 20) + 1,
     detail: {
       fileUrl: filePath,
-      contactList: new Array(Math.floor(Math.random() * 10) + 1)
+      contactList: new Array(Math.floor(Math.random() * 10) + 2)
         .fill(null)
         .map((_: any, idx: number) => ({
           name: "章三" + idx,
-          mobile: "130010096" + Number(`0${idx}`),
-          mail: "130010096" + Number(`0${idx}`) + "@gientech.com"
+          phone: "130010096" + Number(`0${idx}`),
+          mail: "130010096" + Number(`0${idx}`) + "@gientech.com",
+          role: `销售支持-${idx}`
         })),
       assets: new Array(Math.floor(Math.random() * 20) + 10)
         .fill(null)

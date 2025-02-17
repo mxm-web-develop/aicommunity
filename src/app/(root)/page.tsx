@@ -2,7 +2,6 @@ import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 
 export default async function Home() {
-
   return (
     <div className="relative w-full h-full ">
       <div className="banner relative h-[420px] w-full">
@@ -21,7 +20,7 @@ export default async function Home() {
           priority
         />
       </div>
-      <div className="container mx-auto">
+      <div className="container">
         <div className="hot-applications py-5 ">
           <div className="hot-applications-title text-2xl font-bold text-center">
             热门应用

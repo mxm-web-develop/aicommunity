@@ -31,7 +31,7 @@ export default function ApplicationDetail(props: IAppDetail) {
           />
         );
       case detailTabs[1].key:
-        return <DetailAssets />;
+        return <DetailAssets detail={itemData.detail} />;
       case detailTabs[2].key:
         return <DetailContacts detail={itemData.detail} />;
     }
@@ -94,7 +94,7 @@ export default function ApplicationDetail(props: IAppDetail) {
           priority
         />
       </div>
-      <div className="container mx-auto">
+      <div className="container">
         <RenderContent />
       </div>
     </div>

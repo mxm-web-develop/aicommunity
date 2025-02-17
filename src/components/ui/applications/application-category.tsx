@@ -70,7 +70,7 @@ const ApplicationCategory = (props: IAppCategory) => {
       </div>
       {categoryList.map((i: any, idx: number) => (
         <div
-          className={`relative truncate w-[154px] md:w-[196px] lg:w-[296px] h-[42px] mb-1 text-sm text-[#333] leading-10 pl-[44px] pr-4 rounded-lg ${scene === i.id ? "font-bold text-white" : " cursor-pointer hover:opacity-85"}`}
+          className={`relative truncate h-[42px] mb-1 text-sm text-[#333] leading-10 pl-[44px] pr-4 rounded-lg ${scene === i.id ? "font-bold text-white" : " cursor-pointer hover:opacity-85"}`}
           key={`scene-${i.id}-${idx}`}
           style={{
             background:

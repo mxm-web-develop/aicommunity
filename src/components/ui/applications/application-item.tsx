@@ -19,7 +19,7 @@ const ApplicationItem = (props: IAppItem) => {
     <div className="h-[248px]">
       <Link href={`/applications/${itemData.cardId}`}>
         <div
-          className={`h-[246px] bg-white  p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
+          className={`h-[246px] bg-white p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
           onClick={cardClickHandler}
         >
           <div className="font-bold  text-llg mb-3">{itemData.title}</div>
