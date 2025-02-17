@@ -4,9 +4,9 @@ import "@mxmweb/fv/style.css";
 registerPDFWorker("/worker/pdf.worker.min.js");
 
 interface IFileView {
-  fileSuffix: string;
+  fileSuffix?: string;
   fileName?: string;
-  filePath?: string;
+  filePath: string;
 }
 
 export default function FileView(props: IFileView) {

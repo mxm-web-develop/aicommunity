@@ -11,7 +11,7 @@ const FileViewCmp = dynamic(() =>
   import("@/components/FileView").then((mod) => mod.default)
 );
 
-export default async function DetailIntroduce(props: IAppDetailIntroduce) {
+export default function DetailIntroduce(props: IAppDetailIntroduce) {
   const { sameTypeItems, detail } = props;
 
   return (
