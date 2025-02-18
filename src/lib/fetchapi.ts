@@ -7,15 +7,24 @@ export async function getBaseUrl() {
 }
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 
-    (process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : '');
+  // 获取当前请求的 host
+  const headersList = await headers();
+  const host = headersList.get('host');
   
-  const url = baseUrl + endpoint;
-  
+  // 构建完整的 URL
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'http';
+  const baseUrl = `${protocol}://${host}`;
+  const url = new URL(endpoint, baseUrl).toString();
+
   try {
+    console.log(`Fetching ${url} in ${process.env.NODE_ENV} environment`);
+    
     const response = await fetch(url, {
       ...options,
-      cache: 'no-store',
+      // Next.js 13 数据获取选项
+      next: {
+        revalidate: 0 // 禁用缓存
+      },
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -23,11 +32,6 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     });
 
     if (!response.ok) {
-      console.error('API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: url
-      });
       throw new Error(`API request failed: ${response.statusText}`);
     }
 
