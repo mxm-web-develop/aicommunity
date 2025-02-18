@@ -51,7 +51,7 @@ const ApplicationPage = async ({
         </div>
         <div className="absolute top-10 left-0 right-0 z-10">
           <div className="container">
-            <div className="text-[40px]">
+            <div className="text-[40px] mb-1">
               <b>{itemData.title}</b>
             </div>
             <div className="mb-3">
@@ -62,7 +62,7 @@ const ApplicationPage = async ({
                 {itemData.scene}
               </span>
             </div>
-            <div className="flex gap-4 text-sm mb-5">
+            <div className="flex gap-4 text-sm mb-4">
               <div
                 className="cursor-pointer h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 hover:opacity-85"
                 style={{
@@ -84,18 +84,18 @@ const ApplicationPage = async ({
                 return type === i.key ? (
                   <div
                     key={`detail-tab-${i.key}`}
-                    className={`relative h-12 leading-[48px] font-bold text-[#055aff]`}
+                    className={`relative h-12 leading-[44px] font-bold text-[#055aff]`}
                   >
                     {i.label}
                     <b
-                      className={`inline-block w-full absolute bottom-0 left-0 right-0 border-none h-[2px] bg-[#055aff]`}
+                      className={`inline-block w-full absolute bottom-1 left-0 right-0 border-none h-[2px] bg-[#055aff]`}
                     ></b>
                   </div>
                 ) : (
                   <Link href={`/applications/${id}?type=${i.key}`}>
                     <div
                       key={`detail-tab-${i.key}`}
-                      className={`relative h-12 leading-[48px] cursor-pointer hover:opacity-85`}
+                      className={`relative h-12 leading-[44px] cursor-pointer hover:opacity-85`}
                     >
                       {i.label}
                       <b
