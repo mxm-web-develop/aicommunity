@@ -7,24 +7,24 @@ export async function getBaseUrl() {
 }
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
-  // 获取当前请求的 host
   const headersList = await headers();
   const host = headersList.get('host');
   
-  // 构建完整的 URL
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'http';
-  const baseUrl = `${protocol}://${host}`;
+  // 根据环境和主机构建 URL
+  const protocol = 'http';
+  const baseUrl = process.env.NODE_ENV === 'development' 
+    ? `${protocol}://${host}`  // 使用当前主机和端口
+    : `${protocol}://localhost:3000`;  // 生产环境使用本地地址
+
   const url = new URL(endpoint, baseUrl).toString();
 
   try {
     console.log(`Fetching ${url} in ${process.env.NODE_ENV} environment`);
+    console.log('MongoDB Host:', process.env.MONGO_HOST); // 添加调试信息
     
     const response = await fetch(url, {
       ...options,
-      // Next.js 13 数据获取选项
-      next: {
-        revalidate: 0 // 禁用缓存
-      },
+      next: { revalidate: 0 },
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -32,6 +32,19 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     });
 
     if (!response.ok) {
+      // 添加更详细的错误信息
+      console.error('API error details:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: url,
+        host: host,
+        environment: process.env.NODE_ENV,
+        mongoHost: process.env.MONGO_HOST
+      });
+      
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      
       throw new Error(`API request failed: ${response.statusText}`);
     }
 
@@ -40,7 +53,9 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     console.error('Fetch error:', {
       error,
       url,
-      environment: process.env.NODE_ENV
+      host,
+      environment: process.env.NODE_ENV,
+      mongoHost: process.env.MONGO_HOST
     });
     throw error;
   }
