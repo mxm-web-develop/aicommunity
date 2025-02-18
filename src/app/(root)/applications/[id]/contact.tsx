@@ -50,7 +50,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
                     priority
                   />
                 </div>
-                <div className="min-w-20">{i.phone}</div>
+                <div className="min-w-20 leading-[48px]">{i.phone}</div>
               </div>
               <div className="relative pl-9 flex-1">
                 <div className="absolute z-10 left-0 top-3 select-none w-6 h-6 bg-[#f5f9ff] rounded-full pl-1 pt-1">
@@ -61,7 +61,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
                     priority
                   />
                 </div>
-                <div className="min-w-40">{i.mail}</div>
+                <div className="min-w-40 leading-[48px]">{i.mail}</div>
               </div>
             </div>
           </div>
