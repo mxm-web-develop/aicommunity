@@ -32,6 +32,7 @@ export interface IApplication extends Document {
   links: ILinks;
   banner?: IBanner;
   contact: any[];
+  gientechType?: string;
   classify: number;
   tags: string[];
   keywords?: string[];
@@ -49,9 +50,15 @@ export interface IApplication extends Document {
 
 const ApplicationSchema = new Schema<IApplication>(
   {
+    //组织id
     organizationId: { type: String, required: true },
+    //网络
     network: { type: String, default: 'gientech' },
+    //关键词
     keywords: { type: [String], required: false },
+    //类型
+    gientechType: { type: String, required: false },
+    //链接
     links: {
       website: { type: String, required: false },
       github: { type: String, required: false },
@@ -64,7 +71,9 @@ const ApplicationSchema = new Schema<IApplication>(
       description: String,
       url: String,
     },
+    //联系人
     contact: [{ type: Schema.Types.ObjectId, ref: 'Contact' }],  // 引用Contact模型
+    //标签
     tags: [{ type: String }],
     classify: { type: Number, enum: [0,1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],default: 0, required: true },
     name: { type: String, required: true },
@@ -72,7 +81,7 @@ const ApplicationSchema = new Schema<IApplication>(
     shortIntro: { 
       type: String, 
       required: false,
-      maxlength: 500  // 确保简介不超过500字
+      maxlength: 1000  // 确保简介不超过1000字
     },
     richPostId: { type: String, ref: 'RichText' },  // 引用RichText模型
     assets: [{

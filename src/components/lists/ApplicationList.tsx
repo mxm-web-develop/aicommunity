@@ -1,46 +1,74 @@
-interface Application {
-  id: string;
-  name: string;
-  shortIntro: string;
-  status: number;
-  network: string;
-  classify: number;
-  tags: string[];
-}
+import { fetchApi } from '@/lib/fetchapi';
 
-export default function ApplicationList() {
-  // 这里可以添加获取数据的逻辑
-  const applications: Application[] = [
-    { id: '1', name: '应用1', shortIntro: '描述1', status: 1, network: '网络1', classify: 1, tags: ['标签1'] },
-    { id: '2', name: '应用2', shortIntro: '描述2', status: 0, network: '网络2', classify: 2, tags: ['标签2'] },
-  ];
+export default async function ApplicationList() {
+  try {
+    // 并行获取数据
+    const [applicationsResponse, organizationsResponse] = await Promise.all([
+      fetchApi('/api/applications'),
+      fetchApi('/api/organization')
+    ]);
 
-  return (
-    <div className="w-full text-sm">
-      <table className="min-w-full text-xs">
-        <thead>
-          <tr className="border-b">
-            <th className="py-2 text-left">名称</th>
-            <th className="py-2 text-left">简介</th>
-            {/* <th className="py-2 text-left">网络</th> */}
-            <th className="py-2 text-left">分类</th>
-            <th className="py-2 text-left">标签</th>
-            <th className="py-2 text-left">联系人</th>
-          </tr>
-        </thead>
-        <tbody>
-          {applications.map((app) => (
-            <tr key={app.id} className="border-b hover:bg-gray-50">
-              <td className="py-2 px-4">{app.name}</td>
-              <td className="py-2 px-4">{app.shortIntro}</td>
-              {/* <td className="py-2 px-4">{app.network}</td> */}
-              <td className="py-2 px-4">{app.classify}</td>
-              <td className="py-2 px-4">{app.tags.join(', ')}</td>
-              {/* <td className="py-2 px-4">{app.contact.join(', ')}</td> */}
+    // 添加详细的日志输出
+    console.log('Applications Response:', JSON.stringify(applicationsResponse, null, 2));
+    console.log('Organizations Response:', JSON.stringify(organizationsResponse, null, 2));
+
+    // 修改验证逻辑，适应实际的数据结构
+    if (!Array.isArray(applicationsResponse?.data) || !Array.isArray(organizationsResponse)) {
+      console.error('Invalid response data:', { 
+        applicationsData: applicationsResponse?.data,
+        organizationsData: organizationsResponse 
+      });
+      throw new Error('Invalid response data');
+    }
+
+    const applications = applicationsResponse.data;
+    // 注意这里 organizationsResponse 直接就是数组
+    const organizations = organizationsResponse;
+
+    const orgMap = organizations.reduce((acc: Record<string, string>, org: any) => {
+      if (org?._id && org?.name) {  // 注意这里使用 _id 而不是 id
+        acc[org._id] = org.name;
+      }
+      return acc;
+    }, {});
+
+    // 添加数据验证
+    if (applications.length === 0) {
+      return <div className="p-4">暂无应用数据</div>;
+    }
+
+    return (
+      <div className="w-full text-sm">
+        <table className="min-w-full text-xs">
+          <thead>
+            <tr className="border-b">
+              <th className="py-2 text-left">名称</th>
+              <th className="py-2 text-left">简介</th>
+              <th className="py-2 text-left">应用类型</th>
+              <th className="py-2 text-left">所属组织</th>
+              <th className="py-2 text-left">标签</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {applications.map((app: any) => (
+              <tr key={app.id || Math.random()} className="border-b hover:bg-gray-50">
+                <td className="py-2 px-4">{app.name || '-'}</td>
+                <td className="py-2 px-4">{app.shortIntro || '-'}</td>
+                <td className="py-2 px-4">{app.gientechType || '-'}</td>
+                <td className="py-2 px-4">{orgMap[app.organizationId] || "未知组织"}</td>
+                <td className="py-2 px-4">{app.tags?.join(', ') || '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  } catch (error) {
+    console.error('Error in ApplicationList:', error);
+    return (
+      <div className="p-4 text-red-500">
+        获取数据失败: {error instanceof Error ? error.message : '未知错误'}
+      </div>
+    );
+  }
 }
