@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import applicationDetailBanner from "@/static/img/application_details_banner.png";
 import { cardList, detailTabs } from "@/constants";
+import CollectPraiseBtn from "@/components/ui/collect-praise-btn";
 import DetailIntroduce from "./introduce";
 import DetailAssets from "./assets";
 import DetailContacts from "./contact";
@@ -41,6 +42,13 @@ const ApplicationPage = async ({
   return (
     <div className="w-full">
       <div className="select-none h-[248px] relative w-full mb-4">
+        <div className="container relative right-0 top-10 z-20 text-right">
+          <CollectPraiseBtn
+            praiseNum={2356}
+            collectNum={235}
+            isCollect={true}
+          />
+        </div>
         <div className="absolute top-10 left-0 right-0 z-10">
           <div className="container">
             <div className="text-[40px]">
