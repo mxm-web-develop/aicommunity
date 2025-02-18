@@ -23,18 +23,18 @@ const ApplicationItem = (props: IAppItem) => {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="relative pl-7 text-sm text-[#888] leading-6">
+            <div className="relative pl-7 text-sm text-[#888] leading-7 min-w-[60px] h-7">
               <Image
                 src={IconOrganization}
                 alt=""
-                className="absolute top-0 left-0 h-6 w-6 select-none"
+                className="absolute top-[2px] left-0 h-6 w-6 select-none"
                 priority
               />
               {itemData.organization}
             </div>
             <div>
               <span
-                className="inline-block  rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
+                className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
                 title={itemData.scene}
               >
                 {itemData.scene}
