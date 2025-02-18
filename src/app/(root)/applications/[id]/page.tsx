@@ -124,7 +124,7 @@ const ApplicationPage = async ({
           />
         ) : type === detailTabs[1].key ? (
           <DetailAssets detail={itemData.detail} />
-        ) : type === detailTabs[1].key ? (
+        ) : type === detailTabs[2].key ? (
           <DetailContacts detail={itemData.detail} />
         ) : null}
       </div>

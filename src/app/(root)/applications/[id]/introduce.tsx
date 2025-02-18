@@ -26,6 +26,7 @@ export default function DetailIntroduce(props: IAppDetailIntroduce) {
         >
           <div className="flex-1  min-h-[calc(100vh-350px)] p-6">
             {detail.fileUrl}
+            {/* <FileView fileSuffix="pdf" filePath={detail.fileUrl} /> */}
             {/* <FileViewCmp fileSuffix="pdf" filePath={detail.fileUrl} /> */}
           </div>
         </div>

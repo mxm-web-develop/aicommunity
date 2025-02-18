@@ -19,6 +19,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
       }}
     >
       <div className="p-6 min-h-[calc(100vh-350px)]">
+        {/* {JSON.stringify(detail)} */}
         <div className="font-bold text-[#333] tex-llg mb-5">联系人</div>
         {(contactList || []).map((i: any, idx: number) => (
           <div
