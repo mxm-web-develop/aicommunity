@@ -30,7 +30,7 @@ export default function DetailAssets(props: IAppDetailContacts) {
           {(assets || []).map((i: any, idx: number) => (
             <div
               key={`detail-asset-${idx}`}
-              className="flex h-[54px] bg-white border-0 border-solid border-[#e8e8e8] border-b-[1px]"
+              className="flex h-[54px] leading-[54px] bg-white border-0 border-solid border-[#e8e8e8] border-b-[1px]"
               title={i.fileName}
             >
               <div className="pr-4 flex-1 min-w-[222px] relative pl-10">
