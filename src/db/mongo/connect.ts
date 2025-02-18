@@ -65,3 +65,21 @@ export async function connectToDatabase() {
     throw error;
   }
 }
+
+export async function disconnectFromDatabase() {
+  if (!isConnected) {
+    return;
+  }
+
+  try {
+    await mongoose.disconnect();
+    isConnected = false;
+    console.log('MongoDB disconnected successfully');
+  } catch (error) {
+    console.error('MongoDB disconnection error:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    throw error;
+  }
+}
