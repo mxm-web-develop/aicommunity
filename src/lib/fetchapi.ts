@@ -7,22 +7,37 @@ export async function getBaseUrl() {
 }
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
-  const baseUrl = await getBaseUrl();
-  const url = `${baseUrl}${endpoint}`;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 
+    (process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : '');
   
-  const response = await fetch(url, {
-    ...options,
-    cache: 'no-store', // 默认禁用缓存
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+  const url = baseUrl + endpoint;
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.statusText}`);
+    if (!response.ok) {
+      console.error('API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: url
+      });
+      throw new Error(`API request failed: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Fetch error:', {
+      error,
+      url,
+      environment: process.env.NODE_ENV
+    });
+    throw error;
   }
-
-  const data = await response.json();
-  return data;
 }
