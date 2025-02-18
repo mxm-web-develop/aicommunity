@@ -55,8 +55,8 @@ export const fetchToken = async (
   const _url = new URL(url);
   const service = _url.origin;
   const params = new URLSearchParams({
-    ticket: "ST-3478307-O76pTqa0086HrK7-D2QV8F3ruAE-login",
-    // ticket,
+    // ticket: "ST-3478307-O76pTqa0086HrK7-D2QV8F3ruAE-login",
+    ticket,
     service
   }).toString();
   const apiUrl = `${authDomain}${authApi}?${params}`;
