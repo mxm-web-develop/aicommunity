@@ -1,7 +1,7 @@
 "use client";
 import { useFileViewer, registerPDFWorker } from "@mxmweb/fv";
 import "@mxmweb/fv/style.css";
-registerPDFWorker("/worker/pdf.worker.min.js");
+registerPDFWorker("/public/worker/pdf.worker.min.js");
 
 interface IFileView {
   fileSuffix?: string;

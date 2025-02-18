@@ -19,6 +19,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
       }}
     >
       <div className="p-6 min-h-[calc(100vh-350px)]">
+        {/* {JSON.stringify(detail)} */}
         <div className="font-bold text-[#333] tex-llg mb-5">联系人</div>
         {(contactList || []).map((i: any, idx: number) => (
           <div
@@ -49,7 +50,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
                     priority
                   />
                 </div>
-                <div className="min-w-20">{i.phone}</div>
+                <div className="min-w-20 leading-[48px]">{i.phone}</div>
               </div>
               <div className="relative pl-9 flex-1">
                 <div className="absolute z-10 left-0 top-3 select-none w-6 h-6 bg-[#f5f9ff] rounded-full pl-1 pt-1">
@@ -60,7 +61,7 @@ export default function DetailContacts(props: IAppDetailContacts) {
                     priority
                   />
                 </div>
-                <div className="min-w-40">{i.mail}</div>
+                <div className="min-w-40 leading-[48px]">{i.mail}</div>
               </div>
             </div>
           </div>
