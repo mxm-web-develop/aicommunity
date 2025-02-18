@@ -92,9 +92,11 @@ const ApplicationPage = async ({
                     ></b>
                   </div>
                 ) : (
-                  <Link href={`/applications/${id}?type=${i.key}`}>
+                  <Link
+                    key={`detail-tab-${i.key}`}
+                    href={`/applications/${id}?type=${i.key}`}
+                  >
                     <div
-                      key={`detail-tab-${i.key}`}
                       className={`relative h-12 leading-[44px] cursor-pointer hover:opacity-85`}
                     >
                       {i.label}
