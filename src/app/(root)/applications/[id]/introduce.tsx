@@ -1,15 +1,15 @@
 import dynamic from "next/dynamic";
 import AppItem from "../item";
-import FileView from "@/components/FileView";
+// import FileView from "@/components/FileView";
 
 interface IAppDetailIntroduce {
   sameTypeItems: any[];
   detail: any;
 }
 
-const FileViewCmp = dynamic(() =>
-  import("@/components/FileView").then((mod) => mod.default)
-);
+// const FileViewCmp = dynamic(() =>
+//   import("@/components/FileView").then((mod) => mod.default)
+// );
 
 export default function DetailIntroduce(props: IAppDetailIntroduce) {
   const { sameTypeItems, detail } = props;
