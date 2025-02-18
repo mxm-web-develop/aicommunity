@@ -1,6 +1,8 @@
 import ApplicationList from '@/components/lists/ApplicationList';
 import ApplicationForm from '@/components/forms/ApplicationForm';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ApplicationsPage() {
 
   return (
