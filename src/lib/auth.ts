@@ -1,6 +1,7 @@
 import type { NextRequest, NextResponse } from "next/server";
 // import { fetchApi } from "@/lib/fetchapi";
 
+// export const authDomain = "https://login.pacteratech.com“;
 export const authDomain = "https://login-test.pacteratech.com";
 export const authApi = "/serviceValidate";
 const loginApi = "/login";
@@ -46,7 +47,11 @@ export const getTicket = (req: NextRequest) => {
   return queryParams.get(ticketKey) || null;
 };
 
-export const fetchToken = async (ticket: string, url: string) => {
+export const fetchToken = async (
+  ticket: string,
+  url: string,
+  response: NextResponse
+) => {
   const _url = new URL(url);
   const service = _url.origin;
   const params = new URLSearchParams({
@@ -62,9 +67,11 @@ export const fetchToken = async (ticket: string, url: string) => {
     const res = await fetch(apiUrl);
     console.log("res:", res);
     const data = await res.json();
-    console.log("data:", data);
-
-    return data;
+    const { authenticationSuccess } = data;
+    console.log("data:", authenticationSuccess);
+    const { token } = authenticationSuccess;
+    setAuthorization(response, token);
+    return token;
   } catch (err) {
     console.log(err);
     return null;
