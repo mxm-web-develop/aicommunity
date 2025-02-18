@@ -106,17 +106,18 @@ const ApplicationsPage = async ({
                 {(categorys || []).map((i: any, idx: number) => {
                   return _category === i.key ? (
                     <span
+                      key={`category-tab-${idx}`}
                       className={`inline-block px-3 py-1 rounded-sm min-w-10 font-bold text-white`}
                       style={{
                         background:
                           "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
                       }}
-                      key={`category-tab-${idx}`}
                     >
                       {i.label}
                     </span>
                   ) : (
                     <Link
+                      key={`category-tab-${idx}`}
                       href={`/applications?${category ? "category=" + i.key : ""}`}
                     >
                       <span
@@ -124,7 +125,6 @@ const ApplicationsPage = async ({
                         style={{
                           background: "transparent"
                         }}
-                        key={`category-tab-${idx}`}
                       >
                         {i.label}
                       </span>
@@ -135,8 +135,8 @@ const ApplicationsPage = async ({
               {_sceneList.map((i: any, idx: number) => {
                 return _scene === i.id ? (
                   <div
-                    className={`relative truncate h-[42px] mb-1 text-sm leading-10 pl-[44px] pr-4 rounded-lg font-bold text-white`}
                     key={`scene-${i.id}-${idx}`}
+                    className={`relative truncate h-[42px] mb-1 text-sm leading-10 pl-[44px] pr-4 rounded-lg font-bold text-white`}
                     style={{
                       background:
                         "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
@@ -153,11 +153,11 @@ const ApplicationsPage = async ({
                   </div>
                 ) : (
                   <Link
+                    key={`scene-${i.id}-${idx}`}
                     href={`/applications?category=${_category}&scene=${i.id}`}
                   >
                     <div
                       className={`relative truncate h-[42px] mb-1 text-sm text-[#333] leading-10 pl-[44px] pr-4 rounded-lg cursor-pointer hover:opacity-85`}
-                      key={`scene-${i.id}-${idx}`}
                       style={{
                         background: "transparent"
                       }}
