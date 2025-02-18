@@ -8,7 +8,7 @@ import {
   fetchToken
 } from "@/lib/auth";
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, response: NextResponse) {
   const url = request.nextUrl;
 
   if (url.pathname.startsWith("/myproxy")) {
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
       // );
     } else {
       console.log("有ticket，获取token");
-      token = await fetchToken(ticket, request.url);
+      token = await fetchToken(ticket, request.url, response);
       console.log("new token:", token);
     }
   }
