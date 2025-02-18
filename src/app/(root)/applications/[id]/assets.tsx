@@ -21,7 +21,7 @@ export default function DetailAssets(props: IAppDetailContacts) {
       >
         <div className="p-6 min-h-[calc(100vh-350px)] text-[#333] text-sm leading-[54px]">
           <div className="font-bold text-[#333] tex-llg mb-5">静态资源列表</div>
-          <div className="flex h-[54px] bg-[#fafafa] border-0 border-solid border-[#e8e8e8] border-b-[1px]">
+          <div className="flex h-[54px] leading-[54px] bg-[#fafafa] border-0 border-solid border-[#e8e8e8] border-b-[1px]">
             <div className="px-4 flex-1 min-w-[222px]">名称</div>
             <div className="px-4 w-32 text-right">大小</div>
             <div className="px-4 w-40">更新时间</div>
