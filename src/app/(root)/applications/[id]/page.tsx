@@ -36,7 +36,7 @@ const ApplicationPage = async ({
   try {
     // 获取应用详情数据
     console.log('Fetching application details for id:', id);
-    const response = await fetchApi(`/api/applications?id=${id}`);
+    const response = await fetchApi(`/api/applications?id=${id}`, {cache: 'no-store'});
     console.log('API Response:', response);
     
     if (!response.success) {
@@ -66,7 +66,7 @@ const ApplicationPage = async ({
               </div>
               <div className="mb-3">
                 <span
-                  className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
+                  className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c]  truncate"
                   title={itemData.gientechType}
                 >
                   {itemData.gientechType}
@@ -74,15 +74,25 @@ const ApplicationPage = async ({
               </div>
 
               <div className="flex gap-4 text-sm mb-4">
-                <div
-                  className="cursor-pointer h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 hover:opacity-85"
-                  style={{
-                    background:
-                      "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
-                  }}
-                >
-                  立即体验
-                </div>
+                {itemData.links?.website ? (
+                  <a 
+                    href={itemData.links.website}
+                    target="_blank"
+                    className="cursor-pointer h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 hover:opacity-85 text-center"
+                    style={{
+                      background:
+                        "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
+                    }}
+                  >
+                    立即体验
+                  </a>
+                ) : (
+                  <div
+                    className="cursor-not-allowed h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 bg-gray-400 text-center"
+                  >
+                    暂无试用
+                  </div>
+                )}
      
               </div>
               <DetailTabs detailTabs={detailTabs} type={type} id={id} />
@@ -103,6 +113,8 @@ const ApplicationPage = async ({
               gientechType={itemData.gientechType}
               shortIntro={itemData.shortIntro}
               richIntro={itemData.productIntro_id}
+              contact={itemData.contact}
+              organizationId={itemData.organizationId}
               // detail={itemData.detail}
             />
           ) : type === detailTabs[1].key ? (

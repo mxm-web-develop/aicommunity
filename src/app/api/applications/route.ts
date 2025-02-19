@@ -17,15 +17,21 @@ export async function GET(request: NextRequest) {
       const application = await Application.findById(id)
         .populate({
           path: 'contact',
-          model: Contact
+          model: Contact,
+          options: { lean: true }  // 确保返回普通 JavaScript 对象
         })
-        .lean();
+        .lean();  // 这里的 lean() 会将 Mongoose 文档转换为普通 JavaScript 对象
         
       if (!application) {
         return NextResponse.json(
           { success: false, error: '未找到应用' },
           { status: 404 }
         );
+      }
+      
+      // 确保 contact 始终是数组
+      if (application.contact && !Array.isArray(application.contact)) {
+        application.contact = [application.contact];
       }
       
       return NextResponse.json({ success: true, data: application });

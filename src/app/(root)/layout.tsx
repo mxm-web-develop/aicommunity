@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ToggleTheme";
 import { UserAvatar } from "@/components/UserAvatar";
 import Navbar from "@/scomponents/Navbar";
 import { readJSONFile } from "@/lib/getdata";
+import Link from "next/link";
 export default async function AppLayout({
   children
 }: Readonly<{
@@ -17,14 +18,14 @@ export default async function AppLayout({
       <header className="relative w-full bg-background ">
         <div className="flex justify-between py-3 items-center h-[56px] box-border w-full px-[10px]">
           <div className="left">
-            <span className="text-primary cursor-pointer">
+            <Link href="/" className="text-primary cursor-pointer">
               <Image
                 src={homeBg}
                 alt="Home background"
                 className="h-[28px] w-[180px]" // 使用 brightness 或其他滤镜
                 priority
               />
-            </span>
+            </Link>
           </div>
           <div className="right gap-x-2 flex items-center justify-end">
             {/* <Navbar /> 

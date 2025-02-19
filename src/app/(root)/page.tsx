@@ -2,10 +2,11 @@ import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/scomponents/AppCard";
 import { fetchApi } from "@/lib/fetchapi";
+import Link from "next/link";
 
 export default async function Home() {
-  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8',{  cache: 'no-store' });
-  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8',{  cache: 'no-store' });
+  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8',{  next: {revalidate: 17200} });
+  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8',{  next: {revalidate: 17200} });
   if (!success) {
     console.error('Failed to fetch applications');
     return null;
@@ -13,7 +14,7 @@ export default async function Home() {
   console.log(AIapplications);
   // console.log(applications);
   return (
-    <div className="relative w-full h-full ">
+    <div className="relative w-full h-full mb-12">
       <div className="banner relative h-[420px] w-full">
         <div className="absolute top-[140px] left-[80px] z-10 text-black">
           <div className="flex flex-col text-foreground items-start justify-center h-full">
@@ -38,29 +39,42 @@ export default async function Home() {
         </div> */}
         <div className="application-displayer py-5 ">
           <div className="application-displayer-title text-2xl font-bold text-center">
-            AI应用展示
+          AI产品与服务
           </div>
           <div className="text-sm pt-[8px] pb-[32px] text-gray-500 text-center">
-            应用展示subtitle
+          源启AI技术能力矩阵
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {AIapplications.map((application: any) => (
               <AppCard key={application._id} data={application} />
             ))}
-
+          </div>
+          <div className="flex justify-center mt-6">
+            <Link href="/applications">
+              <button className="px-6 py-2 text-sm bg-white text-gray-600 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
+                查看更多
+              </button>
+            </Link>
           </div>
         </div>
         <div className="application-displayer py-5 ">
         <div className="application-displayer-title text-2xl font-bold text-center">
-            AI+应用展示
+        AI+产品与服务
           </div>
           <div className="text-sm pt-[8px] pb-[32px] text-gray-500 text-center">
-            应用展示subtitle
+            源启+应用"智能化矩阵
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {AIapplications2.map((application: any) => (
               <AppCard key={application._id} data={application} />
             ))}
+          </div>
+          <div className="flex justify-center mt-6">
+            <Link href="/applications">
+              <button className="px-6 py-2 text-sm bg-white text-gray-600 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
+                查看更多
+              </button>
+            </Link>
           </div>
         </div>
       </div>
