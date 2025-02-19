@@ -4,11 +4,14 @@ import homeBg from "@/static/img/logo.png";
 import { ThemeToggle } from "@/components/ToggleTheme";
 import { UserAvatar } from "@/components/UserAvatar";
 import Navbar from "@/scomponents/Navbar";
-export default function AppLayout({
+import { readJSONFile } from "@/lib/getdata";
+export default async function AppLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const appInfo = await readJSONFile("src/static/json/app_info.json");
+ 
   return (
     <div className="flex min-h-screen flex-col">
       <header className="relative w-full bg-background ">
@@ -33,7 +36,9 @@ export default function AppLayout({
       <main className=" min-h-[95vh] w-full bg-secondary">{children}</main>
       <footer className="relative w-full bg-background">
         <div className="flex justify-center py-3 items-center w-full px-20">
-          <span>footer</span>
+          <span className="text-xs text-gray-500">
+            {appInfo.footer.right}
+          </span>
         </div>
       </footer>
     </div>

@@ -20,5 +20,6 @@ const ContactSchema = new Schema({
     maxlength: [50, '名称不能超过50个字符'] },
   email: { type: String, required: false, match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, '请输入有效的邮箱地址'] },
 });
+export const Contact = (mongoose.models.Contact || mongoose.model<IContact>('Contact', ContactSchema)) as mongoose.Model<IContact>;
 
-export const Contact = mongoose.models.Contact || mongoose.model<IContact>('Contact', ContactSchema);
+    

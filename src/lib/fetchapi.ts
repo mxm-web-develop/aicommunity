@@ -6,15 +6,13 @@ export async function getBaseUrl() {
   return `${protocol}://${host}`;
 }
 
-export async function fetchApi(endpoint: string, options: RequestInit = {}) {
+export async function fetchApi(endpoint: string, options: RequestInit & { next?: { revalidate?: number } } = {}) {
   const headersList = await headers();
   const host = headersList.get('host');
   
-  // 根据环境和主机构建 URL
-  const protocol = 'http';
-  const baseUrl = process.env.NODE_ENV === 'development' 
-    ? `${protocol}://${host}`  // 使用当前主机和端口
-    : `${protocol}://localhost:3000`;  // 生产环境使用本地地址
+  // 统一使用当前主机和端口
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
 
   const url = new URL(endpoint, baseUrl).toString();
 
@@ -24,7 +22,7 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     
     const response = await fetch(url, {
       ...options,
-      next: { revalidate: 0 },
+      next: options.next,
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,

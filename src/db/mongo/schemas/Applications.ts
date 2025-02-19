@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 import { Contact } from '@/db/mongo/schemas/Contacts';  // 引入已有的 Contact model
 import { RichPost } from '@/db/mongo/schemas/RichPosts';  // 引入已有的 RichPost model
 // 链接接口
@@ -31,7 +31,7 @@ export interface IApplication extends Document {
   network: string;
   links: ILinks;
   banner?: IBanner;
-  contact: any[];
+  contact: mongoose.Types.ObjectId;
   gientechType?: string;
   classify: number;
   tags: string[];
@@ -39,13 +39,18 @@ export interface IApplication extends Document {
   name: string;
   status: number;
   shortIntro: string;
-  richPostId: string;
+  productIntro_id: string;
   assets: IAsset[];
   awards: string[];
-  author: string;
+
   reproduce?: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+// 扩展静态方法接口
+interface IApplicationModel extends Model<IApplication> {
+  findAIApplications(): Promise<IApplication[]>;
 }
 
 const ApplicationSchema = new Schema<IApplication>(
@@ -72,7 +77,7 @@ const ApplicationSchema = new Schema<IApplication>(
       url: String,
     },
     //联系人
-    contact: [{ type: Schema.Types.ObjectId, ref: 'Contact' }],  // 引用Contact模型
+    contact: { type: mongoose.Schema.Types.ObjectId, ref: 'Contact' },
     //标签
     tags: [{ type: String }],
     classify: { type: Number, enum: [0,1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],default: 0, required: true },
@@ -83,7 +88,7 @@ const ApplicationSchema = new Schema<IApplication>(
       required: false,
       maxlength: 1000  // 确保简介不超过1000字
     },
-    richPostId: { type: String, ref: 'RichText' },  // 引用RichText模型
+    productIntro_id: { type: String, ref: 'RichPost' },  // 引用RichText模型
     assets: [{
       name: { type: String, required: true },
       size: { type: Number, required: false },
@@ -114,14 +119,27 @@ ApplicationSchema.virtual('isActive').get(function() {
   return this.status === 1;
 });
 
+// 添加静态方法
+ApplicationSchema.statics.findAIApplications = function() {
+  return this.find({ organizationId: 'ai' })
+    .lean()
+    .then(applications => 
+      mongoose.model('Application').populate(applications, {
+        path: 'contact',
+        model: 'Contact'
+      })
+    );
+};
+
 // 确保JSON输出包含虚拟字段
 ApplicationSchema.set('toJSON', {
   virtuals: true,
   versionKey: false,
   transform: function(doc: any, ret: any) {
-    delete ret._id;
+   
     return ret;
   }
 });
 
-export const Application = mongoose.models.Application || mongoose.model<IApplication>('Application', ApplicationSchema);
+// 导出模型时明确指定类型
+export const Application = (mongoose.models.Application || mongoose.model<IApplication, IApplicationModel>('Application', ApplicationSchema)) as IApplicationModel;

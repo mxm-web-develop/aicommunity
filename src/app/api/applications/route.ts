@@ -5,6 +5,7 @@ import { connectToDatabase } from '@/db/mongo/connect';
 
 // GET - 获取应用列表，支持多种查询条件
 export async function GET() {
+  console.log('难道？')
   try {
     await connectToDatabase();
     

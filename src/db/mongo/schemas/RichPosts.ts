@@ -107,4 +107,4 @@ RichPostSchema.pre('save', function(next) {
   next();
 });
 
-export const RichPost = mongoose.models.RichPost || mongoose.model<IRichPost>('RichPost', RichPostSchema);
+export const RichPost = (mongoose.models.RichPost || mongoose.model<IRichPost>('RichPost', RichPostSchema)) as mongoose.Model<IRichPost>;
