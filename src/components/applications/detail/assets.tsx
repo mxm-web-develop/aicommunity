@@ -1,14 +1,93 @@
+"use client";
 import Image from "next/image";
 import IconFilePdf from "@/static/img/icon-pdf.png";
 import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
+import { useEffect, useMemo, useState } from "react";
+import FileView from "@/components/FileView";
+import { registerPDFWorker } from "../../@mxmweb/fv";
 
+registerPDFWorker("/worker/pdf.worker.min.js");
 interface IAppDetailContacts {
   detail: any;
 }
+const BaseUrl = "http://45.77.12.232:9000";
 export default function DetailAssets(props: IAppDetailContacts) {
   const { detail } = props;
-  const { assets } = detail;
+  const assets = useMemo(() => {
+    return (
+      detail?.length ? detail : ["/test/“两高一弱”问题规则-中电金信.pdf"]
+    ).map((item: any) => {
+      const arr = item.split("/");
+      return {
+        name: arr[arr.length - 1].split(".")[0],
+        url: item,
+        type: arr[arr.length - 1].split(".")[1]
+      };
+    });
+  }, [detail]);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [curFileInfo, setCurFileInfo]: any = useState({});
+  const handlerEvent = (type: string, data?: any) => {
+    switch (type) {
+      case "view":
+        setCurFileInfo({
+          fileName: data.name,
+          filePath: `${BaseUrl}${data.url}`,
+          fileSuffix: data.type
+        });
+        setShowPreviewModal(true);
+        break;
+      case "download":
+        handleDownload(`${BaseUrl}${data.url}`, data.name);
+        break;
+    }
+  };
+
+  const handleDownload = (filePath: string, fileName: string) => {
+    if (filePath) {
+      fetch(filePath, {
+        method: "GET",
+        headers: {}
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.blob(); // 获取Blob对象
+        })
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = `${fileName}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url); // 释放URL对象
+          document.body.removeChild(a);
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+    }
+  };
+  const handleE = (type: string) => {
+    switch (type) {
+      case "close":
+        setShowPreviewModal(false);
+        break;
+
+      default:
+        break;
+    }
+  };
+  useEffect(() => {
+    console.log("assets", assets);
+  }, [assets]);
   return (
     <div className="bg-white">
       <div
@@ -39,8 +118,8 @@ export default function DetailAssets(props: IAppDetailContacts) {
                   className="object-cover absolute z-10 left-4 top-[18px] select-none w-4 h-4"
                   priority
                 />
-                <div className="truncate" title={i.fileName}>
-                  {i.fileName}
+                <div className="truncate" title={i.name}>
+                  {i.name}
                 </div>
               </div>
               <div className="px-4 w-32 text-right">{i.fileSize}</div>
@@ -52,6 +131,7 @@ export default function DetailAssets(props: IAppDetailContacts) {
                   title="查看"
                   className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-85"
                   priority
+                  onClick={() => handlerEvent("view", i)}
                 />
                 <Image
                   src={IconDownload}
@@ -59,12 +139,20 @@ export default function DetailAssets(props: IAppDetailContacts) {
                   title="下载"
                   className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-80"
                   priority
+                  onClick={() => handlerEvent("download", i)}
                 />
               </div>
             </div>
           ))}
         </div>
       </div>
+      {showPreviewModal && (
+        <div className="w-full h-full fixed top-0 left-0 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="w-[900px] h-[70vh] flex items-center justify-center bg-white">
+            <FileView curFileInfo={curFileInfo} handleEvent={handleE} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
