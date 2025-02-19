@@ -1,19 +1,3 @@
-// export default function AppCard({ application }: { application: any }) {
-//   return (
-//     <div 
-//       className="bg-white w-full py-[24px] shadow-none  rounded-lg p-4 hover:shadow-[0_8px_12px_-3px_rgba(141,155,193,0.4)] transition-all ease-in-out duration-300"
-//     >
-//       <div className="text-md">title</div>
-//       <div className="text-sm text-gray-500 my-2 bg-[#f5f5f5] rounded p-2" style={{ height: '80px' }}>description</div>
-
-//       <div className="flex items-center w-full justify-between ">
-//         <div className="text-sm text-gray-500">left</div>
-//         <div className="text-sm text-gray-500">right</div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import Link from "next/link";
 import Image from "next/image";
 import IconOrganization from "@/static/img/icon-organization.png";
@@ -25,17 +9,17 @@ interface IAppItem {
 
 const AppCard = (props: any) => {
   const { data, hoverStyle = true } = props;
-
+  console.log(data);
   return (
     <div className="h-[248px] ">
-      <Link href={`/applications/${data.cardId}`}>
+      <Link href={`/applications/${data._id}`}>
         <div
-          className={`h-[246px] bg-white p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
+          className={` bg-white p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
         >
-          <div className="font-bold  text-llg mb-3">{data.title}</div>
-          <div className="bg-[#fafafa] mb-10 rounded-lg p-5 text-sm text-[#666]">
-            <div className="text-ellipsis line-clamp-2" title={data.desc}>
-              {data.desc}
+          <div className="font-bold h-14 line-clamp-2  text-lg mb-3">{data.name}</div>
+          <div className="bg-secondary  mb-3 rounded-lg text-xs px-2 py-3 text-sm ">
+            <div className="text-ellipsis  h-16 line-clamp-4" title={data.shortIntro}>
+              {data.shortIntro}
             </div>
           </div>
           <div className="flex justify-between">
@@ -50,10 +34,10 @@ const AppCard = (props: any) => {
             </div>
             <div>
               <span
-                className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate"
-                title={data.scene}
+                className="inline-block text-[10px] rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate whitespace-nowrap overflow-hidden"
+                title={data.gientechType}
               >
-                {data.scene}
+                {data.gientechType.length > 5 ? data.gientechType.slice(0, 5) + '...' : data.gientechType}
               </span>
             </div>
           </div>

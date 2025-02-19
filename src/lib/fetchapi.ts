@@ -10,15 +10,17 @@ export async function fetchApi(endpoint: string, options: RequestInit & { next?:
   const headersList = await headers();
   const host = headersList.get('host');
   
-  // 统一使用当前主机和端口
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
   const baseUrl = `${protocol}://${host}`;
-
   const url = new URL(endpoint, baseUrl).toString();
 
   try {
-    console.log(`Fetching ${url} in ${process.env.NODE_ENV} environment`);
-    console.log('MongoDB Host:', process.env.MONGO_HOST); // 添加调试信息
+    console.log(`开始请求 API: ${url}`);
+    console.log('请求参数:', {
+      method: options.method || 'GET',
+      headers: options.headers,
+      environment: process.env.NODE_ENV
+    });
     
     const response = await fetch(url, {
       ...options,
@@ -30,30 +32,25 @@ export async function fetchApi(endpoint: string, options: RequestInit & { next?:
     });
 
     if (!response.ok) {
-      // 添加更详细的错误信息
-      console.error('API error details:', {
+      const errorText = await response.text();
+      console.error('API 请求失败:', {
         status: response.status,
         statusText: response.statusText,
         url: url,
-        host: host,
-        environment: process.env.NODE_ENV,
-        mongoHost: process.env.MONGO_HOST
+        errorText: errorText
       });
       
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      
-      throw new Error(`API request failed: ${response.statusText}`);
+      throw new Error(`API 请求失败: ${response.statusText}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log('API 响应数据:', data);
+    return data;
   } catch (error) {
-    console.error('Fetch error:', {
+    console.error('请求出错:', {
       error,
       url,
-      host,
-      environment: process.env.NODE_ENV,
-      mongoHost: process.env.MONGO_HOST
+      host
     });
     throw error;
   }

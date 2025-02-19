@@ -3,8 +3,13 @@ import AppItem from "@/components/applications/item";
 // import FileView from "@/components/FileView";
 
 interface IAppDetailIntroduce {
-  sameTypeItems: any[];
-  detail: any;
+  // sameTypeItems: any[];
+  keywords: any[];
+  gientechType?: string;
+  organizationId?: string;
+  shortIntro?:string
+  richIntro?:string
+  // detail: any;
 }
 
 // const FileViewCmp = dynamic(() =>
@@ -12,7 +17,7 @@ interface IAppDetailIntroduce {
 // );
 
 export default function DetailIntroduce(props: IAppDetailIntroduce) {
-  const { sameTypeItems, detail } = props;
+  const { keywords, gientechType } = props;
 
   return (
     <div className="w-full">
@@ -25,7 +30,8 @@ export default function DetailIntroduce(props: IAppDetailIntroduce) {
           }}
         >
           <div className="flex-1  min-h-[calc(100vh-350px)] p-6">
-            {detail.fileUrl}
+     
+            {/* {detail.fileUrl} */}
             {/* <FileView fileSuffix="pdf" filePath={detail.fileUrl} /> */}
             {/* <FileViewCmp fileSuffix="pdf" filePath={detail.fileUrl} /> */}
           </div>
@@ -37,13 +43,27 @@ export default function DetailIntroduce(props: IAppDetailIntroduce) {
             background: "linear-gradient(180deg, #ECEFFF 0%, #FFFFFF 51.5%)"
           }}
         >
-          {(sameTypeItems || []).map((i: any, idx: number) => (
+     {/* 添加关键词模块 */}
+     <div className="flex flex-col gap-2">
+            <div className="text-lg font-medium">关键词</div>
+            <div className="flex flex-wrap gap-2">
+              {(keywords || []).map((keyword: string, index: number) => (
+                <span
+                  key={`keyword-${index}`}
+                  className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </div>
+          {/* {(sameTypeItems || []).map((i: any, idx: number) => (
             <AppItem
               key={`same-type-card-${i.cardId}-${idx}`}
               itemData={i}
               hoverStyle={false}
             />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>

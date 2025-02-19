@@ -4,12 +4,41 @@ import { Contact } from '@/db/mongo/schemas/Contacts';
 import { connectToDatabase } from '@/db/mongo/connect';
 
 // GET - 获取应用列表，支持多种查询条件
-export async function GET() {
-  console.log('难道？')
+export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
     
-    const applications = await Application.find()
+    // 获取查询参数
+    const id = request.nextUrl.searchParams.get('id');
+    const giantechType = request.nextUrl.searchParams.get('giantechType');
+    
+    if (id) {
+      // 如果有 id 参数，查询单个应用
+      const application = await Application.findById(id)
+        .populate({
+          path: 'contact',
+          model: Contact
+        })
+        .lean();
+        
+      if (!application) {
+        return NextResponse.json(
+          { success: false, error: '未找到应用' },
+          { status: 404 }
+        );
+      }
+      
+      return NextResponse.json({ success: true, data: application });
+    }
+    
+    // 构建查询条件
+    const query: any = {};
+    if (giantechType) {
+      query.giantechType = giantechType;
+    }
+    
+    // 使用查询条件返回应用列表
+    const applications = await Application.find(query)
       .populate({
         path: 'contact',
         model: Contact
