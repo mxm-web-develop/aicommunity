@@ -1,17 +1,20 @@
 import type { NextConfig } from "next";
-
+import path from "node:path";
+import CopyWebpackPlugin from "copy-webpack-plugin";
+const pdfjsDistPath = path.dirname(require.resolve("pdfjs-dist/package.json"));
+const cMapsDir = path.join(pdfjsDistPath, "cmaps");
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://localhost:3000/api/:path*'
-      } 
-    ]
+        source: "/api/:path*",
+        destination: "http://localhost:3000/api/:path*"
+      }
+    ];
   },
-  
+
   transpilePackages: ["@mxmweb/difychat"],
   env: {
     NEXT_PUBLIC_CHAT_URL: process.env.NEXT_PUBLIC_CHAT_URL,
@@ -26,6 +29,16 @@ const nextConfig: NextConfig = {
         net: false,
         tls: false
       };
+      config.plugins.push(
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: cMapsDir,
+              to: "cmaps/"
+            }
+          ]
+        })
+      );
     }
     return config;
   }

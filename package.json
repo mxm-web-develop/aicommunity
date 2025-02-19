@@ -25,6 +25,7 @@
     "@types/react-select": "^5.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "copy-webpack-plugin": "^12.0.2",
     "fuse.js": "^7.0.0",
     "immer": "^10.1.1",
     "lucide": "^0.461.0",
@@ -43,7 +44,8 @@
     "tailwindcss-animate": "^1.0.7",
     "uid": "^2.0.2",
     "useragent": "^2.3.0",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.1",
+    "pdfjs-dist":"4.4.168"
   },
   "overrides": {
     "react": "19.0.0-rc-66855b96-20241106",
