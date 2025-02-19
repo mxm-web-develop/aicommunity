@@ -21,7 +21,8 @@ export default function FileView(props: IFileView) {
     bgColor: "#fff",
     actionOnEmmit: handleEvent,
     display_file_type: curFileInfo.fileSuffix,
-    hide_toolbar: false
+    hide_toolbar: false,
+    render_width: 900
   });
 
   return <div className="w-full overflow-y-auto h-full">{Element}</div>;
