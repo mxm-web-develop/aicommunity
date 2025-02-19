@@ -40,7 +40,7 @@ export interface IApplication extends Document {
   status: number;
   shortIntro: string;
   productIntro_id: string;
-  assets: IAsset[];
+  assets: string[];
   awards: string[];
 
   reproduce?: string;
@@ -89,12 +89,7 @@ const ApplicationSchema = new Schema<IApplication>(
       maxlength: 1000  // 确保简介不超过1000字
     },
     productIntro_id: { type: String, ref: 'RichPost' },  // 引用RichText模型
-    assets: [{
-      name: { type: String, required: true },
-      size: { type: Number, required: false },
-      format: { type: String, required: true },
-      url: { type: String, required: true },
-    }],
+    assets: [{ type: String ,required:false}],
     awards: [{ type: String }],
     
   },
