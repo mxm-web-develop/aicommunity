@@ -6,25 +6,28 @@ import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
 import FileView from "@/components/FileView";
 import { registerPDFWorker } from "../../@mxmweb/fv";
-
+import { useParams, useSearchParams } from "next/navigation";
 registerPDFWorker("/worker/pdf.worker.min.js");
 interface IAppDetailContacts {
   detail: any;
 }
 const BaseUrl = "http://45.77.12.232:9000";
 export default function DetailAssets(props: IAppDetailContacts) {
+  const params = useParams<{ id: string }>();
+  const dynamicId = params.id;
   const { detail } = props;
   const assets = useMemo(() => {
-    return (
-      detail?.length ? detail : ["/test/“两高一弱”问题规则-中电金信.pdf"]
-    ).map((item: any) => {
-      const arr = item.split("/");
-      return {
-        name: arr[arr.length - 1].split(".")[0],
-        url: item,
-        type: arr[arr.length - 1].split(".")[1]
-      };
-    });
+    return (detail?.length ? detail : ["“两高一弱”问题规则-中电金信.pdf"]).map(
+      (item: any) => {
+        const arr = item.split("/");
+        const arr2 = arr[arr.length - 1].split(".");
+        return {
+          name: arr2[0],
+          url: `/${dynamicId}/${item}`,
+          type: arr2[1]
+        };
+      }
+    );
   }, [detail]);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [curFileInfo, setCurFileInfo]: any = useState({});
