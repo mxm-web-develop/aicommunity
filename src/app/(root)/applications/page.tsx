@@ -1,24 +1,17 @@
 // import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import applicationsBanner from "@/static/img/applications_bg.png";
-import IconCategory from "@/static/img/icon-category.png";
-import IconCategoryActive from "@/static/img/icon-category-active.png";
-import AppItem from "./item";
+import LeftBar from "@/components/applications/left-bar";
+import AppItem from "@/components/applications/item";
 import SearchBar from "@/components/ui/searchBar";
 import { categorys, sceneList, cardList, allRow } from "@/constants";
+import { fetchApi } from "@/lib/fetchapi";
+
 interface ApplicationPageQueryProps {
   category?: string;
   scene?: string;
   keyWord?: string;
 }
-
-// const SearchBarCmp = dynamic(
-//   () => import("@/components/ui/searchBar").then((mod) => mod.default),
-//   {
-//     loading: () => <p>Loading search bar...</p>
-//   }
-// );
 
 const ApplicationsPage = async ({
   searchParams
@@ -30,6 +23,7 @@ const ApplicationsPage = async ({
     scene = allRow.id,
     keyWord = ""
   } = await searchParams;
+
   const _category =
     Number(category) >= Number(categorys[0].key) &&
     Number(category) <= Number(categorys[categorys.length - 1].key)
@@ -99,84 +93,12 @@ const ApplicationsPage = async ({
       <div className="container">
         <div className="flex mb-10 items-start ">
           <div className="flex-1 max-w-[334px] min-w-[194px] bg-white rounded-xl p-5 mr-8 shadow-sidebar">
-            <div className="font-bold text-llg text-[#333]">全部产品</div>
-
-            <div className="mt-5">
-              <div className="flex mb-5">
-                {(categorys || []).map((i: any, idx: number) => {
-                  return _category === i.key ? (
-                    <span
-                      key={`category-tab-${idx}`}
-                      className={`inline-block px-3 py-1 rounded-sm min-w-10 font-bold text-white`}
-                      style={{
-                        background:
-                          "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
-                      }}
-                    >
-                      {i.label}
-                    </span>
-                  ) : (
-                    <Link
-                      key={`category-tab-${idx}`}
-                      href={`/applications?${category ? "category=" + i.key : ""}`}
-                    >
-                      <span
-                        className={`inline-block px-3 py-1 rounded-sm min-w-10 cursor-pointer text-[#333] hover:opacity-85`}
-                        style={{
-                          background: "transparent"
-                        }}
-                      >
-                        {i.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-              {_sceneList.map((i: any, idx: number) => {
-                return _scene === i.id ? (
-                  <div
-                    key={`scene-${i.id}-${idx}`}
-                    className={`relative truncate h-[42px] mb-1 text-sm leading-10 pl-[44px] pr-4 rounded-lg font-bold text-white`}
-                    style={{
-                      background:
-                        "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
-                    }}
-                    title={i.content}
-                  >
-                    <Image
-                      src={_scene !== i.id ? IconCategory : IconCategoryActive}
-                      alt=""
-                      className="absolute top-3 left-4 h-4 w-4 mr-3 select-none"
-                      priority
-                    />
-                    {i.content}
-                  </div>
-                ) : (
-                  <Link
-                    key={`scene-${i.id}-${idx}`}
-                    href={`/applications?category=${_category}&scene=${i.id}`}
-                  >
-                    <div
-                      className={`relative truncate h-[42px] mb-1 text-sm text-[#333] leading-10 pl-[44px] pr-4 rounded-lg cursor-pointer hover:opacity-85`}
-                      style={{
-                        background: "transparent"
-                      }}
-                      title={i.content}
-                    >
-                      <Image
-                        src={
-                          _scene !== i.id ? IconCategory : IconCategoryActive
-                        }
-                        alt=""
-                        className="absolute top-3 left-4 h-4 w-4 mr-3 select-none"
-                        priority
-                      />
-                      {i.content}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+            <LeftBar
+              categorys={categorys}
+              categoryId={_category}
+              scenes={_sceneList}
+              sceneId={_scene}
+            />
           </div>
           {/* <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

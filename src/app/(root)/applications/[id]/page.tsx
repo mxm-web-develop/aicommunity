@@ -1,12 +1,12 @@
 // import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import applicationDetailBanner from "@/static/img/application_details_banner.png";
 import { cardList, detailTabs } from "@/constants";
 import CollectPraiseBtn from "@/components/ui/collect-praise-btn";
-import DetailIntroduce from "./introduce";
-import DetailAssets from "./assets";
-import DetailContacts from "./contact";
+import DetailIntroduce from "@/components/applications/detail/introduce";
+import DetailAssets from "@/components/applications/detail/assets";
+import DetailContacts from "@/components/applications/detail/contact";
+import DetailTabs from "@/components/applications/detail/detail-tabs";
 interface ApplicationPageProps {
   params: {
     id: string;
@@ -79,35 +79,7 @@ const ApplicationPage = async ({
                 xxxxxx
               </div>
             </div>
-            <div className="flex gap-8 text-[#333] text-base">
-              {(detailTabs || []).map((i: any) => {
-                return type === i.key ? (
-                  <div
-                    key={`detail-tab-${i.key}`}
-                    className={`relative h-12 leading-[44px] font-bold text-[#055aff]`}
-                  >
-                    {i.label}
-                    <b
-                      className={`inline-block w-full absolute bottom-1 left-0 right-0 border-none h-[2px] bg-[#055aff]`}
-                    ></b>
-                  </div>
-                ) : (
-                  <Link
-                    key={`detail-tab-${i.key}`}
-                    href={`/applications/${id}?type=${i.key}`}
-                  >
-                    <div
-                      className={`relative h-12 leading-[44px] cursor-pointer hover:opacity-85`}
-                    >
-                      {i.label}
-                      <b
-                        className={`w-full absolute bottom-0 left-0 right-0 border-none h-[2px] bg-[#055aff] hidden`}
-                      ></b>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+            <DetailTabs detailTabs={detailTabs} type={type} id={id} />
           </div>
         </div>
         <Image
