@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import AppItem from "../item";
+import AppItem from "@/components/applications/item";
 // import FileView from "@/components/FileView";
 
 interface IAppDetailIntroduce {

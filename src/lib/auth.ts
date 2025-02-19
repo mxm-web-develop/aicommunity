@@ -66,6 +66,9 @@ export const fetchToken = async (
     // const res = await fetchApi(apiUrl);
     const res = await fetch(apiUrl);
     console.log("res:", res);
+    if (!res.ok) {
+      throw new Error("Failed to fetch token data from cas API");
+    }
     const data = await res.json();
     const { authenticationSuccess } = data;
     console.log("data:", authenticationSuccess);
