@@ -19,10 +19,14 @@ const ApplicationsPage = async ({
 }: {
   searchParams: ApplicationPageQueryProps;
 }) => {
-
-  const { success, data: AIapplications } = await fetchApi('/api/applications/ai',{  next: {revalidate: 3600} });
-  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus',{  next: {revalidate: 3600} });
- 
+  const { success, data: AIapplications } = await fetchApi(
+    "/api/applications/ai",
+    { next: { revalidate: 3600 } }
+  );
+  const { success: success2, data: AIapplications2 } = await fetchApi(
+    "/api/applications/aiplus",
+    { next: { revalidate: 3600 } }
+  );
 
   return (
     <div className="w-full">
@@ -35,7 +39,7 @@ const ApplicationsPage = async ({
             <div className="text-[#333] mb-4">
               突破性AI技术，开启无限创新机遇
             </div>
-            <SearchBar  />
+            <SearchBar />
           </div>
         </div>
         <Image
@@ -48,7 +52,6 @@ const ApplicationsPage = async ({
       </div>
       <div className="container">
         <div className="flex flex-col  mb-10 items-start ">
-        
           <div>
             <div className="text-[24px] font-bold mb-4">AI产品与服务</div>
             <div className="h-[1px] w-full bg-gray-200 m-4"></div>
