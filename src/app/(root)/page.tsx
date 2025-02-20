@@ -5,8 +5,8 @@ import { fetchApi } from "@/lib/fetchapi";
 import Link from "next/link";
 
 export default async function Home() {
-  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8',{  next: {revalidate: 17200} });
-  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8',{  next: {revalidate: 17200} });
+  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8',{  cache: 'no-store'});
+  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8',{  cache: 'no-store'});
   if (!success) {
     console.error('Failed to fetch applications');
     return null;

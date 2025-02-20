@@ -2,7 +2,7 @@ import Link from "next/link";
 
 interface IAppDetailContacts {
   detailTabs: any[];
-  type: string | number;
+  type?: any;
   id: string;
 }
 

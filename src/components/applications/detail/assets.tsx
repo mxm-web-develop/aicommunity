@@ -136,14 +136,14 @@ export default function DetailAssets(props: IAppDetailContacts) {
                   priority
                   onClick={() => handlerEvent("view", i)}
                 />
-                <Image
+                {/* <Image
                   src={IconDownload}
                   alt="下载"
                   title="下载"
                   className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-80"
                   priority
                   onClick={() => handlerEvent("download", i)}
-                />
+                /> */}
               </div>
             </div>
           ))}
