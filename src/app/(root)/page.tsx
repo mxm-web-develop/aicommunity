@@ -15,11 +15,11 @@ import { headers } from "next/headers";
 export default async function Home() {
   let redirectUrl = "";
   if (isCheckLogin) {
-    console.log("isCheckLogin", isCheckLogin);
+    // console.log("isCheckLogin", isCheckLogin);
     const cookieStore = await cookies();
     const isOk = await checkAuthorization(cookieStore);
     if (!isOk) {
-      console.log("checkAuthorization", 1);
+      // console.log("checkAuthorization", 1);
       const headersList = await headers();
       const host = headersList.get("host");
       const protocol = headersList.get("x-forwarded-proto") || "https";
@@ -28,7 +28,7 @@ export default async function Home() {
       redirectUrl = await redirectToLoginUrl(fullUrl);
       console.log("url:", redirectUrl);
     } else {
-      console.log("checkAuthorization", isOk, redirectUrl);
+      // console.log("checkAuthorization", isOk, redirectUrl);
     }
   }
 
