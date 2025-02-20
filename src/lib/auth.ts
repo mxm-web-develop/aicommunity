@@ -6,9 +6,15 @@ const ticketKey = "ticket";
 const storageName = "memberId";
 export const isCheckLogin = false;
 
+export const checkAuthorization = async (cookieStore: any) => {
+  const memberObj = getAuthorization(cookieStore) || {};
+  const { value } = memberObj;
+  return value;
+};
+
 export const redirectToLoginUrl = (url: string) => {
   const _url = new URL(url);
-  return `${process.env.NEXT_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}`;
+  return `${process.env.NEXT_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}/auth`;
 };
 
 export const getAuthorization = (cookieStore: any) => {
@@ -72,5 +78,19 @@ export const fetchToken = async (ticket: string, url: string) => {
   } catch (err) {
     console.log(err);
     return null;
+  }
+};
+
+export const resetCookie = (cookieStore: any, value: string) => {
+  try {
+    const expires = new Date(Date.now() + 1 * 1000);
+    cookieStore.set(storageName, value, {
+      expires,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict"
+    });
+  } catch (err) {
+    console.log(err);
   }
 };

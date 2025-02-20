@@ -47,7 +47,7 @@ export async function fetchApi(
     }
 
     const data = await response.json();
-    console.log("API 响应数据:", data);
+    // console.log("API 响应数据:", data);
     return data;
   } catch (error) {
     console.error("请求出错:", {

@@ -9,16 +9,21 @@ interface IAppItem {
 
 const AppCard = (props: any) => {
   const { data, hoverStyle = true } = props;
-  console.log(data);
+  // console.log(data);
   return (
     <div className="h-[248px] ">
       <Link href={`/applications/${data._id}`}>
         <div
           className={` bg-white p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
         >
-          <div className="font-bold h-14 line-clamp-2  text-lg mb-3">{data.name}</div>
+          <div className="font-bold h-14 line-clamp-2  text-lg mb-3">
+            {data.name}
+          </div>
           <div className="bg-secondary  mb-3 rounded-lg text-xs px-2 py-3 text-sm ">
-            <div className="text-ellipsis  h-16 line-clamp-4" title={data.shortIntro}>
+            <div
+              className="text-ellipsis  h-16 line-clamp-4"
+              title={data.shortIntro}
+            >
               {data.shortIntro}
             </div>
           </div>
@@ -37,7 +42,9 @@ const AppCard = (props: any) => {
                 className="inline-block text-[10px] rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c] max-w-32 truncate whitespace-nowrap overflow-hidden"
                 title={data.gientechType}
               >
-                {data.gientechType.length > 5 ? data.gientechType.slice(0, 5) + '...' : data.gientechType}
+                {data.gientechType.length > 5
+                  ? data.gientechType.slice(0, 5) + "..."
+                  : data.gientechType}
               </span>
             </div>
           </div>

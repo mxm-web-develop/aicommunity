@@ -8,12 +8,12 @@ import {
   getTicket,
   redirectToLoginUrl,
   fetchToken,
-  isCheckLogin
+  isCheckLogin,
+  resetCookie
 } from "@/lib/auth";
 
 export async function middleware(request: NextRequest, response: NextResponse) {
   const url = request.nextUrl;
-
   if (url.pathname.startsWith("/myproxy")) {
     // 重写URL
     url.pathname = url.pathname.replace(/^\/myproxy/, "");
@@ -27,6 +27,10 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 
   if (isCheckLogin) {
     const cookieStore = await cookies();
+    const { pathname, origin } = url;
+    const _url = pathname === "/auth" ? "/" : "";
+    // resetCookie(cookieStore, "aa");
+    // console.log("重置cookie!");
     const memberObj = getAuthorization(cookieStore) || {};
     const { value } = memberObj;
     console.log("memberObj:", memberObj);
@@ -57,11 +61,19 @@ export async function middleware(request: NextRequest, response: NextResponse) {
           } else {
             console.log("cookie设置", data);
             setAuthorization(cookieStore, data);
-            // setTimeout(() => {
-            //   console.log("!!!!----:", getAuthorization(cookieStore));
-            // }, 5000);
+            console.log("已授权1！");
+            // console.log("urlurlurlurl:", origin, _url, pathname);
+            if (_url) {
+              return NextResponse.redirect(new URL(_url, request.url));
+            }
           }
         }
+      }
+    } else {
+      console.log("已授权2！");
+      console.log("urlurlurlurl:", url, origin, _url, pathname);
+      if (_url) {
+        return NextResponse.redirect(new URL(_url, request.url));
       }
     }
 
@@ -78,6 +90,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 }
 
 export const config = {
-  // matcher: ["/myproxy/:path*", "/applications/:path*"]
-  matcher: ["/myproxy/:path*", "/:path*"]
+  matcher: ["/myproxy/:path*", "/applications/:path*", "/auth/:path*"]
+  // matcher: ["/myproxy/:path*", "/:path*"]
 };
