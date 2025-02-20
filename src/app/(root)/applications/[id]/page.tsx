@@ -14,17 +14,11 @@ interface ApplicationPageProps {
   params: {
     id: string;
   };
-  searchParams: {
-    type?: string;
-  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
+export default async function ApplicationPage({ params, searchParams }: ApplicationPageProps) {
 
-const ApplicationPage = async ({
-  params,
-  searchParams
-}: ApplicationPageProps) => {
-  // 等待 params 和 searchParams
   const { id } = await params;
   const { type } = await searchParams;
 
@@ -36,7 +30,7 @@ const ApplicationPage = async ({
   try {
     // 获取应用详情数据
     console.log('Fetching application details for id:', id);
-    const response = await fetchApi(`/api/applications?id=${id}`, {cache: 'no-store'});
+    const response = await fetchApi(`/api/applications?id=${id}`, {next: {revalidate: 7200}});
     console.log('API Response:', response);
     
     if (!response.success) {
@@ -138,4 +132,3 @@ const ApplicationPage = async ({
   }
 };
 
-export default ApplicationPage;
