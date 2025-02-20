@@ -4,12 +4,12 @@ import AppCard from "@/scomponents/AppCard";
 import { fetchApi } from "@/lib/fetchapi";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import {
   checkAuthorization,
   redirectToLoginUrl,
   isCheckLogin
 } from "@/lib/auth";
-import RedirectPage from "@/components/ui/redirect-page";
 import { headers } from "next/headers";
 
 export default async function Home() {
@@ -27,6 +27,9 @@ export default async function Home() {
       console.log("redirectToLoginUrl:", fullUrl);
       redirectUrl = await redirectToLoginUrl(fullUrl);
       console.log("url:", redirectUrl);
+      if (redirectUrl) {
+        redirect(redirectUrl);
+      }
     } else {
       // console.log("checkAuthorization", isOk, redirectUrl);
     }
@@ -48,7 +51,6 @@ export default async function Home() {
   // console.log(applications);
   return (
     <div className="relative w-full h-full mb-12">
-      <RedirectPage redirectUrl={redirectUrl} />
       <div className="banner relative h-[420px] w-full">
         <div className="absolute top-[140px] left-[80px] z-10 text-black">
           <div className="flex flex-col text-foreground items-start justify-center h-full">
