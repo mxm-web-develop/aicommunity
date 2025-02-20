@@ -2,10 +2,9 @@ export async function fetchApi(
   endpoint: string,
   options: RequestInit & { next?: { revalidate?: number } } = {}
 ) {
-  // 构建时跳过所有 API 请求
-  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build') {
+  // 只在构建阶段跳过请求
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
     console.log('构建阶段跳过 API 请求:', endpoint);
-    // 返回空数据
     return {
       success: true,
       data: []
