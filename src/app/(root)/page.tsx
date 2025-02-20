@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/scomponents/AppCard";

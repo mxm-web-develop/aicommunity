@@ -1,35 +1,100 @@
 #!/bin/bash
 
-echo "开始部署..."
+# 颜色定义
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# 日志函数
+log() {
+    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] $1${NC}"
+}
+
+error() {
+    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $1${NC}"
+}
+
+# 错误处理
+set -e
+trap 'error "部署失败，请检查错误信息"' ERR
+
+# 开始部署
+log "开始部署流程..."
 
 # 停止现有进程
 if [ -f deploy/pid.txt ]; then
-  kill $(cat deploy/pid.txt) || true
+    log "停止现有进程..."
+    kill $(cat deploy/pid.txt) || true
+    rm deploy/pid.txt
 fi
 
 # 清理旧的部署文件
+log "清理旧文件..."
 rm -rf deploy
 
 # 构建应用
+log "开始构建应用..."
 yarn build
 
-# 创建部署目录
-mkdir -p deploy
+# 创建目录结构
+log "创建目录结构..."
 mkdir -p deploy/.next
+mkdir -p deploy/public
+mkdir -p deploy/src/static/img
+mkdir -p deploy/src/static/json
 
-# 复制 standalone 文件
+# 复制文件
+log "复制构建文件..."
 cp -r .next/standalone/* deploy/
-
-# 复制完整的 .next 目录（包括所有构建文件）
 cp -r .next/* deploy/.next/
 
+log "复制静态资源..."
 # 复制 public 目录
-cp -r public deploy/
+if [ -d "public" ]; then
+    cp -r public/* deploy/public/
+else
+    error "public 目录不存在"
+fi
 
-echo "文件复制完成，开始启动服务..."
+# 复制静态资源
+if [ -d "src/static" ]; then
+    cp -r src/static/* deploy/src/static/
+else
+    log "src/static 目录不存在，跳过"
+fi
+
+# 复制环境变量
+log "复制环境变量文件..."
+if [ -f ".env.production" ]; then
+    cp .env.production deploy/.env.production
+else
+    error ".env.production 文件不存在"
+    exit 1
+fi
 
 # 进入部署目录
+log "进入部署目录..."
 cd deploy
 
-# 启动服务
-node server.js
+# 启动应用
+log "启动应用..."
+if [ -f "server.js" ]; then
+    # 后台运行并保存 PID
+    node server.js & echo $! > pid.txt
+    log "应用已启动，PID: $(cat pid.txt)"
+    log "可以通过 'tail -f deploy/output.log' 查看日志"
+else
+    error "server.js 不存在，部署失败"
+    exit 1
+fi
+
+log "部署完成！"
+
+# 显示一些有用的信息
+echo -e "\n${GREEN}部署信息:${NC}"
+echo "- 部署目录: $(pwd)"
+echo "- 进程 PID: $(cat pid.txt)"
+echo "- 环境变量: .env.production"
+echo "- 启动命令: node server.js"
+echo -e "\n${GREEN}如需停止服务:${NC}"
+echo "kill \$(cat pid.txt)"

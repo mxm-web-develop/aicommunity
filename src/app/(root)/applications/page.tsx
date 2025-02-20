@@ -1,4 +1,6 @@
 // import dynamic from "next/dynamic";
+export const dynamic = 'force-dynamic';
+
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
 import LeftBar from "@/components/applications/left-bar";
