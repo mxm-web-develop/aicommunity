@@ -4,9 +4,16 @@ import AppCard from "@/scomponents/AppCard";
 import { fetchApi } from "@/lib/fetchapi";
 import Link from "next/link";
 
+export function generateStaticParams() {
+  return [{}];  // 根路由
+}
 export default async function Home() {
-  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8',{  cache: 'no-store'});
-  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8',{  cache: 'no-store'});
+  const { success, data: AIapplications } = await fetchApi('/api/applications/ai?limit=8', {
+    next: { revalidate: 43200 }
+  });
+  const { success: success2, data: AIapplications2 } = await fetchApi('/api/applications/aiplus?limit=8', {
+    next: { revalidate: 43200 }
+  });
   if (!success) {
     console.error('Failed to fetch applications');
     return null;

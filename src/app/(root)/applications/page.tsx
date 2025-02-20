@@ -13,7 +13,9 @@ interface ApplicationPageQueryProps {
   scene?: string;
   keyWord?: string;
 }
-
+export function generateStaticParams() {
+  return [{}];  // 应用列表页
+}
 const ApplicationsPage = async ({
   searchParams
 }: {
@@ -21,11 +23,11 @@ const ApplicationsPage = async ({
 }) => {
   const { success, data: AIapplications } = await fetchApi(
     "/api/applications/ai",
-    { next: { revalidate: 3600 } }
+    { next: { revalidate: 43200 } }
   );
   const { success: success2, data: AIapplications2 } = await fetchApi(
     "/api/applications/aiplus",
-    { next: { revalidate: 3600 } }
+    { next: { revalidate: 43200 } }
   );
 
   return (

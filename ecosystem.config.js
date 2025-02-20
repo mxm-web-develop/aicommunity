@@ -1,17 +1,18 @@
 module.exports = {
     apps: [
       {
-        name: 'aicommunity', // 应用名称
-        script: 'node_modules/next/dist/bin/next', // Next.js 启动脚本
-        args: 'start', // 运行参数
-        instances: "max", // 实例数量，可以设置为 'max' 使用全部 CPU
-        exec_mode: 'cluster', // 执行模式
-        watch: false, // 是否监听文件变化
+        name: 'aicommunity',
+        script: '.next/standalone/server.js',  // 注意这里改成 standalone 的入口文件
+        instances: 1,
+        exec_mode: 'cluster',
         env: {
-          PORT: 3000, // 运行端口
+          PORT: 3000,
           NODE_ENV: 'production',
         },
-        exp_backoff_restart_delay: 100, // 重启延迟
-      },
-    ],
+        exp_backoff_restart_delay: 100,
+        error_file: './logs/err.log',
+        out_file: './logs/out.log',
+        log_date_format: 'YYYY-MM-DD HH:mm:ss'
+      }
+    ]
   };

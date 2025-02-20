@@ -6,6 +6,7 @@ const cMapsDir = path.join(pdfjsDistPath, "cmaps");
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
+  output: 'standalone',
   typescript: {
     // !! 警告 !!
     // 仅在你确定类型错误不会影响生产构建时才启用此选项
@@ -15,17 +16,17 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:3000/api/:path*"
+        destination: '/api/:path*'
       }
     ];
   },
 
-  transpilePackages: ["@mxmweb/difychat"],
+  // transpilePackages: ["@mxmweb/difychat"],
   env: {
     NEXT_PUBLIC_CHAT_URL: process.env.NEXT_PUBLIC_CHAT_URL,
     NEXT_PUBLIC_CHAT_TOKEN: process.env.NEXT_PUBLIC_CHAT_TOKEN,
     NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK,
-    API_URL: "http://localhost:3000"
+    API_URL: process.env.API_URL 
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

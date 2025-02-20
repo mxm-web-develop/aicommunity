@@ -16,7 +16,27 @@ interface ApplicationPageProps {
   };
   searchParams?: { [key: string]: string | string[] | undefined };
 }
+export async function generateStaticParams() {
+  // 构建时返回一个空数组，允许所有路径在运行时动态生成
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Production build: Skipping API calls during build');
+    return [];
+  }
 
+  try {
+    const { data: applications } = await fetchApi('/api/applications/ai', {
+      next: { revalidate: 43200 }
+    });
+    
+    return applications?.map((app: any) => ({
+      id: app._id.toString()
+    })) || [];
+    
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return [];
+  }
+}
 export default async function ApplicationPage({ params, searchParams }: ApplicationPageProps) {
 
   const { id } = await params;
