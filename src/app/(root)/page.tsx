@@ -12,9 +12,7 @@ import {
 } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export function generateStaticParams() {
-  return [{}];  // 根路由
-}
+
 export default async function Home() {
   let redirectUrl = "";
   if (isCheckLogin) {

@@ -13,9 +13,7 @@ interface ApplicationPageQueryProps {
   scene?: string;
   keyWord?: string;
 }
-export function generateStaticParams() {
-  return [{}];  // 应用列表页
-}
+
 export default async function ApplicationsPage() {
   try {
     const { success, data: AIapplications = [] } = await fetchApi('/api/applications/ai', {
