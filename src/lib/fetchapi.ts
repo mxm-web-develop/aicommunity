@@ -2,12 +2,12 @@ export async function fetchApi(
   endpoint: string,
   options: RequestInit & { next?: { revalidate?: number } } = {}
 ) {
-  // 只在构建阶段跳过请求
+  // 只在构建阶段跳过请求，但保持缓存配置
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     console.log('构建阶段跳过 API 请求:', endpoint);
     return {
       success: true,
-      data: []
+      data: endpoint.includes('limit=') ? [] : {} // 根据请求类型返回合适的空数据
     };
   }
 
@@ -18,12 +18,13 @@ export async function fetchApi(
     console.log("请求参数:", {
       method: options.method || "GET",
       headers: options.headers,
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
+      cache: options.next?.revalidate ? `缓存${options.next.revalidate}秒` : '不缓存'
     });
 
     const response = await fetch(url, {
       ...options,
-      next: options.next,
+      next: options.next, // 保持缓存配置
       headers: {
         "Content-Type": "application/json",
         ...options.headers
