@@ -1,39 +1,43 @@
 import type { NextRequest, NextResponse } from "next/server";
-// import { fetchApi } from "@/lib/fetchapi";
 
-// export const authDomain = "https://login.pacteratech.com“;
-export const authDomain = "https://login-test.pacteratech.com";
-export const authApi = "/serviceValidate";
 const loginApi = "/login";
+const logoutApi = "/logout";
 const ticketKey = "ticket";
-const storageName = "Authorization";
+const storageName = "memberId";
+export const isCheckLogin = false;
 
 export const redirectToLoginUrl = (url: string) => {
   const _url = new URL(url);
-  return `${authDomain}${loginApi}?service=${_url.origin}`;
+  return `${process.env.NEXT_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}`;
 };
 
-export const getAuthorization = (req: NextRequest) => {
-  const token = req.cookies.get(storageName)?.value || null;
-  return token;
+export const getAuthorization = (cookieStore: any) => {
+  return cookieStore.get(storageName) || null;
 };
 
-export const setAuthorization = (res: NextResponse, token: string) => {
+export const setAuthorization = (cookieStore: any, value: string) => {
   try {
-    res.cookies.set(storageName, token);
+    const expires = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    // const expires = new Date(Date.now() + 30 * 1000);
+    cookieStore.set(storageName, value, {
+      expires,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict"
+    });
   } catch (err) {
     console.log(err);
   }
 };
 
-export const checkTokenExpiration = (token: string | null) => {
+export const checkTokenExpiration = (cookieStore: any) => {
   try {
-    if (token) {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const expirationTime = payload.exp * 1000;
-      return Date.now() > expirationTime;
+    const obj = getAuthorization(cookieStore);
+    const expires = obj.options.expires;
+    if (expires && new Date(expires) < new Date()) {
+      return true;
     }
-    return true;
+    return false;
   } catch (error) {
     return true;
   }
@@ -47,34 +51,24 @@ export const getTicket = (req: NextRequest) => {
   return queryParams.get(ticketKey) || null;
 };
 
-export const fetchToken = async (
-  ticket: string,
-  url: string,
-  response: NextResponse
-) => {
-  const _url = new URL(url);
-  const service = _url.origin;
-  const params = new URLSearchParams({
-    // ticket: "ST-3478307-O76pTqa0086HrK7-D2QV8F3ruAE-login",
-    ticket,
-    service
-  }).toString();
-  const apiUrl = `${authDomain}${authApi}?${params}`;
-
+export const fetchToken = async (ticket: string, url: string) => {
   try {
-    console.log("fetch token:", apiUrl);
-    // const res = await fetchApi(apiUrl);
-    const res = await fetch(apiUrl);
-    console.log("res:", res);
-    if (!res.ok) {
-      throw new Error("Failed to fetch token data from cas API");
-    }
-    const data = await res.json();
-    const { authenticationSuccess } = data;
-    console.log("data:", authenticationSuccess);
-    const { token } = authenticationSuccess;
-    setAuthorization(response, token);
-    return token;
+    const _url = new URL(url);
+    const service = _url.origin;
+    const params = new URLSearchParams({
+      ticket,
+      service
+    }).toString();
+    const apiUrl = `${_url.origin}/api/serviceValidate?${params}`;
+    console.log("apiUrl:", apiUrl);
+
+    const data = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then((response) => response.json());
+    return data;
   } catch (err) {
     console.log(err);
     return null;
