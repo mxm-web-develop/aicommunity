@@ -5,9 +5,7 @@ import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
 import FileView from "@/components/FileView";
-import { registerPDFWorker } from "../../@mxmweb/fv";
 import { useParams, useSearchParams } from "next/navigation";
-registerPDFWorker("/worker/pdf.worker.min.js");
 interface IAppDetailContacts {
   detail: any;
 }
@@ -17,17 +15,15 @@ export default function DetailAssets(props: IAppDetailContacts) {
   const dynamicId = params.id;
   const { detail } = props;
   const assets = useMemo(() => {
-    return (detail?.length ? detail : ["“两高一弱”问题规则-中电金信.pdf"]).map(
-      (item: any) => {
-        const arr = item.split("/");
-        const arr2 = arr[arr.length - 1].split(".");
-        return {
-          name: arr2[0],
-          url: `/${dynamicId}/${item}`,
-          type: arr2[1]
-        };
-      }
-    );
+    return (detail || []).map((item: any) => {
+      const arr = item.split("/");
+      const arr2 = arr[arr.length - 1].split(".");
+      return {
+        name: arr2[0],
+        url: `/${dynamicId}/${item}`,
+        type: arr2[1]
+      };
+    });
   }, [detail]);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [curFileInfo, setCurFileInfo]: any = useState({});

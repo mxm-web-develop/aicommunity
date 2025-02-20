@@ -20,73 +20,75 @@
 # 设计参考
 
 ## 首页
+
 ### 导航
 
-  主题色切换
- 
+主题色切换
+
 ### banner
+
 ### 推荐应用
+
 ### footer
 
 ## 应用列表
+
 ### 导航
+
 ### 应用列表
+
 ### footer
 
 ## 应用详情
+
 ### 导航
+
 ### 应用详情
+
 ### 同类推荐应用
+
 ### 资源下载
+
 ### footer
 
-
-
-
 # 数据格式
+
 ## 测试环境
 
-### MongoDB
-```
-MONGODB_URI=mongodb://admin:password@mxm-ai.com:27017/testmongo?authSource=admin
-MONGO_USERNAME=admin
-MONGO_PASSWORD=password
-MONGO_HOST=mxm-ai.com
-MONGO_PORT=27017
-MONGO_DB=testmongo
-MONGO_AUTH_SOURCE=admin
 ```
 ### MinIO
 ```
+
 MINIO_ENDPOINT=45.77.12.232
 MINIO_PORT=9000
 MINIO_USE_SSL=false
 MINIO_ACCESS_KEY=admin
 MINIO_SECRET_KEY=password
 MINIO_BUCKET_NAME=test
-```
+
+````
 ### 组织 organization
 
 ```json
 {
   "id": "1",
   "name": "中电金信",
-  "subGroup":["AI","AI+"],  
+  "subGroup":["AI","AI+"],
   "logo": "https://www.zjfintech.com/logo.png",
   "description": "中电金信是一家专注于金融科技的公司，提供智能化的解决方案。",
   "url": "https://www.zjfintech.com"
 }
-```
+````
 
 ### 富文本资源 richPosts
 
 ```json
 {
   "id": "post_1",
-  "type":"document",
+  "type": "document",
   "content": "富文本内容...",
   "format": "markdown",
-  "size": 1024,  // 存储内容大小（字节），用于监控
+  "size": 1024, // 存储内容大小（字节），用于监控
   "createdAt": "2024-03-20T10:00:00Z",
   "updatedAt": "2024-03-20T10:00:00Z"
 }
@@ -99,7 +101,7 @@ MINIO_BUCKET_NAME=test
   "id": "1",
   "organization": {
     "id": "1",
-    "group":0,  
+    "group":0,
   },
   "network": "gientech",
   "links":{
@@ -140,9 +142,9 @@ MINIO_BUCKET_NAME=test
 [
   {
     "id": "1",
-    "organization":{
+    "organization": {
       "id": "1",
-      "group":0,  
+      "group": 0
     },
     "label": "技术支持",
     "name": "张三",
@@ -161,16 +163,11 @@ MINIO_BUCKET_NAME=test
 
 ### 热门推荐 recommend
 
-```json  
-  {
-    "applications":["applicationId1","applicationId2"]
-  }
-
+```json
+{
+  "applications": ["applicationId1", "applicationId2"]
+}
 ```
-
-
-
-
 
 ### 事件 event
 

@@ -19,7 +19,8 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_CHAT_URL: process.env.NEXT_PUBLIC_CHAT_URL,
     NEXT_PUBLIC_CHAT_TOKEN: process.env.NEXT_PUBLIC_CHAT_TOKEN,
-    NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK
+    NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK,
+    API_URL: "http://localhost:3000"
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
