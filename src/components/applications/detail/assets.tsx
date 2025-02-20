@@ -5,9 +5,7 @@ import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
 import FileView from "@/components/FileView";
-import { registerPDFWorker } from "../../@mxmweb/fv";
 import { useParams, useSearchParams } from "next/navigation";
-registerPDFWorker("/worker/pdf.worker.min.js");
 interface IAppDetailContacts {
   detail: any;
 }
