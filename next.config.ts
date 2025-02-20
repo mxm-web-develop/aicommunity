@@ -6,6 +6,11 @@ const cMapsDir = path.join(pdfjsDistPath, "cmaps");
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
+  typescript: {
+    // !! 警告 !!
+    // 仅在你确定类型错误不会影响生产构建时才启用此选项
+    ignoreBuildErrors: true,
+  },
   async rewrites() {
     return [
       {

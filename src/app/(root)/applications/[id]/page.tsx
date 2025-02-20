@@ -13,13 +13,12 @@ import { redirect } from 'next/navigation';
 interface ApplicationPageProps {
   params: {
     id: string;
-  },
-  searchParams?: { [key: string]: string | string[] | undefined }
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-
 export default async function ApplicationPage({ params, searchParams }: ApplicationPageProps) {
-  // 等待 params 和 searchParams
+
   const { id } = await params;
   const { type } = await searchParams;
 
