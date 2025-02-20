@@ -134,8 +134,8 @@ export const detailTabs = [
     key: "1",
     label: "静态资源"
   },
-  {
-    key: "2",
-    label: "联系人"
-  }
+  // {
+  //   key: "2",
+  //   label: "联系人"
+  // }
 ];

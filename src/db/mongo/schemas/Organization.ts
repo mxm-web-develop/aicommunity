@@ -21,4 +21,4 @@ const organizationSchema = new Schema<IOrganization>(
   }
 );
 
-export const Organization = models.Organization || model<IOrganization>('Organization', organizationSchema);
+export const Organization = (models.Organization || model<IOrganization>('Organization', organizationSchema)) as mongoose.Model<IOrganization>  ;

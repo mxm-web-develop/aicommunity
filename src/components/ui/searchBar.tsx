@@ -1,63 +1,46 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import IconSearch from "@/static/img/icon-search.png";
+'use client'
 
-interface ISearchBar {
-  category: string;
-  scene: string;
-  kWord?: string;
-}
+import { Search } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useTransition } from 'react'
 
-const ENTER_KEY = "Enter";
-export default function SearchBar(props: ISearchBar) {
-  const { category, scene, kWord = "" } = props;
-  const [keyWord, setKeyWord] = useState<string>("");
-  const router = useRouter();
-
-  const searchHandler = () => {
-    if (keyWord) {
-      router.push(
-        `/applications?category=${category}&secne=${scene}&keyWord=${keyWord}`
-      );
+export default function SearchBar() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
+  
+  const handleSearch = (term: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (term) {
+      params.set('search', term)
+    } else {
+      params.delete('search')
     }
-  };
-
-  const keyDownHandler = (e: any) => {
-    const { key, code, keyCode } = e;
-    if (key === ENTER_KEY && code === ENTER_KEY && keyCode === 13) {
-      searchHandler();
-    }
-  };
-
-  const keyWordChangeHandler = (e: any) => {
-    setKeyWord(e.target.value.trim()); // 更新状态
-  };
-
-  useEffect(() => {
-    if (kWord === "") {
-      setKeyWord("");
-    }
-  }, [kWord]);
+    // 暂时不跳转
+    // startTransition(() => {
+    //   router.push(`?${params.toString()}`)
+    // })
+  }
 
   return (
-    <div className="bg-white border-solid border-[1px] border-[#eee] h-10 w-[616px] rounded-sm overflow-hidden relative">
+    <div className="relative w-full max-w-[500px]">
       <input
-        value={keyWord}
         type="text"
-        className="outline-none border-none bg-transparent pl-4 pr-8 py-[8px] w-full text-sm text-[#888]"
-        placeholder="输入产品名称"
-        onKeyDown={keyDownHandler}
-        onChange={keyWordChangeHandler}
+        defaultValue={searchParams.get('name') ?? ''}
+        onChange={(e) => handleSearch(e.target.value)}
+        placeholder="搜索..."
+        className="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 
+                 dark:border-gray-700 bg-background focus:outline-none 
+                 focus:ring-[1px] focus:ring-secondary"
       />
-      <Image
-        src={IconSearch}
-        alt="搜索"
-        className="absolute w-4 h-4 right-4 top-3 cursor-pointer text-red-500 hover:opacity-80"
-        onClick={searchHandler}
-        priority
-      />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 
+                      text-gray-400 h-4 w-4" />
+      {isPending && (
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div className="animate-spin h-4 w-4 border-2 border-primary 
+                        border-t-transparent rounded-full" />
+        </div>
+      )}
     </div>
-  );
+  )
 }

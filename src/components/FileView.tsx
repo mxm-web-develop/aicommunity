@@ -1,22 +1,29 @@
 "use client";
-import { useFileViewer, registerPDFWorker } from "@mxmweb/fv";
-import "@mxmweb/fv/style.css";
-registerPDFWorker("/public/worker/pdf.worker.min.js");
+import { useEffect } from "react";
+import { useFileViewer, registerPDFWorker } from "./@mxmweb/fv";
+import "./@mxmweb/fv/assets/style.css";
+
+registerPDFWorker("/worker/pdf.worker.min.js");
 
 interface IFileView {
-  fileSuffix?: string;
-  fileName?: string;
-  filePath: string;
+  curFileInfo: { fileSuffix?: string; fileName?: string; filePath: string };
+  handleEvent: (type: string, data?: any) => void;
 }
 
 export default function FileView(props: IFileView) {
-  const { filePath } = props;
-
+  const { curFileInfo, handleEvent } = props;
+  useEffect(() => {
+    console.log("curFileInfo", curFileInfo);
+  }, [curFileInfo]);
   const { Element } = useFileViewer({
-    fileUrl: filePath,
+    fileUrl: curFileInfo.filePath,
+    from: "pdf",
     bgColor: "#fff",
-    hide_toolbar: false
+    actionOnEmmit: handleEvent,
+    display_file_type: curFileInfo.fileSuffix,
+    hide_toolbar: false,
+    render_width: 900
   });
 
-  return <div className="overflow-y-auto h-full">{Element}</div>;
+  return <div className="w-full overflow-y-auto h-full">{Element}</div>;
 }

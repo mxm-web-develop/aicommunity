@@ -2,9 +2,11 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
+  mode: "jit",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/scomponents/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@mxmweb/difychat/**/*.{js,ts,jsx,tsx}"
   ],
@@ -88,5 +90,5 @@ export default {
     }
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [require("tailwindcss-animate")]
+  plugins: [require("tailwindcss-animate"),require('@tailwindcss/typography')]
 } satisfies Config;
