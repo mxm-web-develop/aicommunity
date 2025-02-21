@@ -4,11 +4,17 @@ import IconFilePdf from "@/static/img/icon-pdf.png";
 import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
-import FileView from "@/components/FileView";
 import { useParams, useSearchParams } from "next/navigation";
+import dynamic from 'next/dynamic';
+
 interface IAppDetailContacts {
   detail: any;
 }
+
+// 添加动态导入，并禁用SSR
+const FileView = dynamic(() => import('@/components/FileView'), {
+  ssr: false, // 这个配置确保组件只在客户端渲染
+});
 
 export default function DetailAssets(props: IAppDetailContacts) {
   const params = useParams<{ id: string }>();
@@ -17,7 +23,13 @@ export default function DetailAssets(props: IAppDetailContacts) {
 
   // 使用正确的环境变量构建MinIO URL
   const BaseUrl = useMemo(() => {
-    const endpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT || "localhost";
+    let endpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT || 'localhost';
+    console.log("window.location.hostname;", window.location.hostname);
+    // 如果endpoint是localhost，则从API_URL中提取主机名
+    if (endpoint === 'localhost') {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL 
+      endpoint = window.location.hostname;
+    }
     const port = process.env.NEXT_PUBLIC_MINIO_PORT || "9000";
     const useSSL = process.env.NEXT_PUBLIC_MINIO_USE_SSL === "true";
     const protocol = useSSL ? "https" : "http";
