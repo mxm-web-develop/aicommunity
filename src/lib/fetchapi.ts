@@ -2,9 +2,14 @@ export async function fetchApi(
   endpoint: string,
   options: RequestInit & { next?: { revalidate?: number } } = {}
 ) {
-  // 只在构建阶段跳过请求
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    console.log('构建阶段跳过 API 请求:', endpoint);
+  // 修改条件判断逻辑
+  if (
+    // 精确判断构建阶段
+    process.env.NEXT_PHASE === 'phase-production-build' ||
+    // 静态生成时使用模拟数据
+    (typeof window === 'undefined' && process.env.NODE_ENV === 'production')
+  ) {
+    console.log('[预渲染] 使用模拟数据:', endpoint);
     return {
       success: true,
       data: endpoint.includes('limit=') ? [] : {}
@@ -13,7 +18,7 @@ export async function fetchApi(
 
   try {
     // 使用 NEXT_PUBLIC_API_URL 或 API_URL
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:80';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL  || 'http://localhost:80';
     const fullUrl = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
     
     console.log(`开始请求 API: ${fullUrl}`, {
@@ -41,7 +46,6 @@ export async function fetchApi(
     console.error("请求出错:", {
       error,
       环境: process.env.NODE_ENV,
-      API_URL: process.env.API_URL,
       NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL
     });
     throw error;

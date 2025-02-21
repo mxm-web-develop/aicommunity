@@ -13,8 +13,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    serverComponentsExternalPackages: [],
-    esmExternals: 'loose',  // 使用 loose 模式处理 ESM
+
   },
   async rewrites() {
     return [
@@ -26,12 +25,7 @@ const nextConfig: NextConfig = {
   },
 
   // transpilePackages: ["@mxmweb/difychat"],
-  env: {
-    NEXT_PUBLIC_CHAT_URL: process.env.NEXT_PUBLIC_CHAT_URL,
-    NEXT_PUBLIC_CHAT_TOKEN: process.env.NEXT_PUBLIC_CHAT_TOKEN,
-    NEXT_PUBLIC_CHAT_MOCK: process.env.NEXT_PUBLIC_CHAT_MOCK,
-    API_URL: process.env.API_URL 
-  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
