@@ -1,28 +1,27 @@
 import type { NextConfig } from "next";
 import path from "node:path";
+
 import CopyWebpackPlugin from "copy-webpack-plugin";
 const pdfjsDistPath = path.dirname(require.resolve("pdfjs-dist/package.json"));
 const cMapsDir = path.join(pdfjsDistPath, "cmaps");
 const nextConfig: NextConfig = {
+  http2: true,
   /* config options here */
   reactStrictMode: true,
-  output: 'standalone',
+  output: "standalone",
   poweredByHeader: false,
   // 确保静态资源路径正确
-
   typescript: {
     // !! 警告 !!
     // 仅在你确定类型错误不会影响生产构建时才启用此选项
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   },
-  experimental: {
-
-  },
+  experimental: {},
   async rewrites() {
     return [
       {
         source: "/api/:path*",
-        destination: '/api/:path*'
+        destination: "/api/:path*"
       }
     ];
   },
@@ -53,15 +52,14 @@ const nextConfig: NextConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve.alias,
-        '@': require('path').resolve(__dirname, 'src'),
+        "@": require("path").resolve(__dirname, "src")
       },
       fallback: {
         ...config.resolve.fallback,
-        'vite-browser-external': false,
+        "vite-browser-external": false
       }
     };
     return config;
-    
   }
   // experimental: {
   //   esmExternals: "loose",
