@@ -1,16 +1,9 @@
-export default function ApplicationsLoading() {
+export default function Loading() {
   return (
-    <div className="flex-1 container mx-auto px-4 py-8">
-      <div className="animate-pulse">
-        <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div 
-              key={i}
-              className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"
-            />
-          ))}
-        </div>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] mb-4"></div>
+        <div className="text-gray-600 text-lg">页面加载中，请稍后...</div>
       </div>
     </div>
   );
