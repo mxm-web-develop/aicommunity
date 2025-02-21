@@ -17,21 +17,23 @@ export default function DetailAssets(props: IAppDetailContacts) {
 
   // 使用正确的环境变量构建MinIO URL
   const BaseUrl = useMemo(() => {
-    const endpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT || 'localhost';
-    const port = process.env.NEXT_PUBLIC_MINIO_PORT || '9000';
-    const useSSL = process.env.NEXT_PUBLIC_MINIO_USE_SSL === 'true';
-    const protocol = useSSL ? 'https' : 'http';
+    const endpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT || "localhost";
+    const port = process.env.NEXT_PUBLIC_MINIO_PORT || "9000";
+    const useSSL = process.env.NEXT_PUBLIC_MINIO_USE_SSL === "true";
+    const protocol = useSSL ? "https" : "http";
     return `${protocol}://${endpoint}:${port}`; // 移除bucket名称
   }, []);
 
   const assets = useMemo(() => {
-    const bucket = process.env.NEXT_PUBLIC_MINIO_BUCKET_NAME || 'test';
+    const bucket = process.env.NEXT_PUBLIC_MINIO_BUCKET_NAME || "test";
     return (detail || []).map((item: any) => {
       const arr = item.split("/");
       const arr2 = arr[arr.length - 1].split(".");
       return {
         name: arr2[0],
-        url: item.startsWith('http') ? item : `${BaseUrl}/${bucket}/${item}`, // 在这里添加bucket名称
+        url: item.startsWith("http")
+          ? item
+          : `${BaseUrl}/${dynamicId || bucket}/${item}`, // 在这里添加bucket名称
         type: arr2[1]
       };
     });
@@ -40,7 +42,7 @@ export default function DetailAssets(props: IAppDetailContacts) {
   const [curFileInfo, setCurFileInfo]: any = useState({});
 
   const handlerEvent = (type: string, data?: any) => {
-    console.log('拼了个啥', BaseUrl,'data.url', data);
+    console.log("拼了个啥", BaseUrl, "data.url", data);
     switch (type) {
       case "view":
         setCurFileInfo({
