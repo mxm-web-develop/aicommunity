@@ -52,15 +52,32 @@ mkdir -p deploy/src/static/json
 
 # 复制文件
 logger "复制构建文件..."
-cp -r .next/standalone/* deploy/
-cp -r .next/static deploy/.next/
-cp -r public deploy/    # 直接复制整个 public 目录
-if [ -f "next.config.ts" ]; then
-    cp next.config.ts deploy/next.config.js
-elif [ -f "next.config.js" ]; then
-    cp next.config.js deploy/
-else
-    error_log "找不到 next.config.ts 或 next.config.js"
+# 首先确保目标目录存在
+mkdir -p deploy/.next
+
+# 复制整个 .next 目录的内容
+cp -r .next/* deploy/.next/
+
+# 复制 standalone 内容到根目录
+if [ -d ".next/standalone" ]; then
+    cp -r .next/standalone/* deploy/
+fi
+
+# 确保 build-id 文件存在
+if [ ! -f "deploy/.next/BUILD_ID" ]; then
+    error_log "找不到 BUILD_ID 文件，构建可能不完整"
+    exit 1
+fi
+
+# 检查关键文件
+logger "检查必要文件..."
+if [ ! -f "deploy/server.js" ]; then
+    error_log "server.js 不存在，部署失败"
+    exit 1
+fi
+
+if [ ! -d "deploy/.next/static" ]; then
+    error_log ".next/static 目录不存在，部署失败"
     exit 1
 fi
 
@@ -102,13 +119,11 @@ cd deploy
 # 启动应用
 logger "启动应用..."
 if [ -f "server.js" ]; then
-    # 添加必要的环境变量
-    nohup env NODE_ENV=production \
-        PORT=80 \
-        HOST=0.0.0.0 \
-        NEXT_TELEMETRY_DISABLED=1 \
-        node server.js > output.log 2>&1 & 
+    # 设置更多调试信息
+    export NODE_ENV=production
+    export DEBUG=* 
     
+    nohup node server.js > output.log 2>&1 & 
     
     # 保存PID
     echo $! > pid.txt

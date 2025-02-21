@@ -14,7 +14,7 @@
   "dependencies": {
     "@mxmweb/aieditor": "^1.0.13",
     "@mxmweb/difychat": "1.0.16",
-    "@mxmweb/fv": "^1.2.1",
+    "@mxmweb/fv": "^1.6.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
