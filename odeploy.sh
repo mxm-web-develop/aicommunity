@@ -54,13 +54,8 @@ mkdir -p deploy/src/static/json
 logger "复制构建文件..."
 cp -r .next/standalone/* deploy/
 cp -r .next/static deploy/.next/
-cp -r .next/server deploy/.next/
-cp -r .next/types deploy/.next/
-cp .next/BUILD_ID deploy/.next/
-cp .next/build-manifest.json deploy/.next/
-cp .next/prerender-manifest.json deploy/.next/
-cp .next/react-loadable-manifest.json deploy/.next/
-cp .next/routes-manifest.json deploy/.next/
+cp -r public deploy/    # 直接复制整个 public 目录
+cp next.config.js deploy/  # 确保复制 next.config.js
 
 logger "复制静态资源..."
 # 复制 public 目录
@@ -86,6 +81,13 @@ else
     exit 1
 fi
 
+# 在启动应用之前添加环境变量配置
+logger "配置环境变量..."
+cat >> deploy/.env.production << EOF
+NEXT_PUBLIC_API_URL=http://your-api-url
+NODE_ENV=production
+EOF
+
 # 进入部署目录
 logger "进入部署目录..."
 cd deploy
@@ -93,8 +95,12 @@ cd deploy
 # 启动应用
 logger "启动应用..."
 if [ -f "server.js" ]; then
-    # 使用 nohup 启动应用并重定向输出
-    nohup env NODE_ENV=production PORT=80 HOST=0.0.0.0 node server.js > output.log 2>&1 & 
+    # 添加必要的环境变量
+    nohup env NODE_ENV=production \
+        PORT=80 \
+        HOST=0.0.0.0 \
+        NEXT_TELEMETRY_DISABLED=1 \
+        node server.js > output.log 2>&1 & 
     
     
     # 保存PID

@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   output: 'standalone',
+  poweredByHeader: false,
+  // 确保静态资源路径正确
+  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '',
   typescript: {
     // !! 警告 !!
     // 仅在你确定类型错误不会影响生产构建时才启用此选项
