@@ -1,7 +1,8 @@
-// 使用 dynamic = 'force-static' 来启用静态生成，但首次访问时生成
-export const dynamic = 'force-static'
-// 设置 revalidate
-export const revalidate = 43200  // 12小时缓存
+// 使用 dynamic = 'force-static' 来启用静态生成
+// // 设置 revalidate
+// export const revalidate = 43200  // 12小时缓存
+export const dynamic = 'force-dynamic'
+
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
 import LeftBar from "@/components/applications/left-bar";
