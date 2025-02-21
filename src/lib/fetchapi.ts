@@ -5,9 +5,7 @@ export async function fetchApi(
   // 修改条件判断逻辑
   if (
     // 精确判断构建阶段
-    process.env.NEXT_PHASE === 'phase-production-build' ||
-    // 静态生成时使用模拟数据
-    (typeof window === 'undefined' && process.env.NODE_ENV === 'production')
+    process.env.NEXT_PHASE === 'phase-production-build'
   ) {
     console.log('[预渲染] 使用模拟数据:', endpoint);
     return {
