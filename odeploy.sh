@@ -119,11 +119,14 @@ cd deploy
 # 启动应用
 logger "启动应用..."
 if [ -f "server.js" ]; then
-    # 设置更多调试信息
+    # 明确设置环境变量
     export NODE_ENV=production
-    export DEBUG=* 
+    export PORT=80
+    export HOST=0.0.0.0
+    export DEBUG=*
     
-    nohup node server.js > output.log 2>&1 & 
+    # 使用环境变量启动服务
+    nohup env PORT=80 HOST=0.0.0.0 node server.js > output.log 2>&1 & 
     
     # 保存PID
     echo $! > pid.txt
@@ -135,6 +138,9 @@ if [ -f "server.js" ]; then
     if ps -p $(cat pid.txt) > /dev/null; then
         logger "应用已成功启动，PID: $(cat pid.txt)"
         logger "日志文件: $(pwd)/output.log"
+        
+        # 验证端口
+        netstat -tlnp | grep $(cat pid.txt)
     else
         error_log "应用启动失败，请检查日志文件"
         exit 1
@@ -152,7 +158,10 @@ case "$1" in
         if [ -f pid.txt ] && ps -p $(cat pid.txt) > /dev/null; then
             echo "服务已在运行中，PID: $(cat pid.txt)"
         else
-            nohup NODE_ENV=production PORT=80 HOST=0.0.0.0 node server.js > output.log 2>&1 &
+            export PORT=80
+            export HOST=0.0.0.0
+            export NODE_ENV=production
+            nohup node server.js > output.log 2>&1 &
             echo $! > pid.txt
             echo "服务已启动，PID: $(cat pid.txt)"
         fi
