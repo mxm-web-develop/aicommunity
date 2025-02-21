@@ -55,7 +55,14 @@ logger "复制构建文件..."
 cp -r .next/standalone/* deploy/
 cp -r .next/static deploy/.next/
 cp -r public deploy/    # 直接复制整个 public 目录
-cp next.config.js deploy/  # 确保复制 next.config.js
+if [ -f "next.config.ts" ]; then
+    cp next.config.ts deploy/next.config.js
+elif [ -f "next.config.js" ]; then
+    cp next.config.js deploy/
+else
+    error_log "找不到 next.config.ts 或 next.config.js"
+    exit 1
+fi
 
 logger "复制静态资源..."
 # 复制 public 目录
