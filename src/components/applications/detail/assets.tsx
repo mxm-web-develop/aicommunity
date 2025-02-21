@@ -9,7 +9,7 @@ import { useParams, useSearchParams } from "next/navigation";
 interface IAppDetailContacts {
   detail: any;
 }
-const BaseUrl = "http://45.77.12.232:9000";
+const BaseUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}`;
 export default function DetailAssets(props: IAppDetailContacts) {
   const params = useParams<{ id: string }>();
   const dynamicId = params.id;
