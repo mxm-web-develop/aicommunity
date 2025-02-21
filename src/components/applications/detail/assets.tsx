@@ -4,11 +4,17 @@ import IconFilePdf from "@/static/img/icon-pdf.png";
 import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
-import FileView from "@/components/FileView";
 import { useParams, useSearchParams } from "next/navigation";
+import dynamic from 'next/dynamic';
+
 interface IAppDetailContacts {
   detail: any;
 }
+
+// 添加动态导入，并禁用SSR
+const FileView = dynamic(() => import('@/components/FileView'), {
+  ssr: false, // 这个配置确保组件只在客户端渲染
+});
 
 export default function DetailAssets(props: IAppDetailContacts) {
   const params = useParams<{ id: string }>();
