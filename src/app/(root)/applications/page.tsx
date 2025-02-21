@@ -1,6 +1,7 @@
-// import dynamic from "next/dynamic";
-export const dynamic = 'force-dynamic';
-
+// 使用 dynamic = 'force-static' 来启用静态生成，但首次访问时生成
+export const dynamic = 'force-static'
+// 设置 revalidate
+export const revalidate = 43200  // 12小时缓存
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
 import LeftBar from "@/components/applications/left-bar";
@@ -18,13 +19,11 @@ interface ApplicationPageQueryProps {
 
 export default async function ApplicationsPage() {
   try {
-    const { success, data: AIapplications = [] } = await fetchApi('/api/applications/ai', {
-      next: { revalidate: 3600 }
-    });
+    const { success, data: AIapplications = [] } = await fetchApi('/api/applications/ai'
+    );
 
-    const { success: success2, data: AIapplications2 = [] } = await fetchApi('/api/applications/aiplus', {
-      next: { revalidate: 3600 }
-    });
+    const { success: success2, data: AIapplications2 = [] } = await fetchApi('/api/applications/aiplus'
+    );
 
     // 确保数据是数组
     const applications = Array.isArray(AIapplications) ? AIapplications : [];

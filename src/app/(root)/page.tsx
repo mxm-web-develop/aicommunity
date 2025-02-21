@@ -1,4 +1,7 @@
-export const dynamic = 'force-dynamic';
+// 使用 dynamic = 'force-static' 来启用静态生成，但首次访问时生成
+export const dynamic = 'force-static'
+// 设置 revalidate
+export const revalidate = 43200  // 12小时缓存
 
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
@@ -39,12 +42,10 @@ export default async function Home() {
   }
 
   const { success, data: AIapplications } = await fetchApi(
-    "/api/applications/ai?limit=8",
-    { next: { revalidate: 43200 } }
+    "/api/applications/ai?limit=8"
   );
   const { success: success2, data: AIapplications2 } = await fetchApi(
-    "/api/applications/aiplus?limit=8",
-    { next: { revalidate: 43200 } }
+    "/api/applications/aiplus?limit=8"
   );
   if (!success) {
     console.error("Failed to fetch applications");
