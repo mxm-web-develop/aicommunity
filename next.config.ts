@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     // 仅在你确定类型错误不会影响生产构建时才启用此选项
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: [],
+    esmExternals: 'loose',  // 使用 loose 模式处理 ESM
+  },
   async rewrites() {
     return [
       {
@@ -47,7 +51,20 @@ const nextConfig: NextConfig = {
         })
       );
     }
+    // 添加这些配置来解决 vite-browser-external 问题
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        '@': require('path').resolve(__dirname, 'src'),
+      },
+      fallback: {
+        ...config.resolve.fallback,
+        'vite-browser-external': false,
+      }
+    };
     return config;
+    
   }
   // experimental: {
   //   esmExternals: "loose",

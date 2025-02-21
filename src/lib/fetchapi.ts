@@ -13,7 +13,7 @@ export async function fetchApi(
 
   try {
     // 使用 NEXT_PUBLIC_API_URL 或 API_URL
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:80';
     const fullUrl = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
     
     console.log(`开始请求 API: ${fullUrl}`, {

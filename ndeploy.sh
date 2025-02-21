@@ -21,6 +21,13 @@ trap 'error "部署失败，请检查错误信息"' ERR
 # 开始部署
 log "开始部署流程..."
 
+# 检查是否有 root 权限（如果要使用 80 端口需要）
+if [ "$EUID" -ne 0 ]; then 
+    error "需要 root 权限来使用 80 端口"
+    error "请使用 sudo ./ndeploy.sh 运行"
+    exit 1
+fi
+
 # 停止现有进程
 if [ -f deploy/pid.txt ]; then
     log "停止现有进程..."
@@ -79,8 +86,8 @@ cd deploy
 # 启动应用
 log "启动应用..."
 if [ -f "server.js" ]; then
-    # 后台运行并保存 PID
-    node server.js & echo $! > pid.txt
+    # 设置 PORT 环境变量并后台运行
+    PORT=80 node server.js & echo $! > pid.txt
     log "应用已启动，PID: $(cat pid.txt)"
     log "可以通过 'tail -f deploy/output.log' 查看日志"
 else
@@ -95,6 +102,7 @@ echo -e "\n${GREEN}部署信息:${NC}"
 echo "- 部署目录: $(pwd)"
 echo "- 进程 PID: $(cat pid.txt)"
 echo "- 环境变量: .env.production"
-echo "- 启动命令: node server.js"
+echo "- 启动命令: PORT=80 node server.js"
+echo "- 访问地址: http://localhost"
 echo -e "\n${GREEN}如需停止服务:${NC}"
 echo "kill \$(cat pid.txt)"
