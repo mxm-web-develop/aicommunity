@@ -1,13 +1,18 @@
+'use client'
 import Link from "next/link";
-
+import { useParams, useSearchParams } from 'next/navigation';
 interface IAppDetailContacts {
   detailTabs: any[];
-  type?: any;
-  id: string;
+  // type?: any;
+  //id: string;
 }
 
 export default function DetailTabs(props: IAppDetailContacts) {
-  const { detailTabs, type, id } = props;
+  const { detailTabs } = props;
+  const params = useParams();
+  const id = params.id;
+  const searchParams = useSearchParams();
+  const type = searchParams?.get('type');
   return (
     <div className="flex gap-8 text-[#333] text-base">
       {(detailTabs || []).map((i: any) => {

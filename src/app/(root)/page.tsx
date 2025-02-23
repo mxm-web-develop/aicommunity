@@ -1,59 +1,23 @@
-// 使用 dynamic = 'force-static' 来启用静态生成，但首次访问时生成
-export const dynamic = 'force-dynamic'
-// 设置 revalidate
-//export const revalidate = 43200  // 12小时缓存
+export const dynamic = 'force-static'
+export const revalidate = 43200  // 12小时缓存
 
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/components/server/AppCard";
-import { fetchApi } from "@/lib/fetchapi";
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import {
-  checkAuthorization,
-  redirectToLoginUrl,
-  isCheckLogin
-} from "@/lib/auth";
-import { headers } from "next/headers";
-
+import { getApplications } from "@/lib/service/getApplications";
 
 
 export default async function Home() {
-  let redirectUrl = "";
-  if (isCheckLogin) {
-    // console.log("isCheckLogin", isCheckLogin);
-    const cookieStore = await cookies();
-    const isOk = await checkAuthorization(cookieStore);
-    if (!isOk) {
-      // console.log("checkAuthorization", 1);
-      const headersList = await headers();
-      const host = headersList.get("host");
-      const protocol = headersList.get("x-forwarded-proto") || "https";
-      const fullUrl = `${protocol}://${host}`;
-      console.log("redirectToLoginUrl:", fullUrl);
-      redirectUrl = await redirectToLoginUrl(fullUrl);
-      console.log("url:", redirectUrl);
-      if (redirectUrl) {
-        redirect(redirectUrl);
-      }
-    } else {
-      // console.log("checkAuthorization", isOk, redirectUrl);
-    }
-  }
+  const ai_applications = await getApplications({
+    organizationId: "67b291be1ad598b265fce6b6",
+    limit: 8,
+  });
+  const aiplus_applications = await getApplications({
+    organizationId: "67b291be1ad598b265fce6b6",
+    limit: 8,
+  });
 
-  const { success, data: AIapplications } = await fetchApi(
-    "/api/applications/ai?limit=8"
-  );
-  const { success: success2, data: AIapplications2 } = await fetchApi(
-    "/api/applications/aiplus?limit=8"
-  );
-  if (!success) {
-    console.error("Failed to fetch applications");
-    return null;
-  }
-  // console.log(AIapplications);
-  // console.log(applications);
   return (
     <div className="relative w-full h-full mb-12">
       <div className="banner relative h-[420px] w-full">
@@ -86,7 +50,7 @@ export default async function Home() {
             源启AI技术能力矩阵
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {AIapplications.map((application: any) => (
+            {ai_applications.map((application: any) => (
               <AppCard key={application._id} data={application} />
             ))}
           </div>
@@ -106,7 +70,7 @@ export default async function Home() {
             源启+应用"智能化矩阵
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {AIapplications2.map((application: any) => (
+            {aiplus_applications.map((application: any) => (
               <AppCard key={application._id} data={application} />
             ))}
           </div>
