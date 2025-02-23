@@ -2,27 +2,30 @@
 import { useEffect } from "react";
 import { useFileViewer, registerPDFWorker } from "./@mxmweb/fv";
 import "./@mxmweb/fv/assets/style.css";
+registerPDFWorker("/worker/pdf.worker.min.js");
 
-interface IFileView {
-  curFileInfo: { fileSuffix?: string; fileName?: string; filePath: string };
-  handleEvent: (type: string, data?: any) => void;
+interface FileViewProps {
+  fileUrl: string;
+  fileName: string;
+  onClose: () => void;
+  fileType?: string;
 }
 
-export default function FileView(props: IFileView) {
-  const { curFileInfo, handleEvent } = props;
+export default function FileView(props: FileViewProps) {
+  const { fileUrl, fileName, onClose, fileType } = props;
   
   useEffect(() => {
     // 移到 useEffect 中，确保只在客户端执行
-    registerPDFWorker("/worker/pdf.worker.min.js");
-    console.log("curFileInfo", curFileInfo);
+   
+    console.log("curFileInfo", { fileUrl, fileName });
   }, []); // 只在组件首次挂载时注册
 
   const { Element } = useFileViewer({
-    fileUrl: curFileInfo.filePath,
+    fileUrl,
     from: "pdf",
     bgColor: "#fff",
-    actionOnEmmit: handleEvent,
-    display_file_type: curFileInfo.fileSuffix,
+    actionOnEmmit: onClose,
+    display_file_type: fileType,
     hide_toolbar: false,
     render_width: 900
   });

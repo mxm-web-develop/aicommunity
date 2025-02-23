@@ -78,8 +78,8 @@ const ApplicationSchema = new Schema<IApplication>(
     },
     //联系人
     contact: [{ 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Contact' 
+      type: Schema.Types.ObjectId, 
+      ref: 'Contact' // 确保与注册的模型名称完全一致
     }],
     //标签
     tags: [{ type: String }],

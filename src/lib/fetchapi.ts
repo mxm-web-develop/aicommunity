@@ -2,17 +2,17 @@ export async function fetchApi(
   endpoint: string,
   options: RequestInit & { next?: { revalidate?: number } } = {}
 ) {
-  // 修改条件判断逻辑
-  if (
-    // 精确判断构建阶段
-    process.env.NEXT_PHASE === 'phase-production-build'
-  ) {
-    console.log('[预渲染] 使用模拟数据:', endpoint);
-    return {
-      success: true,
-      data: endpoint.includes('limit=') ? [] : {}
-    };
-  }
+  // // 修改条件判断逻辑
+  // if (
+  //   // 精确判断构建阶段
+  //   process.env.NEXT_PHASE === 'phase-production-build'
+  // ) {
+  //   console.log('[预渲染] 使用模拟数据:', endpoint);
+  //   return {
+  //     success: true,
+  //     data: endpoint.includes('limit=') ? [] : {}
+  //   };
+  // }
 
   try {
     // 使用 NEXT_PUBLIC_API_URL 或 API_URL

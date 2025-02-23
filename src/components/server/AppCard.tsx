@@ -12,7 +12,7 @@ const AppCard = (props: any) => {
   // console.log(data);
   return (
     <div className="h-[248px] ">
-      <Link href={`/applications/${data._id}`}>
+      <Link href={`/applications/${data._id}?type=0`}>
         <div
           className={` bg-white p-6 rounded-xl cursor-pointer text-[#333] shadow-sidebar ${hoverStyle ? "hover:shadow-cardHover  hover:h-[248px] hover:text-[#055aff]" : ""}`}
         >

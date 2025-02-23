@@ -92,6 +92,16 @@ pm2 start ecosystem.config.js
 log "保存 PM2 进程列表..."
 pm2 save
 
+# 复制文件后设置正确的权限
+log "设置文件权限..."
+chown -R $(whoami) deploy/
+chmod -R 755 deploy/
+
+# 部署完成后清理并重置开发环境权限
+log "重置开发环境权限..."
+chown -R $(whoami) .next/
+chmod -R 755 .next/
+
 log "部署完成！"
 
 # 显示一些有用的信息

@@ -11,6 +11,7 @@ import SearchBar from "@/components/ui/searchBar";
 import { categorys, sceneList, cardList, allRow } from "@/constants";
 import { fetchApi } from "@/lib/fetchapi";
 import AppCard from "@/components/server/AppCard";
+import { getApplications } from "@/lib/service/getApplications";
 
 interface ApplicationPageQueryProps {
   category?: string;
@@ -19,16 +20,20 @@ interface ApplicationPageQueryProps {
 }
 
 export default async function ApplicationsPage() {
-  try {
-    const { success, data: AIapplications = [] } = await fetchApi('/api/applications/ai'
-    );
-
-    const { success: success2, data: AIapplications2 = [] } = await fetchApi('/api/applications/aiplus'
-    );
+  
+    const ai_applications = await getApplications({
+      organizationId: "67b291be1ad598b265fce6b6",
+      limit: 1000,
+    });
+    const aiplus_applications = await getApplications({
+      organizationId: "67b291be1ad598b265fce6b6",
+      limit: 1000,
+    });
+    
 
     // 确保数据是数组
-    const applications = Array.isArray(AIapplications) ? AIapplications : [];
-    const applications2 = Array.isArray(AIapplications2) ? AIapplications2 : [];
+    const applications = Array.isArray(ai_applications) ? ai_applications : [];
+    const applications2 = Array.isArray(aiplus_applications) ? aiplus_applications : [];
 
     return (
       <div className="w-full">
@@ -77,8 +82,5 @@ export default async function ApplicationsPage() {
       </div>
       </div>
     );
-  } catch (error) {
-    console.error('Error:', error);
-    return <div>加载失败，请稍后重试</div>;
-  }
+  
 }
