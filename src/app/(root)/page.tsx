@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
-import AppCard from "@/scomponents/AppCard";
+import AppCard from "@/components/server/AppCard";
 import { fetchApi } from "@/lib/fetchapi";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -16,6 +16,7 @@ import {
   isCheckLogin
 } from "@/lib/auth";
 import { headers } from "next/headers";
+
 
 
 export default async function Home() {

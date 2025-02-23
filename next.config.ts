@@ -5,11 +5,11 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 const pdfjsDistPath = path.dirname(require.resolve("pdfjs-dist/package.json"));
 const cMapsDir = path.join(pdfjsDistPath, "cmaps");
 const nextConfig: NextConfig = {
-  http2: true,
   /* config options here */
   reactStrictMode: true,
   output: "standalone",
   poweredByHeader: false,
+
   // 确保静态资源路径正确
   typescript: {
     // !! 警告 !!
