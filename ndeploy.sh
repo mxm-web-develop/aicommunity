@@ -90,6 +90,23 @@ if [ -f "server.js" ]; then
     PORT=80 node server.js & echo $! > pid.txt
     log "应用已启动，PID: $(cat pid.txt)"
     log "可以通过 'tail -f deploy/output.log' 查看日志"
+
+    # 启动进程监控
+    log "启动进程监控..."
+    (
+        while true; do
+            if ! ps -p $! > /dev/null; then
+                error "检测到进程崩溃，尝试重启..."
+                PORT=80 node --max-old-space-size=2048 server.js & 
+                PID=$!
+                echo $PID > pid.txt
+                sleep 5
+            fi
+            sleep 10
+        done
+    ) &
+    MONITOR_PID=$!
+    echo $MONITOR_PID > monitor_pid.txt
 else
     error "server.js 不存在，部署失败"
     exit 1

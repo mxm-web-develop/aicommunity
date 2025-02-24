@@ -232,7 +232,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     onClick={() => {
                       const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
                       console.log("baseUrl", baseUrl,file.url);
-                      // window.open(`${baseUrl}${file.url}`, '_blank');
+                      window.open(`${baseUrl}${file.url}`, '_blank');
                     }}
                   />
                   {/* <a href={file.url} download>
