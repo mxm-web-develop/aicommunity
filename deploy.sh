@@ -58,11 +58,28 @@ cp -r .next/standalone/* deploy/
 cp -r .next/* deploy/.next/
 
 log "复制静态资源..."
-# 复制 public 目录
+# 确保 .next/static 被正确复制
+if [ -d ".next/static" ]; then
+    cp -r .next/static deploy/.next/static
+    log "已复制 .next/static 目录"
+else
+    error ".next/static 目录不存在，请检查构建结果"
+    exit 1
+fi
+
+# 优化 public 目录复制（保留符号链接）
 if [ -d "public" ]; then
-    cp -r public/* deploy/public/
+    cp -rL public/* deploy/public/  # -L 跟随符号链接
+    log "已复制 public 目录内容"
+    # 添加文件数量验证
+    count=$(ls -1 deploy/public | wc -l)
+    if [ "$count" -lt 5 ]; then
+        error "public 目录复制不完整，仅 $count 个文件"
+        exit 1
+    fi
 else
     error "public 目录不存在"
+    exit 1
 fi
 
 # 复制静态资源
@@ -146,3 +163,17 @@ if [ ! -f "server.js" ]; then
     ls -l  # 显示目录内容帮助调试
     exit 1
 fi
+
+# 添加静态资源验证
+log "验证静态资源..."
+required_static=(
+    "deploy/.next/static"
+    "deploy/public/favicon.ico"
+    "deploy/public/manifest.json"
+)
+for file in "${required_static[@]}"; do
+    if [ ! -e "$file" ]; then
+        error "关键静态文件缺失: $file"
+        exit 1
+    fi
+done
