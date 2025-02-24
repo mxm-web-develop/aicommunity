@@ -32,21 +32,25 @@ log "停止现有应用..."
 pm2 stop aicommunity || true
 pm2 delete aicommunity || true
 
-# 清理旧的部署文件
+# 修改清理旧文件的逻辑（增加存在性检查）
 log "清理旧文件..."
-rm -rf deploy
+if [ -d "deploy" ]; then
+    rm -rf deploy
+    log "已删除旧部署目录"
+else
+    log "未找到旧部署目录，跳过清理"
+fi
 
 # 构建应用
 log "开始构建应用..."
 yarn build
 
-# 创建目录结构
+# 在创建目录前添加校验（关键修复）
 log "创建目录结构..."
-mkdir -p deploy/.next
-mkdir -p deploy/public
-mkdir -p deploy/src/static/img
-mkdir -p deploy/src/static/json
-mkdir -p deploy/logs
+if ! mkdir -p deploy/{.next,public,src/static/img,src/static/json,logs}; then
+    error "创建部署目录失败"
+    exit 1
+fi
 
 # 复制文件
 log "复制构建文件..."
@@ -92,10 +96,15 @@ pm2 start ecosystem.config.js
 log "保存 PM2 进程列表..."
 pm2 save
 
-# 复制文件后设置正确的权限
+# 修改权限设置部分（增加存在性检查）
 log "设置文件权限..."
-chown -R $(whoami) deploy/
-chmod -R 755 deploy/
+if [ -d "deploy" ]; then
+    chown -R $(whoami) deploy/
+    chmod -R 755 deploy/
+else
+    error "deploy 目录不存在，无法设置权限"
+    exit 1
+fi
 
 # 部署完成后清理并重置开发环境权限
 log "重置开发环境权限..."
@@ -115,3 +124,10 @@ echo "- 查看日志: pm2 logs aicommunity"
 echo "- 重启应用: pm2 restart aicommunity"
 echo "- 停止应用: pm2 stop aicommunity"
 echo "- 删除应用: pm2 delete aicommunity"
+
+# 在最后添加部署验证
+log "验证部署完整性..."
+if [ ! -f "deploy/server.js" ]; then
+    error "关键文件 server.js 缺失"
+    exit 1
+fi
