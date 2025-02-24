@@ -57,11 +57,17 @@ log "复制构建文件..."
 cp -r .next/standalone/* deploy/
 cp -r .next/* deploy/.next/
 
-log "复制静态资源..."
-# 确保 .next/static 被正确复制
+log "复制构建静态资源..."
+# 使用保留符号链接的方式复制
 if [ -d ".next/static" ]; then
-    cp -r .next/static deploy/.next/static
-    log "已复制 .next/static 目录"
+    mkdir -p deploy/.next
+    rsync -avh --progress .next/static/ deploy/.next/static/
+    log "已同步 .next/static 目录"
+    # 添加复制结果验证
+    if [ ! -d "deploy/.next/static" ]; then
+        error ".next/static 复制失败"
+        exit 1
+    fi
 else
     error ".next/static 目录不存在，请检查构建结果"
     exit 1
@@ -156,7 +162,7 @@ log "当前验证路径: $PWD"
 log "目录内容:"
 ls -l
 
-# 修改验证逻辑（使用当前目录路径）
+# 修改验证逻辑（使用相对路径）
 log "验证部署完整性..."
 if [ ! -f "server.js" ]; then
     error "关键文件 server.js 缺失（当前目录: $PWD）"
@@ -164,16 +170,19 @@ if [ ! -f "server.js" ]; then
     exit 1
 fi
 
-# 添加静态资源验证
+# 修改验证逻辑（使用相对路径）
 log "验证静态资源..."
 required_static=(
-    "deploy/.next/static"
-    "deploy/public/favicon.ico"
-    "deploy/public/manifest.json"
+    ".next/static/chunks"
+    ".next/static/css"
+    "public/favicon.ico"
 )
-for file in "${required_static[@]}"; do
-    if [ ! -e "$file" ]; then
-        error "关键静态文件缺失: $file"
+for path in "${required_static[@]}"; do
+    full_path="deploy/${path}"
+    if [ ! -e "$full_path" ]; then
+        error "关键静态资源缺失: $full_path"
+        error "实际目录结构:"
+        tree -L 3 deploy
         exit 1
     fi
 done
