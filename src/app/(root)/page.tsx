@@ -67,7 +67,7 @@ export default async function Home() {
             AI+产品与服务
           </div>
           <div className="text-sm pt-[8px] pb-[32px] text-gray-500 text-center">
-            源启+应用"智能化矩阵
+            源启+应用智能化矩阵
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {aiplus_applications.map((application: any) => (
