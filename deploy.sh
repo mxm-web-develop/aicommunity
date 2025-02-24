@@ -83,28 +83,32 @@ fi
 
 # 复制 PM2 配置文件
 cp ecosystem.config.js deploy/
-
-# 进入部署目录
+log "当前工作目录: $PWD"
+log "部署目录路径: $DEPLOY_PATH"
+# 修改进入部署目录的逻辑
 log "进入部署目录..."
-cd deploy
+DEPLOY_PATH="$PWD/deploy"
+if [ ! -d "$DEPLOY_PATH" ]; then
+    error "部署目录 $DEPLOY_PATH 不存在"
+    exit 1
+fi
+cd "$DEPLOY_PATH" || {
+    error "无法进入部署目录"
+    exit 1
+}
 
-# 使用 PM2 启动应用
+# 修改权限设置部分（使用绝对路径）
+log "设置文件权限..."
+chown -R $(whoami) "$DEPLOY_PATH"
+chmod -R 755 "$DEPLOY_PATH"
+
+# 修改 PM2 启动命令（使用绝对路径）
 log "使用 PM2 启动应用..."
-pm2 start ecosystem.config.js
+pm2 start "$DEPLOY_PATH/ecosystem.config.js"
 
 # 保存 PM2 进程列表
 log "保存 PM2 进程列表..."
 pm2 save
-
-# 修改权限设置部分（增加存在性检查）
-log "设置文件权限..."
-if [ -d "deploy" ]; then
-    chown -R $(whoami) deploy/
-    chmod -R 755 deploy/
-else
-    error "deploy 目录不存在，无法设置权限"
-    exit 1
-fi
 
 # 部署完成后清理并重置开发环境权限
 log "重置开发环境权限..."
