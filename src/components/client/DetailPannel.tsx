@@ -230,7 +230,8 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-85"
                     priority
                     onClick={() => {
-                      window.open(file.url, '_blank'); // 直接在新窗口打开
+                      const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
+                      window.open(`${baseUrl}${file.url}`, '_blank');
                     }}
                   />
                   {/* <a href={file.url} download>
