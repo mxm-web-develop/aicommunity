@@ -129,9 +129,20 @@ echo "- 重启应用: pm2 restart aicommunity"
 echo "- 停止应用: pm2 stop aicommunity"
 echo "- 删除应用: pm2 delete aicommunity"
 
-# 在最后添加部署验证
+log "进入部署目录..."
+cd "$DEPLOY_PATH" || {
+    error "无法进入部署目录"
+    exit 1
+}
+
+log "当前验证路径: $PWD"
+log "目录内容:"
+ls -l
+
+# 修改验证逻辑（使用当前目录路径）
 log "验证部署完整性..."
-if [ ! -f "deploy/server.js" ]; then
-    error "关键文件 server.js 缺失"
+if [ ! -f "server.js" ]; then
+    error "关键文件 server.js 缺失（当前目录: $PWD）"
+    ls -l  # 显示目录内容帮助调试
     exit 1
 fi
