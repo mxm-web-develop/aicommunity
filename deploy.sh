@@ -170,7 +170,7 @@ if [ ! -f "server.js" ]; then
     exit 1
 fi
 
-# 修改验证逻辑（使用相对路径）
+# 修改静态资源验证逻辑
 log "验证静态资源..."
 required_static=(
     ".next/static/chunks"
@@ -178,11 +178,18 @@ required_static=(
     "public/favicon.ico"
 )
 for path in "${required_static[@]}"; do
-    full_path="deploy/${path}"
+    full_path="$DEPLOY_PATH/$path"
     if [ ! -e "$full_path" ]; then
         error "关键静态资源缺失: $full_path"
         error "实际目录结构:"
-        tree -L 3 deploy
+        ls -lR $DEPLOY_PATH/.next/static  # 替代 tree 命令
         exit 1
     fi
 done
+
+# 在文件复制后添加调试信息
+log "复制结果验证："
+echo ".next/static 内容:"
+ls -l $DEPLOY_PATH/.next/static | head -n 10
+echo "public 目录内容:"
+ls -l $DEPLOY_PATH/public | head -n 5
