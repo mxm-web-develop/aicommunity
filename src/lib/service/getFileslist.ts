@@ -29,7 +29,7 @@ export async function getBucketFiles(bucketId: string): Promise<MinioFile[]> {
           name: obj.name,
           size: obj.size,
           lastModified: obj.lastModified,
-          url: `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${bucketId}/${obj.name}`
+          url: `/${bucketId}/${obj.name}`
         });
       });
 
