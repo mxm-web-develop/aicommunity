@@ -231,8 +231,8 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     priority
                     onClick={() => {
                       const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
-                      console.log("baseUrl", baseUrl);
-                      window.open(`${baseUrl}${file.url}`, '_blank');
+                      console.log("baseUrl", baseUrl,file.url);
+                      // window.open(`${baseUrl}${file.url}`, '_blank');
                     }}
                   />
                   {/* <a href={file.url} download>
