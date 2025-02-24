@@ -10,7 +10,7 @@ import { getApplications } from "@/lib/service/getApplications";
 
 export default async function Home() {
   const ai_applications = await getApplications({
-    organizationId: "67b291be1ad598b265fce6b6",
+    organizationId: "67af16e967cff211db44c6db",
     limit: 8,
   });
   const aiplus_applications = await getApplications({
