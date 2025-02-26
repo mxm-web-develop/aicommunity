@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { minioClient } from '../minioClient';
+import { minioClient } from '../../db/minio/instant';
 
 
 export interface MinioFile {

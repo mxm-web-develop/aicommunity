@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 
 // 检查必要的环境变量
 const requiredEnvVars = [
-  'MONGO_USERNAME',
-  'MONGO_PASSWORD',
-  'MONGO_HOST',
-  'MONGO_PORT',
-  'MONGO_DB',
-  'MONGO_AUTH_SOURCE'
+  'NEXT_MONGO_USERNAME',
+  'NEXT_MONGO_PASSWORD',
+  'NEXT_MONGO_HOST',
+  'NEXT_MONGO_PORT',
+  'NEXT_MONGO_DB',
+  'NEXT_MONGO_AUTH_SOURCE'
 ];
 
 // 验证所有必需的环境变量
@@ -18,7 +18,7 @@ for (const envVar of requiredEnvVars) {
 }
 
 // 构建 MongoDB URI
-const MONGODB_URI_FULL = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}`;
+const MONGODB_URI_FULL = `mongodb://${process.env.NEXT_MONGO_USERNAME}:${process.env.NEXT_MONGO_PASSWORD}@${process.env.NEXT_MONGO_HOST}:${process.env.NEXT_MONGO_PORT}/${process.env.NEXT_MONGO_DB}?authSource=${process.env.NEXT_MONGO_AUTH_SOURCE}`;
 
 let isConnected = false;
 
