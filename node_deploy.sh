@@ -142,16 +142,72 @@ case "$1" in
     ;;
   stop)
     if [ -f "server.pid" ]; then
-      echo "🛑 停止服务 (PID: $(cat server.pid))"
-      kill $(cat server.pid)
-      rm server.pid
-      echo "服务已停止"
+      PID=$(cat server.pid)
+      echo "🛑 尝试停止服务 (PID: $PID)"
+      
+      # 先尝试正常终止
+      kill $PID 2>/dev/null || true
+      sleep 2
+      
+      # 强制终止如果仍在运行
+      if ps -p $PID > /dev/null; then
+        echo "进程未响应，使用强制终止..."
+        kill -9 $PID 2>/dev/null || true
+        sleep 1
+      fi
+      rm -f server.pid
+    fi
+    
+    # 清理端口3000进程
+    PORT_PIDS=$(lsof -ti:$DEFAULT_PORT)
+    if [ -n "$PORT_PIDS" ]; then
+      echo "正在清理端口 $DEFAULT_PORT 的进程..."
+      for pid in $PORT_PIDS; do
+        kill -9 $pid 2>/dev/null
+        echo "已终止进程 $pid"
+      done
+      sleep 1
+      [ -z "$(lsof -ti:$DEFAULT_PORT)" ] && echo "✅ 端口已释放"
     else
-      echo "ℹ️ 未找到运行中的服务"
+      echo "ℹ️ 未发现运行中的服务"
+    fi
+    ;;
+status)
+    # 首先检查PID文件
+    if [ -f "server.pid" ]; then
+      PID=$(cat server.pid)
+      if ps -p $PID > /dev/null; then
+        echo "✅ 服务正在运行 (PID: $PID)"
+      else
+        echo "⚠️ PID文件存在，但进程 $PID 未运行"
+        PORT_CHECK=true
+      fi
+    else
+      PORT_CHECK=true
+    fi
+    
+    # 检查端口3000是否有服务在运行
+    if [ "$PORT_CHECK" = true ] || [ ! -f "server.pid" ]; then
+      PORT_PIDS=$(lsof -ti:$DEFAULT_PORT)
+      if [ -n "$PORT_PIDS" ]; then
+        echo "✅ 发现端口 $DEFAULT_PORT 上运行的服务:"
+        for pid in $PORT_PIDS; do
+          echo " - PID: $pid ($(ps -p $pid -o comm=))"
+          echo "   命令: $(ps -p $pid -o command= | head -c 100)..."
+        done
+        
+        # 创建或更新PID文件（如果只有一个进程）
+        if [ $(echo "$PORT_PIDS" | wc -w) -eq 1 ]; then
+          echo "$PORT_PIDS" > server.pid
+                echo "已更新PID文件"
+        fi
+      else
+        echo "ℹ️ 端口 $DEFAULT_PORT 上没有服务运行"
+      fi
     fi
     ;;
   *)
-    echo "用法: $0 {start|stop}"
+    echo "用法: $0 {start|stop|status|restart}"
     exit 1
 esac
 EOL
