@@ -18,7 +18,11 @@ interface Contact {
   _v?: number;
   _id: string;
 }
+const minioProtocol = process.env.NEXT_PUBLIC_MINIO_PROTOCOL;
+const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
+const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
 
+const baseUrl = `${minioProtocol}://${minioEndpoint}:${minioPort}`;
 interface IAppDetailIntroduce {
   // sameTypeItems: any[];
   keywords: any[];
@@ -230,7 +234,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-85"
                     priority
                     onClick={() => {
-                      const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
+                      // const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
                       console.log("baseUrl", baseUrl,file.url);
                       window.open(`${baseUrl}${file.url}`, '_blank');
                     }}
