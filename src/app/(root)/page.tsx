@@ -26,9 +26,9 @@ export default async function Home() {
       const host = headersList.get("host");
       const protocol = headersList.get("x-forwarded-proto") || "https";
       const fullUrl = `${protocol}://${host}`;
-      console.log("redirectToLoginUrl:", fullUrl);
+      // console.log("redirectToLoginUrl:", fullUrl);
       redirectUrl = await redirectToLoginUrl(fullUrl);
-      console.log("url:", redirectUrl);
+      // console.log("url:", redirectUrl);
       if (redirectUrl) {
         redirect(redirectUrl);
       }
@@ -36,6 +36,7 @@ export default async function Home() {
       // console.log("checkAuthorization", isOk, redirectUrl);
     }
   }
+
   const ai_applications = await getApplications({
     organizationId: "67af16e967cff211db44c6db",
     limit: 8
