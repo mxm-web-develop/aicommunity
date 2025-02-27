@@ -11,6 +11,7 @@ export interface MinioFile {
 
 export async function getBucketFiles(bucketId: string): Promise<MinioFile[]> {
   try {
+    console.log('minio 账号', process.env.MINIO_ACCESS_KEY, 'minio 密码', process.env.MINIO_SECRET_KEY)
     // 调整1：增强存储桶存在性检查
     const bucketExists = await minioClient.bucketExists(bucketId);
     if (!bucketExists) {
