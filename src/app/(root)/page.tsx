@@ -20,11 +20,13 @@ export default async function Home() {
 
   return (
     <div className="relative w-full h-full mb-12">
-      <div className="banner relative h-[420px] w-full">
-        <div className="absolute top-[140px] left-[80px] z-10 text-black">
+      <div className="banner  relative h-[280px] md:h-[420px] w-full">
+        <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
+          <div className="container">
           <div className="flex flex-col text-foreground items-start justify-center h-full">
-            <div className="text-4xl font-bold">源启AI+</div>
-            <div className="text-xl">智能引领未来，AI为您赋能</div>
+            <div className="text-2xl md:text-4xl font-bold">源启AI+</div>
+            <div className="text-sm md:text-xl">智能引领未来，AI为您赋能</div>
+          </div>
           </div>
         </div>
         <Image

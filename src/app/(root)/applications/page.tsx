@@ -40,7 +40,7 @@ export default async function ApplicationsPage() {
       <div className="select-none h-[248px] relative w-full mb-10">
         <div className="absolute top-12 left-0 right-0 z-10">
           <div className="container">
-            <div className="text-[40px]">
+            <div className="text-2xl md:text-4xl">
               <b>产品与服务</b>
             </div>
             <div className="text-[#333] mb-4">

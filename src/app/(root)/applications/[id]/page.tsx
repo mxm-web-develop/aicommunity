@@ -81,10 +81,10 @@ export default async function ApplicationPage({ params }: ApplicationPageProps) 
         </div>
         <div className="absolute top-10 left-0 right-0 z-10">
           <div className="container">
-            <div className="text-[40px] mb-1">
+            <div className=" text-2xl md:text-4xl mb-1">
               <b>{itemData.name}</b>
             </div>
-            <div className="mb-3">
+            <div className="mb-4 mt-5 ">
               <span
                 className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c]  truncate"
                 title={itemData.gientechType}

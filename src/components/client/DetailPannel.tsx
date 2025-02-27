@@ -93,7 +93,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
     <>
     {type == '0' && (
     <div className="w-full">
-      <div className="flex mb-4 items-start">
+      <div className="flex flex-col flex-col-reverse md:flex-row mb-4 items-start">
         <div
           className="flex-1 rounded-xl overflow-hidden"
           style={{
@@ -106,11 +106,10 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
             <article className="prose prose-sm md:prose-base  prose-slate max-w-none">
               {shortIntro || '没有应用介绍'}
             </article>
-
           </div>
         </div>
         <div
-          className="w-[334px] rounded-xl ml-8 overflow-hidden shadow-sidebar p-6 min-h-[calc(100vh-350px)] flex flex-col gap-5"
+          className="w-full md:w-[334px] mb-4 md:mb-0 rounded-sm md:rounded-xl ml-0 md:ml-8 overflow-hidden shadow-sidebar p-6  min-h-[250px]  md:min-h-[calc(100vh-350px)] flex flex-col gap-5"
           style={{
             border: "1px solid #fff",
             background: "linear-gradient(180deg, #ECEFFF 0%, #FFFFFF 51.5%)"
@@ -177,12 +176,12 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
       }}
     >
       <div className="p-6 min-h-[calc(100vh-350px)] text-[#333] text-sm leading-[54px]">
-        <div className="font-bold text-[#333] tex-llg mb-5">静态资源列表</div>
+        <div className="font-bold text-[#333] text-base md:text-lg mb-5">静态资源列表</div>
         <div className="flex h-[54px] leading-[54px] bg-[#fafafa] border-0 border-solid border-[#e8e8e8] border-b-[1px]">
-          <div className="px-4 flex-1 min-w-[222px]">名称</div>
-          <div className="px-4 w-32 text-right">大小</div>
-          <div className="px-4 w-40">更新时间</div>
-          <div className="px-4 w-32">操作</div>
+          <div className="px-4 flex-1 w-[222px] md:min-w-[222px]">名称</div>
+          <div className="px-4 hidden md:block md:w-32 text-right">大小</div>
+          <div className="px-4 hidden md:block md:w-40">更新时间</div>
+          <div className="px-4 md:w-32">操作</div>
         </div>
      
         {loading ? (
@@ -196,9 +195,10 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
             return (
               <div
                 key={`file-${idx}`}
-                className="flex h-[54px] leading-[54px] bg-white border-0 border-solid border-[#e8e8e8] border-b-[1px]"
+                className="flex h-[54px] leading-[54px] bg-white border-0 border-solid
+                 border-[#e8e8e8] border-b-[1px]"
               >
-                <div className="pr-4 flex-1 min-w-[222px] relative pl-10">
+                <div className="pr-4 flex-1 w-[222px] md:min-w-[222px] truncate  relative pl-10">
                   <Image
                     src={IconFilePdf}
                     alt=""
@@ -209,14 +209,14 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     {file.name}
                   </div>
                 </div>
-                <div className="px-4 w-32 text-right">
+                <div className="px-4 w-32 text-right hidden md:block">
                   {file.size > 1024 * 1024 
                     ? `${(file.size / 1024 / 1024).toFixed(2)} MB`
                     : file.size > 1024 
                       ? `${(file.size / 1024).toFixed(2)} KB`
                       : `${file.size} B`}
                 </div>
-                <div className="px-4 w-40">
+                <div className="px-4 w-40 hidden md:block">
                   {new Date(file.lastModified).toLocaleDateString('zh-CN', {
                     year: 'numeric',
                     month: '2-digit',
@@ -226,7 +226,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     hour12: false
                   }).replace(/\//g, '-')}
                 </div>
-                <div className="px-4 w-32 flex items-center gap-6">
+                <div className="px-4 w-32 flex justify-end items-center md:justify-start gap-6">
                   <Image
                     src={IconView}
                     alt="查看"
