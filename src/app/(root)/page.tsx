@@ -1,21 +1,48 @@
-export const dynamic = 'force-static'
-export const revalidate = 43200  // 12小时缓存
+export const dynamic = "force-static";
+export const revalidate = 43200; // 12小时缓存
 
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/components/server/AppCard";
 import Link from "next/link";
 import { getApplications } from "@/lib/service/getApplications";
-
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
+import {
+  checkAuthorization,
+  redirectToLoginUrl,
+  isCheckLogin
+} from "@/lib/auth";
 
 export default async function Home() {
+  let redirectUrl = "";
+  if (isCheckLogin) {
+    // console.log("isCheckLogin", isCheckLogin);
+    const cookieStore = await cookies();
+    const isOk = await checkAuthorization(cookieStore);
+    if (!isOk) {
+      // console.log("checkAuthorization", 1);
+      const headersList = await headers();
+      const host = headersList.get("host");
+      const protocol = headersList.get("x-forwarded-proto") || "https";
+      const fullUrl = `${protocol}://${host}`;
+      console.log("redirectToLoginUrl:", fullUrl);
+      redirectUrl = await redirectToLoginUrl(fullUrl);
+      console.log("url:", redirectUrl);
+      if (redirectUrl) {
+        redirect(redirectUrl);
+      }
+      // } else {
+      // console.log("checkAuthorization", isOk, redirectUrl);
+    }
+  }
   const ai_applications = await getApplications({
     organizationId: "67af16e967cff211db44c6db",
-    limit: 8,
+    limit: 8
   });
   const aiplus_applications = await getApplications({
     organizationId: "67b291be1ad598b265fce6b6",
-    limit: 8,
+    limit: 8
   });
 
   return (
@@ -23,10 +50,10 @@ export default async function Home() {
       <div className="banner  relative h-[280px] md:h-[420px] w-full">
         <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
           <div className="container">
-          <div className="flex flex-col text-foreground items-start justify-center h-full">
-            <div className="text-2xl md:text-4xl font-bold">源启AI+</div>
-            <div className="text-sm md:text-xl">智能引领未来，AI为您赋能</div>
-          </div>
+            <div className="flex flex-col text-foreground items-start justify-center h-full">
+              <div className="text-2xl md:text-4xl font-bold">源启AI+</div>
+              <div className="text-sm md:text-xl">智能引领未来，AI为您赋能</div>
+            </div>
           </div>
         </div>
         <Image
