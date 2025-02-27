@@ -14,26 +14,13 @@ import {
 
 export async function middleware(request: NextRequest, response: NextResponse) {
   const url = request.nextUrl;
-  if (url.pathname.startsWith("/myproxy")) {
-    // 重写URL
-    url.pathname = url.pathname.replace(/^\/myproxy/, "");
-    // 设置新的主机
-    url.host = "api.dify.ai";
-    url.protocol = "https";
-    url.port = "";
-
-    return NextResponse.rewrite(url);
-  }
 
   if (isCheckLogin) {
     const cookieStore = await cookies();
     const { pathname, origin } = url;
     const _url = pathname === "/auth" ? "/" : "";
-    // resetCookie(cookieStore, "aa");
-    // console.log("重置cookie!");
     const memberObj = getAuthorization(cookieStore) || {};
     const { value } = memberObj;
-    console.log("memberObj:", memberObj);
     const ticket = getTicket(request);
 
     if (!value) {

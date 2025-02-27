@@ -7,7 +7,6 @@ import AppCard from "@/components/server/AppCard";
 import Link from "next/link";
 import { getApplications } from "@/lib/service/getApplications";
 
-
 export default async function Home() {
   const ai_applications = await getApplications({
     organizationId: "67af16e967cff211db44c6db",
