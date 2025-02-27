@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { Viewport } from 'next'
+import type { Viewport } from "next";
 // import { Inter } from 'next/font/google';
 // import localFont from "next/font/local";
 import "./globals.css";
@@ -20,21 +20,21 @@ import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Gientech AI+ Community",
-  description: "中电尽心-源启AI+社区",
+  description: "中电尽心-源启AI+社区"
   //viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
 
   // mobileWebAppCapable: "yes",
   //appleMobileWebAppStatusBarStyle: "#050505",
 };
 export const viewport: Viewport = {
-  themeColor: '#050505',
-  width: 'device-width',
+  themeColor: "#050505",
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
-}
+  userScalable: false
+};
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

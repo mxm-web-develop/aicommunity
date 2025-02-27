@@ -6,39 +6,9 @@ import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/components/server/AppCard";
 import Link from "next/link";
 import { getApplications } from "@/lib/service/getApplications";
-import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
-import {
-  checkAuthorization,
-  redirectToLoginUrl,
-  isCheckLogin
-} from "@/lib/auth";
-import TrickToken from "@/components/client/TrickToken";
+import RedirectCmp from "@/components/RedirectCmp";
+
 export default async function Home() {
-
-  let redirectUrl = "";
-  if (isCheckLogin) {
-    // console.log("isCheckLogin", isCheckLogin);
-    const cookieStore = await cookies();
-    const isOk = await checkAuthorization(cookieStore);
-    if (!isOk) {
-      // console.log("checkAuthorization", 1);
-      const headersList = await headers();
-      const host = headersList.get("host");
-      console.log(host,'wefklewjkfjew')
-      const protocol = headersList.get("x-forwarded-proto") || "https";
-      const fullUrl = `${protocol}://${host}`;
-      // console.log("redirectToLoginUrl:", fullUrl);
-      redirectUrl = await redirectToLoginUrl(fullUrl);
-      // console.log("url:", redirectUrl);
-      if (redirectUrl) {
-        redirect(redirectUrl);
-      }
-      // } else {
-      // console.log("checkAuthorization", isOk, redirectUrl);
-    }
-  }
-
   const ai_applications = await getApplications({
     organizationId: "67af16e967cff211db44c6db",
     limit: 8
@@ -50,6 +20,7 @@ export default async function Home() {
 
   return (
     <div className="relative w-full h-full mb-12">
+      <RedirectCmp />
       <div className="banner  relative h-[280px] md:h-[420px] w-full">
         <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
           <div className="container">
