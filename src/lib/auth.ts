@@ -4,7 +4,7 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
-export const isCheckLogin = true;
+export const isCheckLogin = false;
 
 export const checkAuthorization = async (cookieStore: any) => {
   const memberObj = getAuthorization(cookieStore) || {};
