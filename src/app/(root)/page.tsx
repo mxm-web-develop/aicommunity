@@ -13,8 +13,9 @@ import {
   redirectToLoginUrl,
   isCheckLogin
 } from "@/lib/auth";
-
+import TrickToken from "@/components/client/TrickToken";
 export default async function Home() {
+
   let redirectUrl = "";
   if (isCheckLogin) {
     // console.log("isCheckLogin", isCheckLogin);
@@ -24,6 +25,7 @@ export default async function Home() {
       // console.log("checkAuthorization", 1);
       const headersList = await headers();
       const host = headersList.get("host");
+      console.log(host,'wefklewjkfjew')
       const protocol = headersList.get("x-forwarded-proto") || "https";
       const fullUrl = `${protocol}://${host}`;
       // console.log("redirectToLoginUrl:", fullUrl);
@@ -113,6 +115,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
+      <TrickToken />
     </div>
   );
 }

@@ -18,11 +18,12 @@ interface Contact {
   _v?: number;
   _id: string;
 }
+const isGientechProd = true
 const minioProtocol = process.env.NEXT_PUBLIC_MINIO_PROTOCOL;
 const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
 const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
 
-const baseUrl = `${minioProtocol}://${minioEndpoint}:${minioPort}`;
+const baseUrl =  isGientechProd ? `https://developer.gientech.com/files/` : `http://${minioEndpoint}:${minioPort}`;
 interface IAppDetailIntroduce {
   // sameTypeItems: any[];
   keywords: any[];
@@ -235,7 +236,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     priority
                     onClick={() => {
                       // const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
-                      console.log("baseUrl", baseUrl,file.url);
+                      console.log("baseUrl",baseUrl, 'file.url', file.url, 'window', window.location.host);
                       window.open(`${baseUrl}${file.url}`, '_blank');
                     }}
                   />

@@ -19,7 +19,7 @@ const AppCard = (props: any) => {
           <div className="font-bold h-14 line-clamp-2  text-lg mb-3">
             {data.name}
           </div>
-          <div className="bg-secondary  mb-3 rounded-lg text-xs px-2 py-3 text-sm ">
+          <div className="bg-secondary  mb-3 rounded-lg text-xs px-2 py-3 ">
             <div
               className="text-ellipsis  h-16 line-clamp-4"
               title={data.shortIntro}

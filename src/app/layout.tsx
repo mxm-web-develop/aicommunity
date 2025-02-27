@@ -5,6 +5,7 @@ import type { Viewport } from 'next'
 import "./globals.css";
 import { Sidebar } from "lucide-react";
 import { Providers } from "@/lib/ThemeProvider";
+import { headers } from "next/headers";
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
 //   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="min-h-screen font-sans" suppressHydrationWarning>
