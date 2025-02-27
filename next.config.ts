@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
   poweredByHeader: false,
-
+  env: {
+    MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY
+  },
   // 确保静态资源路径正确
   typescript: {
     // !! 警告 !!
