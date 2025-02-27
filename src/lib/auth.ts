@@ -4,7 +4,7 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
-export const isCheckLogin = false;
+export const isCheckLogin = true;
 
 export const checkAuthorization = async (cookieStore: any) => {
   const memberObj = getAuthorization(cookieStore) || {};
@@ -14,7 +14,7 @@ export const checkAuthorization = async (cookieStore: any) => {
 
 export const redirectToLoginUrl = (url: string) => {
   const _url = new URL(url);
-  return `${process.env.NEXT_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}/auth`;
+  return `${process.env.NEXT_VALIDATE_API_BASE_URL || process.env.NEXT_PUBLIC_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}/auth`;
 };
 
 export const getAuthorization = (cookieStore: any) => {
@@ -27,7 +27,7 @@ export const setAuthorization = (cookieStore: any, value: string) => {
     // const expires = new Date(Date.now() + 30 * 1000);
     cookieStore.set(storageName, value, {
       expires,
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict"
     });
@@ -93,4 +93,18 @@ export const resetCookie = (cookieStore: any, value: string) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const checkAuthorizationByClient = () => {
+  const cookies = document.cookie.split(";");
+
+  for (const cookie of cookies) {
+    const [key, value] = cookie.trim().split("=");
+
+    if (key === storageName) {
+      return decodeURIComponent(value);
+    }
+  }
+
+  return null;
 };

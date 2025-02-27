@@ -29,6 +29,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     const cookieStore = await cookies();
     const { pathname, origin } = url;
     const _url = pathname === "/auth" ? "/" : "";
+    // setAuthorization(cookieStore, "");
     // resetCookie(cookieStore, "aa");
     // console.log("重置cookie!");
     const memberObj = getAuthorization(cookieStore) || {};
