@@ -1,5 +1,5 @@
 import Image from "next/image";
-import homeBg from "@/static/img/logo.png";
+import Logo from "@/static/img/logo.png";
 
 import { ThemeToggle } from "@/components/ToggleTheme";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -21,7 +21,7 @@ export default async function AppLayout({
           <div className="left">
             <Link href="/" className="text-primary cursor-pointer">
               <Image
-                src={homeBg}
+                src={Logo}
                 alt="Home background"
                 className="h-[28px] w-[180px]" // 使用 brightness 或其他滤镜
                 priority

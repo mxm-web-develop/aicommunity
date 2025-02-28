@@ -11,6 +11,7 @@ import {
 let redirectUrl = "";
 const RedirectCmp = () => {
   useEffect(() => {
+    console.log("isCheckLogin", isCheckLogin);
     if (isCheckLogin) {
       const isOk = checkAuthorizationByClient();
       if (!isOk) {
