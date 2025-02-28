@@ -9,7 +9,7 @@ export interface MinioFile {
   url: string;
 }
 
-export async function getBucketFiles(bucketId: string): Promise<MinioFile[]> {
+export async function  getBucketFiles(bucketId: string): Promise<MinioFile[]> {
   try {
     // 检查存储桶是否存在，不存在则自动创建
     if (!await minioClient.bucketExists(bucketId)) {
