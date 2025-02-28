@@ -4,7 +4,7 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
-const _host = "http://developer.gientech.com";
+const _host = "https://developer.gientech.com";
 export const isCheckLogin = true;
 
 export const checkAuthorization = async (cookieStore: any) => {
