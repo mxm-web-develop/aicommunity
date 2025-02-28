@@ -61,7 +61,7 @@ export const getTicket = (req: NextRequest) => {
 export const fetchToken = async (ticket: string, url: string) => {
   try {
     const _url = new URL(url);
-    const service = _url.origin;
+    const service = _host; //_url.origin;
     const params = new URLSearchParams({
       ticket,
       service
