@@ -20,7 +20,7 @@ export default async function Home() {
 
   return (
     <div className="relative w-full h-full mb-12">
-      <RedirectCmp />
+      {/* <RedirectCmp /> */}
       <div className="banner  relative h-[280px] md:h-[420px] w-full">
         <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
           <div className="container">

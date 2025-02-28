@@ -14,7 +14,9 @@ import {
 
 export async function middleware(request: NextRequest, response: NextResponse) {
   const url = request.nextUrl;
-
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
   if (isCheckLogin) {
     const cookieStore = await cookies();
     const { pathname, origin } = url;
@@ -80,6 +82,11 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 }
 
 export const config = {
-  matcher: ["/myproxy/:path*", "/applications/:path*", "/auth/:path*","/files/:path*"]
+  matcher: [ 
+    '/applications/:path*',
+    // '/api/applications/:path*',  // 移除这行，让 API 路由自由通过
+    '/auth/:path*',
+    '/((?!api|_next|static|images|favicon.ico).*)'
+  ]
   // matcher: ["/myproxy/:path*", "/:path*"]
 };

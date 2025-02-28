@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from 'next/dynamic';
 import FileView from '@/components/FileView';
 import * as React from 'react';
+import PDFViewer from '@/components/client/PDFViewer';
 
 
 interface Contact {
@@ -57,12 +58,14 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
   // 添加文件列表状态
   const [files, setFiles] = useState<MinioFile[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showPDFViewer, setShowPDFViewer] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string>();
 
   // 获取文件列表
-  const fetchFiles = async (appId: string) => {
+  const fetchFiles = async (appId: string, ) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/applications/${appId}/files`);
+      const response = await fetch(`/api/applications/${appId}/files/`);
       const result = await response.json();
       console.log("result", result);
       setFiles(result.data || []);
@@ -90,11 +93,51 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
     setCurFileInfo({});
   };
 
+  const handleFileView = async (file: any) => {
+    // 1. 立即显示预览窗口（带loading状态）
+    setShowPDFViewer(true);
+
+    try {
+      const fileName = file.url.split('/').pop();
+      const requestUrl = `/api/applications/${appId}/files/${encodeURIComponent(fileName)}`;
+      
+      const response = await fetch(requestUrl, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      // 2. 设置 URL 显示 PDF
+      setPdfUrl(url);
+
+    } catch (error) {
+      console.error('File view error:', error);
+      alert('文件加载失败，请稍后重试');
+      // 发生错误时关闭预览窗口
+      handleClosePDFViewer();
+    }
+  };
+
+  const handleClosePDFViewer = () => {
+    setShowPDFViewer(false);
+    // 清理 URL 对象
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+      setPdfUrl(undefined);
+    }
+  };
+
   return (
     <>
     {type == '0' && (
     <div className="w-full">
-      <div className="flex flex-col flex-col-reverse md:flex-row mb-4 items-start">
+      <div className="flex flex-col mb-4 items-start">
         <div
           className="flex-1 rounded-xl overflow-hidden"
           style={{
@@ -234,11 +277,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     title="查看"
                     className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-85"
                     priority
-                    onClick={() => {
-                      // const baseUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL;
-                      console.log("baseUrl",baseUrl, 'file.url', file.url, 'window', window.location.host);
-                      window.open(`${baseUrl}${file.url}`, '_blank');
-                    }}
+                    onClick={() => handleFileView(file)}
                   />
                   {/* <a href={file.url} download>
                     <Image
@@ -271,6 +310,13 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
       </div>
     )} */}
   </div>
+    )}
+    {/* 添加 PDF 预览器 */}
+    {showPDFViewer && (
+      <PDFViewer 
+        url={pdfUrl} 
+        onClose={handleClosePDFViewer} 
+      />
     )}
     </>
   )}
