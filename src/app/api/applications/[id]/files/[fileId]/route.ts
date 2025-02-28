@@ -20,7 +20,7 @@ export async function GET(
     console.log('File Name:', fileName);
 
     // 3. 构建正确的 Minio URL
-    const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT || 'developer.gientech.com';
+    const minioEndpoint = 'developer.gientech.com';
     const minioUrl = `https://${minioEndpoint}/files/${bucketId}/${fileName}`;
     console.log('Minio URL:', minioUrl);
 
