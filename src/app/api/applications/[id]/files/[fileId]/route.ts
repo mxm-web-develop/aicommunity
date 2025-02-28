@@ -20,8 +20,8 @@ export async function GET(
     console.log('File Name:', fileName);
 
     // 3. 构建正确的 Minio URL
-    const minioEndpoint = process.env.MINIO_ENDPOINT || '45.77.12.232:9000';
-    const minioUrl = `http://${minioEndpoint}/${bucketId}/${fileName}`;
+    const minioEndpoint = process.env.MINIO_ENDPOINT || 'https://developer.gientech.com/files/';
+    const minioUrl = `https://developer.gientech.com/files/${bucketId}/${fileName}`;
     console.log('Minio URL:', minioUrl);
 
     // 4. 请求文件
