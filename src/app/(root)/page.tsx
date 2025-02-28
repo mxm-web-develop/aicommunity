@@ -7,6 +7,7 @@ import AppCard from "@/components/server/AppCard";
 import Link from "next/link";
 import { getApplications } from "@/lib/service/getApplications";
 import RedirectCmp from "@/components/RedirectCmp";
+import { isCheckLogin } from "@/lib/auth";
 
 export default async function Home() {
   const ai_applications = await getApplications({
@@ -20,7 +21,7 @@ export default async function Home() {
 
   return (
     <div className="relative w-full h-full mb-12">
-      {/* <RedirectCmp /> */}
+      {isCheckLogin ? <RedirectCmp /> : null}
       <div className="banner  relative h-[280px] md:h-[420px] w-full">
         <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
           <div className="container">
