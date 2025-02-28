@@ -4,7 +4,7 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
-const _host = "http://developer.gientech.com";
+const _host = "https://developer.gientech.com";
 export const isCheckLogin = true;
 
 export const checkAuthorization = async (cookieStore: any) => {
@@ -61,7 +61,7 @@ export const getTicket = (req: NextRequest) => {
 export const fetchToken = async (ticket: string, url: string) => {
   try {
     const _url = new URL(url);
-    const service = _url.origin;
+    const service = _host; //_url.origin;
     const params = new URLSearchParams({
       ticket,
       service
