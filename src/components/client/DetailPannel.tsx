@@ -137,7 +137,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
     <>
     {type == '0' && (
     <div className="w-full">
-      <div className="flex flex-col mb-4 items-start">
+      <div className="flex flex-col md:flex-row mb-4 items-start">
         <div
           className="flex-1 rounded-xl overflow-hidden"
           style={{
