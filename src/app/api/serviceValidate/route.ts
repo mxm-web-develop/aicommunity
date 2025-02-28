@@ -9,15 +9,27 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const service = queryParams.get("service");
     console.log("ticket:", ticket);
     console.log("service:", service);
+
+    // @ts-ignore
+    const agent = new (require('https').Agent)({
+      rejectUnauthorized: false
+    });
+
     const response = await fetch(
       `${process.env.NEXT_VALIDATE_API_BASE_URL}${authApi}?ticket=${ticket}&service=${service}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        // @ts-ignore
+        agent: agent
       }
     );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
     const data = await response.text();
     const startFlag = "<cas:user>";
@@ -44,8 +56,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
   } catch (error) {
     console.error("Failed to fetch userId:", error);
     return NextResponse.json(
-      { error: "Failed to fetch userId" },
-      { status: 500 }
+      { success: false, error: "Failed to fetch userId" },
+      { status: 200 }
     );
   }
 }
