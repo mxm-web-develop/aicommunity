@@ -84,7 +84,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 export const config = {
   matcher: [ 
     '/applications/:path*',
-    // '/api/applications/:path*',  // 移除这行，让 API 路由自由通过
+    '/api/applications/:path*',  // 移除这行，让 API 路由自由通过
     '/auth/:path*',
     '/((?!api|_next|static|images|favicon.ico).*)'
   ]
