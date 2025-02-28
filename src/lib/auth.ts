@@ -4,6 +4,7 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
+const _host = "https://developer.gientech.com";
 export const isCheckLogin = true;
 
 export const checkAuthorization = async (cookieStore: any) => {
@@ -14,7 +15,7 @@ export const checkAuthorization = async (cookieStore: any) => {
 
 export const redirectToLoginUrl = (url: string) => {
   const _url = new URL(url);
-  return `${process.env.NEXT_VALIDATE_API_BASE_URL || process.env.NEXT_PUBLIC_VALIDATE_API_BASE_URL}${loginApi}?service=https://developer.gientech.com/auth`;
+  return `${process.env.NEXT_VALIDATE_API_BASE_URL || process.env.NEXT_PUBLIC_VALIDATE_API_BASE_URL}${loginApi}?service=${_host}/auth`;
 };
 
 export const getAuthorization = (cookieStore: any) => {
@@ -65,7 +66,7 @@ export const fetchToken = async (ticket: string, url: string) => {
       ticket,
       service
     }).toString();
-    const apiUrl = `${_url.origin}/api/serviceValidate?${params}`;
+    const apiUrl = `${_host}/api/serviceValidate?${params}`;
     console.log("apiUrl:", apiUrl);
 
     const data = await fetch(apiUrl, {
