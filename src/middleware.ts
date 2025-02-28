@@ -80,6 +80,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 }
 
 export const config = {
-  matcher: ["/myproxy/:path*", "/applications/:path*", "/auth/:path*"]
+  matcher: ["/myproxy/:path*", "/applications/:path*", "/auth/:path*","/files/:path*"]
   // matcher: ["/myproxy/:path*", "/:path*"]
 };

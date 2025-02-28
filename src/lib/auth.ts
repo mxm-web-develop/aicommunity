@@ -14,7 +14,7 @@ export const checkAuthorization = async (cookieStore: any) => {
 
 export const redirectToLoginUrl = (url: string) => {
   const _url = new URL(url);
-  return `${process.env.NEXT_VALIDATE_API_BASE_URL || process.env.NEXT_PUBLIC_VALIDATE_API_BASE_URL}${loginApi}?service=${_url.origin}/auth`;
+  return `${process.env.NEXT_VALIDATE_API_BASE_URL || process.env.NEXT_PUBLIC_VALIDATE_API_BASE_URL}${loginApi}?service=https://developer.gientech.com/auth`;
 };
 
 export const getAuthorization = (cookieStore: any) => {
