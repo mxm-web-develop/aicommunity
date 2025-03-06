@@ -1,7 +1,7 @@
 // 使用 dynamic = 'force-static' 来启用静态生成
 // // 设置 revalidate
 // export const revalidate = 43200  // 12小时缓存
-export const dynamic = 'force-dynamic'
+
 
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
@@ -12,7 +12,7 @@ import { categorys, sceneList, cardList, allRow } from "@/constants";
 import { fetchApi } from "@/lib/fetchapi";
 import AppCard from "@/components/server/AppCard";
 import { getApplications } from "@/lib/service/getApplications";
-
+import AppControlList from "@/components/client/AppControlList";
 interface ApplicationPageQueryProps {
   category?: string;
   scene?: string;
@@ -21,24 +21,11 @@ interface ApplicationPageQueryProps {
 
 export default async function ApplicationsPage() {
   
-    const ai_applications = await getApplications({
-      organizationId: "67af16e967cff211db44c6db",
-      limit: 1000,
-    });
-    const aiplus_applications = await getApplications({
-      organizationId: "67b291be1ad598b265fce6b6",
-      limit: 1000,
-    });
-    
-
-    // 确保数据是数组
-    const applications = Array.isArray(ai_applications) ? ai_applications : [];
-    const applications2 = Array.isArray(aiplus_applications) ? aiplus_applications : [];
 
     return (
       <div className="w-full">
       <div className="select-none h-[248px] relative w-full mb-10">
-        <div className="absolute top-12 left-0 right-0 z-10">
+        <div className="absolute top-24 left-0 right-0 z-10">
           <div className="container">
             <div className="text-2xl md:text-4xl">
               <b>产品与服务</b>
@@ -46,7 +33,7 @@ export default async function ApplicationsPage() {
             <div className="text-[#333] mb-4">
               突破性AI技术，开启无限创新机遇
             </div>
-            <SearchBar />
+            {/* <SearchBar /> */}
           </div>
         </div>
         <Image
@@ -57,29 +44,9 @@ export default async function ApplicationsPage() {
           priority
         />
       </div>      
-      <div className="container mx-auto py-8">
-        <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center">
-            AI产品与服务
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-            {applications.map((application: any) => (
-              <AppCard key={application._id} data={application} />
-            ))}
-          </div>
-        </div>
-
-        <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center">
-            AI+产品与服务
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-            {applications2.map((application: any) => (
-              <AppCard key={application._id} data={application} />
-            ))}
-          </div>
-        </div>
-      </div>
+      
+      <AppControlList />
+    
       </div>
     );
   

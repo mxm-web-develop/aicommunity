@@ -17,6 +17,15 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
+// 添加环境变量调试信息
+console.log('MongoDB connection environment variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  host: process.env.NEXT_MONGO_HOST,
+  port: process.env.NEXT_MONGO_PORT,
+  db: process.env.NEXT_MONGO_DB,
+  authSource: process.env.NEXT_MONGO_AUTH_SOURCE
+});
+
 // 构建 MongoDB URI
 const MONGODB_URI_FULL = `mongodb://${process.env.NEXT_MONGO_USERNAME}:${process.env.NEXT_MONGO_PASSWORD}@${process.env.NEXT_MONGO_HOST}:${process.env.NEXT_MONGO_PORT}/${process.env.NEXT_MONGO_DB}?authSource=${process.env.NEXT_MONGO_AUTH_SOURCE}`;
 

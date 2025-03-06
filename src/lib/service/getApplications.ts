@@ -14,7 +14,7 @@ export async function getApplications({ organizationId, limit = 8 }: QueryOption
     
     let query = Application.find(
       filter,
-      'name gientechType status shortIntro _id'
+      'name gientechType status shortIntro _id keywords'
     ).sort({ gientechType: 1 });
     
     query = query.limit(limit);

@@ -14,30 +14,25 @@ export default function DetailTabs(props: IAppDetailContacts) {
   const searchParams = useSearchParams();
   const type = searchParams?.get('type');
   return (
-    <div className="flex gap-8 text-[#333] text-base">
+    <div className="flex gap-4 text-base text-muted-foreground">
       {(detailTabs || []).map((i: any) => {
         return type === i.key ? (
           <div
             key={`detail-tab-${i.key}`}
-            className={`relative h-12 leading-[44px] font-bold text-[#055aff]`}
+            className="relative h-12 leading-[44px] font-bold text-highlight"
           >
             {i.label}
-            <b
-              className={`inline-block w-full absolute bottom-1 left-0 right-0 border-none h-[2px] bg-[#055aff]`}
-            ></b>
+            <b className="absolute inset-x-0 bottom-0 h-[3px] bg-highlight" />
           </div>
         ) : (
           <Link
             key={`detail-tab-${i.key}`}
             href={`/applications/${id}?type=${i.key}`}
+            className="hover:text-primary/80 transition-colors"
           >
-            <div
-              className={`relative h-12 leading-[44px] cursor-pointer hover:opacity-85`}
-            >
+            <div className="relative h-12 leading-[44px]">
               {i.label}
-              <b
-                className={`w-full absolute bottom-0 left-0 right-0 border-none h-[2px] bg-[#055aff] hidden`}
-              ></b>
+              <b className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent" />
             </div>
           </Link>
         );

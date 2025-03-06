@@ -16,7 +16,7 @@ export async function OPTIONS() {
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params; // 确保使用await获取参数
+    const { id } = await params;
     
     if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
       throw new Error('无效的应用ID', { cause: { status: 400 } });

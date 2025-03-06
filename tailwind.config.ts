@@ -52,9 +52,17 @@ export default {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))"
         },
+        tag: {
+          DEFAULT: "hsl(var(--tag))",
+          foreground: "hsl(var(--tag-foreground))"
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))"
+        },
+        highlight: {
+          DEFAULT: "hsl(var(--highlight))",
+          foreground: "hsl(var(--highlight-foreground))"
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",

@@ -7,7 +7,7 @@ import IconView from "@/static/img/icon-view.png";
 import IconDownload from "@/static/img/icon-download.png";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from 'next/dynamic';
-import FileView from '@/components/FileView';
+
 import * as React from 'react';
 import PDFViewer from '@/components/client/PDFViewer';
 

@@ -4,9 +4,9 @@ const loginApi = "/login";
 const logoutApi = "/logout";
 const ticketKey = "ticket";
 const storageName = "memberId";
-const _host = "https://developer.gientech.com";
-export const isCheckLogin = true;
-
+const _host = process.env.NEXT_PUBLIC_SSO_HOST || "https://developer.gientech.com";
+// 从环境变量读取SSO开关配置
+export const isCheckLogin = process.env.NEXT_PUBLIC_ENABLE_SSO === 'true';
 export const checkAuthorization = async (cookieStore: any) => {
   const memberObj = getAuthorization(cookieStore) || {};
   const { value } = memberObj;

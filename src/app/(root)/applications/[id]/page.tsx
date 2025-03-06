@@ -59,7 +59,7 @@ export async function generateStaticParams() {
 // 2. 页面组件会为每个 id 执行一次
 export default async function ApplicationPage({ params }: ApplicationPageProps) {
   // 正确获取动态路由参数（移除await）
-  const { id } = params; // 直接解构params
+  const { id } = await params; // 直接解构params
   
   // 使用解构后的id
   const itemData = await getApplicationDetails(id) as unknown as Application;
@@ -71,85 +71,80 @@ export default async function ApplicationPage({ params }: ApplicationPageProps) 
   // 4. 使用数据渲染UI
   return (
     <div className="w-full">
-      <div className="select-none h-[248px] relative w-full mb-4">
-        <div className="container relative right-0 top-10 z-20 text-right">
-          <CollectPraiseBtn
-            praiseNum={0}
-            collectNum={0}
-            isCollect={false}
+      <div className="relative h-[248px] w-full mb-4">
+        {/* 背景图容器 */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={applicationDetailBanner}
+            alt=""
+            fill
+            className="object-cover"
+            priority
           />
         </div>
-        <div className="absolute top-10 left-0 right-0 z-10">
-          <div className="container">
-            <div className=" text-2xl md:text-4xl mb-1">
-              <b>{itemData.name}</b>
-            </div>
-            <div className="mb-4 mt-5 ">
-              <span
-                className="inline-block rounded-[2px] px-4 py-1 bg-[#f8f1e8] text-sm text-[#c08c8c]  truncate"
-                title={itemData.gientechType}
-              >
-                {itemData.gientechType}
-              </span>
-            </div>
 
-            <div className="flex gap-4 text-sm mb-4">
-              {itemData.links?.website ? (
-                <a 
-                  href={itemData.links.website}
-                  target="_blank"
-                  className="cursor-pointer h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 hover:opacity-85 text-center"
-                  style={{
-                    background:
-                      "linear-gradient(99.9deg, #2B69FF -4.18%, #8F91FF 59.48%, #EC8FFF 105.42%)"
-                  }}
-                >
-                  立即体验
-                </a>
-              ) : (
-                <div
-                  className="cursor-not-allowed h-9 px-8 w-[120px] rounded-sm font-bold text-white leading-9 bg-gray-400 text-center"
-                >
-                  暂无试用
-                </div>
-              )}
-       
+        {/* 内容容器 */}
+        <div className="container relative z-10 h-full flex flex-col">
+          <div className="self-end pt-6">
+            <CollectPraiseBtn
+              praiseNum={0}
+              collectNum={0}
+              isCollect={false}
+            />
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center">
+            <div className="max-w-3xl">
+              <h1 className="text-2xl md:text-4xl font-bold mb-2 text-foreground">
+                {itemData.name}
+              </h1>
+              
+              {/* 标签样式更新 */}
+              <div className="my-4">
+                <span className="inline-block rounded px-4 py-1 bg-tag/40 text-muted-foreground text-sm">
+                  {itemData.gientechType}
+                </span>
+              </div>
+
+              {/* 按钮样式更新 */}
+              <div className="flex gap-4 mb-2">
+                {itemData.links?.website ? (
+                  <a 
+                    href={itemData.links.website}
+                    target="_blank"
+                    className="inline-flex items-center justify-center h-9 px-6 rounded-sm font-medium bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    立即体验
+                  </a>
+                ) : (
+                  <button 
+                    className="inline-flex items-center justify-center h-9 px-6 rounded-sm font-medium bg-muted text-muted-foreground cursor-not-allowed"
+                    disabled
+                  >
+                    暂无试用
+                  </button>
+                )}
+              </div>
+
+              {/* Tab组件样式 */}
+              <DetailTabs detailTabs={detailTabs} />
             </div>
-            <DetailTabs detailTabs={detailTabs}  />
           </div>
         </div>
-        <Image
-          src={applicationDetailBanner}
-          alt=""
-          fill
-          className="object-cover h-[248px]"
-          priority
+      </div>
+
+      {/* 下方内容区域 */}
+      <div className="container">
+        <DetailPannel
+          keywords={itemData.keywords}
+          gientechType={itemData.gientechType}
+          shortIntro={itemData.shortIntro}
+          richIntro={itemData.productIntro_id}
+          contact={itemData.contact}  
+          organizationId={itemData.organizationId}
+          appId={id}
         />
       </div>
-          <div className="container">
-            <DetailPannel
-              keywords={itemData.keywords}
-              gientechType={itemData.gientechType}
-              shortIntro={itemData.shortIntro}
-              richIntro={itemData.productIntro_id}
-              contact={itemData.contact}  
-              organizationId={itemData.organizationId}
-              appId={id}
-              />
-            
-            {/* {(!type || type === detailTabs[0].key) ? (
-              <DetailIntroduce
-                keywords={itemData.keywords}
-                gientechType={itemData.gientechType}
-                shortIntro={itemData.shortIntro}
-                richIntro={itemData.productIntro_id}
-                contact={itemData.contact}
-                organizationId={itemData.organizationId}
-              />
-            ) : type === detailTabs[1].key ? (
-              <DetailAssets detail={itemData.assets} />
-            ) : null} */}
-          </div>
     </div>
   );
 }
