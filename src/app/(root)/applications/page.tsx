@@ -5,14 +5,16 @@
 
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
-import LeftBar from "@/components/applications/left-bar";
-import AppItem from "@/components/applications/item";
-import SearchBar from "@/components/ui/searchBar";
-import { categorys, sceneList, cardList, allRow } from "@/constants";
-import { fetchApi } from "@/lib/fetchapi";
-import AppCard from "@/components/server/AppCard";
-import { getApplications } from "@/lib/service/getApplications";
-import AppControlList from "@/components/client/AppControlList";
+
+import dynamic from 'next/dynamic';
+import { ErrorBoundary } from '@/components/client/ErrorBoundary';
+
+// 使用 dynamic 导入，确保客户端组件正确加载
+const AppControlListClient = dynamic(
+  () => import('@/components/client/AppControlList'),
+  { ssr: false }
+);
+
 interface ApplicationPageQueryProps {
   category?: string;
   scene?: string;
@@ -21,7 +23,6 @@ interface ApplicationPageQueryProps {
 
 export default async function ApplicationsPage() {
   
-
     return (
       <div className="w-full">
       <div className="select-none h-[248px] relative w-full mb-10">
@@ -45,7 +46,9 @@ export default async function ApplicationsPage() {
         />
       </div>      
       
-      <AppControlList />
+      <ErrorBoundary fallback={<div className="container">加载应用列表时出错，请检查控制台或刷新页面。</div>}>
+        <AppControlListClient />
+      </ErrorBoundary>
     
       </div>
     );
