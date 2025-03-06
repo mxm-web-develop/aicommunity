@@ -80,7 +80,7 @@ cp -r ./.next/standalone/* ./deploy/
 cp -r ./public ./deploy/
 
 # 4. 确保 server.js 的路径配置正确
-cat > ./deploy/path-fix.js << 'EOL'
+cat > ./path-fix.js << 'EOL'
 const fs = require('fs');
 const path = require('path');
 
@@ -89,7 +89,7 @@ const serverPath = path.join(__dirname, 'deploy', 'server.js');
 let content = fs.readFileSync(serverPath, 'utf8');
 
 // 修改路径引用，确保指向正确的 .next 目录
-content = content.replace(/path:\s*['"](.+?)['"]/g, `path: require('path').join(__dirname, '.next')`);
+content = content.replace(/\.next/g, `../.next`);
 
 // 写回文件
 fs.writeFileSync(serverPath, content);
@@ -116,16 +116,17 @@ case "$1" in
     echo "启动服务..."
     # 加载环境变量
     if [ -f ".env" ]; then
+      set -a
       source .env
+      set +a
     fi
     
     # 使用环境变量中的PORT，如果未设置则使用默认值
     PORT=${PORT:-$DEFAULT_PORT}
     echo "使用端口: $PORT"
     
-    # 显式设置环境变量
-    export PORT=$PORT
-    export NODE_ENV=production
+    # 确保日志目录存在
+    mkdir -p logs
     
     echo "检查目录结构..."
     if [ ! -f ".next/server/next-font-manifest.json" ]; then
@@ -135,10 +136,13 @@ case "$1" in
     fi
     
     echo "启动服务器..."
-    nohup node server.js > error.log 2>&1 &
+    # 改进日志记录方式，分离错误和标准输出
+    nohup node server.js > logs/server.log 2> logs/error.log &
     echo $! > server.pid
     echo "✅ 服务已启动 (PID: $(cat server.pid)) 在端口 $PORT"
     echo "请等待几秒钟后访问: http://localhost:$PORT"
+    echo "标准输出日志: logs/server.log"
+    echo "错误日志: logs/error.log"
     ;;
   stop)
     if [ -f "server.pid" ]; then
@@ -232,3 +236,26 @@ if [[ "$(echo "$start_now" | tr '[:upper:]' '[:lower:]')" == "y" || "$(echo "$st
   ./control.sh start
   cd ..
 fi
+
+# 添加环境变量调试信息
+echo "🔍 添加环境变量调试脚本..."
+cat > ./deploy/check-env.sh << 'EOL'
+#!/bin/bash
+echo "环境文件内容:"
+cat .env
+
+echo -e "\n当前进程环境变量:"
+env | sort
+
+echo -e "\n测试加载环境变量:"
+set -a
+source .env
+set +a
+echo "PORT = $PORT"
+echo "NODE_ENV = $NODE_ENV"
+EOL
+chmod +x ./deploy/check-env.sh
+
+echo -e "调试环境:   cd deploy && ./check-env.sh"
+echo -e "查看标准日志: tail -f deploy/logs/server.log"
+echo -e "查看错误日志: tail -f deploy/logs/error.log"
