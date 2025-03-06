@@ -29,6 +29,9 @@ const PDFViewer = ({ url, onClose }: PDFViewerProps) => {
         <div className="flex items-center justify-between p-2 md:p-3 border-b bg-gray-50">
           <div className="flex items-center gap-2 md:gap-4 overflow-x-auto scrollbar-hide">
             <h3 className="text-sm font-medium whitespace-nowrap">文档预览</h3>
+   
+          </div>
+          <div className='flex items-center gap-2 md:gap-4 overflow-x-auto scrollbar-hide'>
             {numPages && (
               <>
                 <div className="flex items-center gap-1 md:gap-2">
@@ -69,13 +72,14 @@ const PDFViewer = ({ url, onClose }: PDFViewerProps) => {
                 </div>
               </>
             )}
-          </div>
+            
           <button 
             onClick={onClose}
             className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
           >
             <X className="w-4 h-4" />
           </button>
+          </div>
         </div>
         
         {/* PDF 内容区域 */}

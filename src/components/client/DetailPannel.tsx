@@ -96,14 +96,14 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
   const handleFileView = async (file: any) => {
     // 1. 立即显示预览窗口（带loading状态）
     setShowPDFViewer(true);
-
+    
     try {
       const fileName = file.url.split('/').pop();
       const requestUrl = `/api/applications/${appId}/files/${encodeURIComponent(fileName)}`;
       
       const response = await fetch(requestUrl, {
         method: 'GET',
-        credentials: 'include',
+        // credentials: 'include',
       });
 
       if (!response.ok) {
@@ -112,7 +112,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
+      console.log(url)
       // 2. 设置 URL 显示 PDF
       setPdfUrl(url);
 

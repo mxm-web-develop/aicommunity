@@ -42,7 +42,7 @@ const ComingSoonCard = () =>  (
   </svg>
   </div>
   </div>
-  <div className="font-medium text-lg text-[#3c78d8]/80 text-center mb-2">更多应用</div>
+  <div className="font-medium text-lg text-[#3c78d8]/80 text-center mb-2">更多精彩</div>
   <div className="font-normal text-[15px] text-[#3c78d8]/60 text-center">敬请期待</div>
   </div>
   </div>
@@ -51,7 +51,7 @@ const ComingSoonCard = () =>  (
 const GoToAppList = () => (
   <div className="flex justify-center mt-8">
   <Link href="/applications?type=platform" className="inline-flex items-center px-6 py-2.5 rounded-full bg-gradient-to-r from-[#3c78d8] to-[#2196f3] text-white font-medium text-sm hover:shadow-lg hover:opacity-90 transition-all duration-300">
-    查看更多应用
+    查看更多
   </Link>
 </div>
  )
@@ -124,6 +124,44 @@ export default async function Home() {
       />
     </div>
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
+             {/* 平台展示 */}
+             <div className="application-displayer py-5">
+          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
+            AI平台
+          </div>
+          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
+            搭建完整AI生态系统
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {processedPlatforms.map((platform, index) => (
+              platform.isMore ? 
+                <MoreCard key={`more-platform-${index}`} type="platform" /> :
+                platform.isComingSoon ? 
+                  <ComingSoonCard key={`coming-platform-${index}`} /> :
+                  <AppCard key={platform._id} data={platform} />
+            ))}
+          </div>
+          <GoToAppList />
+        </div>
+            {/* 大模型展示 */}
+            <div className="application-displayer py-5">
+          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
+            AI大模型
+          </div>
+          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
+            强大的AI引擎，赋能各行各业
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {processedLlms.map((llm, index) => (
+              llm.isMore ? 
+                <MoreCard key={`more-llm-${index}`} type="llm" /> :
+                llm.isComingSoon ? 
+                  <ComingSoonCard key={`coming-llm-${index}`} /> :
+                  <AppCard key={llm._id} data={llm} />
+            ))}
+          </div>
+          <GoToAppList />
+        </div>
         {/* 应用类别展示 */}
         <div className="application-displayer py-5">
           <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
@@ -144,45 +182,9 @@ export default async function Home() {
           <GoToAppList />
         </div>
 
-        {/* 大模型展示 */}
-        <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
-            AI大模型
-          </div>
-          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
-            强大的AI引擎，赋能各行各业
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {processedLlms.map((llm, index) => (
-              llm.isMore ? 
-                <MoreCard key={`more-llm-${index}`} type="llm" /> :
-                llm.isComingSoon ? 
-                  <ComingSoonCard key={`coming-llm-${index}`} /> :
-                  <AppCard key={llm._id} data={llm} />
-            ))}
-          </div>
-          <GoToAppList />
-        </div>
+    
 
-        {/* 平台展示 */}
-        <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
-            AI平台
-          </div>
-          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
-            搭建完整AI生态系统
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {processedPlatforms.map((platform, index) => (
-              platform.isMore ? 
-                <MoreCard key={`more-platform-${index}`} type="platform" /> :
-                platform.isComingSoon ? 
-                  <ComingSoonCard key={`coming-platform-${index}`} /> :
-                  <AppCard key={platform._id} data={platform} />
-            ))}
-          </div>
-          <GoToAppList />
-        </div>
+  
       </div>
     </div>
   );

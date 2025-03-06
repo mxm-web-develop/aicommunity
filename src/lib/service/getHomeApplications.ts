@@ -24,7 +24,7 @@ export async function getHomeApplications({ organizationId, type, limit = 8 }: Q
     
     let query = Application.find(
       filter,
-      'name type status shortIntro _id keywords organization'
+      'name type status shortIntro _id keywords organizationId'
     ).sort({ createdAt: -1 });
     
     query = query.limit(limit);
