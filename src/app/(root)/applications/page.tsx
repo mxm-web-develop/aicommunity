@@ -8,6 +8,7 @@ import applicationsBanner from "@/static/img/applications_bg.png";
 
 import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/client/ErrorBoundary';
+import { Suspense } from 'react';
 
 // 使用 dynamic 导入，确保客户端组件正确加载
 
@@ -42,11 +43,10 @@ export default async function ApplicationsPage() {
           className="object-cover"
           priority
         />
-      </div>      
-      
-      <AppControlList />
-    
-    
+      </div>
+      <Suspense fallback={<div className="container text-center py-10">加载中...</div>}>
+        <AppControlList key="app-control-list" />
+      </Suspense>
       </div>
     );
   

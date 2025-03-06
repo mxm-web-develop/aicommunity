@@ -19,12 +19,12 @@ interface Contact {
   _v?: number;
   _id: string;
 }
-const isGientechProd = true
-const minioProtocol = process.env.NEXT_PUBLIC_MINIO_PROTOCOL;
-const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
-const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
+// const isGientechProd = true
+// const minioProtocol = process.env.NEXT_PUBLIC_MINIO_PROTOCOL;
+// const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
+// const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
 
-const baseUrl =  isGientechProd ? `https://developer.gientech.com/files/` : `http://${minioEndpoint}:${minioPort}`;
+// const baseUrl =  isGientechProd ? `https://developer.gientech.com/files/` : `http://${minioEndpoint}:${minioPort}`;
 interface IAppDetailIntroduce {
   // sameTypeItems: any[];
   keywords: any[];
@@ -36,10 +36,6 @@ interface IAppDetailIntroduce {
   // detail: any;
   appId: string;
 }
-
-// const FileViewCmp = dynamic(() =>
-//   import("@/components/FileView").then((mod) => mod.default)
-// );
 
 // 添加文件类型定义
 interface MinioFile {
@@ -137,7 +133,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
     <>
     {type == '0' && (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row mb-4 items-start">
+      <div className="flex flex-col md:flex-row gap-y-4 md:gap-y-0 mb-4 items-start">
         <div
           className="flex-1 rounded-xl overflow-hidden"
           style={{
@@ -279,15 +275,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
                     priority
                     onClick={() => handleFileView(file)}
                   />
-                  {/* <a href={file.url} download>
-                    <Image
-                      src={IconDownload}
-                      alt="下载"
-                      title="下载"
-                      className="object-cover select-none w-4 h-4 cursor-pointer hover:opacity-85"
-                      priority
-                    />
-                  </a> */}
+            
                 </div>
               </div>
             );
@@ -297,18 +285,7 @@ export default function DetailPannel(props: IAppDetailIntroduce) {
         )}
       </div>
     </div>
-    {/* {showPreviewModal && (
-      <div className="fixed inset-0 z-[1000] bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="w-[90vw] h-[80vh] bg-white rounded-lg overflow-hidden shadow-xl">
-          <FileView 
-            fileUrl={curFileInfo.url}
-            fileName={curFileInfo.name}
-            onClose={handleClosePreview}
-            fileType={curFileInfo.name.split('.').pop()}
-          />
-        </div>
-      </div>
-    )} */}
+
   </div>
     )}
     {/* 添加 PDF 预览器 */}

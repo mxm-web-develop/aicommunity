@@ -55,12 +55,12 @@ const AppCard = (props: IAppItem) => {
       <div className="h-[120px]">
         <Link href={`/applications/${data._id}?type=0`}>
           <div
-            className={`bg-white px-4 py-3 rounded-xl cursor-pointer text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.05)] h-full ${
+            className={`bg-white items-start px-4 py-3 rounded-xl cursor-pointer text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.05)] h-full ${
               hoverStyle ? "hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:border-[#e0ebff]" : ""
             } transition-all duration-300 border border-[#f0f0f0] flex items-center`}
           >
             {/* 类型图标 */}
-            <div className="bg-[#f5f9ff] rounded-lg p-1.5 mr-3 shrink-0">
+            <div className="bg-[#f5f9ff] self-start rounded-lg p-1.5 mt-2 mr-3 shrink-0">
               <div className="text-[#3c78d8]"><TypeIcon /></div>
             </div>
             {/* 主内容区 */}
@@ -76,7 +76,7 @@ const AppCard = (props: IAppItem) => {
               </div>
               {/* 底部信息 */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center text-xs text-[#718096]">
+                <div className="flex items-start text-xs text-[#718096]">
                   <Image
                     src={OrganizationIcon}
                     alt=""

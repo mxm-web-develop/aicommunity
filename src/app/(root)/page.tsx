@@ -9,6 +9,7 @@ import { getApplications } from "@/lib/service/getApplications";
 import RedirectCmp from "@/components/RedirectCmp";
 import { isCheckLogin } from "@/lib/auth";
 import { getHomeApplications } from "@/lib/service/getHomeApplications";
+import CategorySection from "@/components/client/CategorySection";
 
 // 创建"查看更多"卡片 - 高级质感版本
 const MoreCard = ({ type }: { type: string }) => (
@@ -62,6 +63,35 @@ export default async function Home() {
   const llms = await getHomeApplications({ type: 'llm', limit: 8 });
   const platforms = await getHomeApplications({ type: 'platform', limit: 8 });
 
+  // 序列化处理函数 - 添加这个函数
+  const serializeData = (items) => {
+    return items.map(item => {
+      if (!item || typeof item !== 'object') return item;
+      
+      // 处理特殊字段，如 MongoDB ObjectId
+      return Object.keys(item).reduce((acc, key) => {
+        // 如果是 ObjectId，转换为字符串
+        if (key === '_id' && item[key] && typeof item[key].toString === 'function') {
+          acc[key] = item[key].toString();
+        } 
+        // 如果是 organizationId 且是 ObjectId
+        else if (key === 'organizationId' && item[key] && typeof item[key].toString === 'function') {
+          acc[key] = item[key].toString();
+        }
+        // 其他字段原样保留
+        else {
+          acc[key] = item[key];
+        }
+        return acc;
+      }, {});
+    });
+  };
+
+  // 先序列化数据
+  const serializedApplications = serializeData(applications);
+  const serializedLlms = serializeData(llms);
+  const serializedPlatforms = serializeData(platforms);
+
   // 处理应用展示逻辑
   const processApps = (apps: any[], type: string) => {
     const LAYOUT = {
@@ -99,9 +129,9 @@ export default async function Home() {
       
   };
 
-  const processedApplications = processApps(applications, 'application');
-  const processedLlms = processApps(llms, 'llm');
-  const processedPlatforms = processApps(platforms, 'platform');
+  const processedApplications = processApps(serializedApplications, 'application');
+  const processedLlms = processApps(serializedLlms, 'llm');
+  const processedPlatforms = processApps(serializedPlatforms, 'platform');
 
   return (
     <div className="relative w-full h-full mb-12">
@@ -125,66 +155,26 @@ export default async function Home() {
     </div>
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
              {/* 平台展示 */}
-             <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
-            AI平台
-          </div>
-          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
-            搭建完整AI生态系统
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {processedPlatforms.map((platform, index) => (
-              platform.isMore ? 
-                <MoreCard key={`more-platform-${index}`} type="platform" /> :
-                platform.isComingSoon ? 
-                  <ComingSoonCard key={`coming-platform-${index}`} /> :
-                  <AppCard key={platform._id} data={platform} />
-            ))}
-          </div>
-          <GoToAppList />
-        </div>
+             <CategorySection 
+               title="AI平台" 
+               subtitle="搭建完整AI生态系统" 
+               data={processedPlatforms} 
+               type="platform" 
+             />
             {/* 大模型展示 */}
-            <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
-            AI大模型
-          </div>
-          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
-            强大的AI引擎，赋能各行各业
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {processedLlms.map((llm, index) => (
-              llm.isMore ? 
-                <MoreCard key={`more-llm-${index}`} type="llm" /> :
-                llm.isComingSoon ? 
-                  <ComingSoonCard key={`coming-llm-${index}`} /> :
-                  <AppCard key={llm._id} data={llm} />
-            ))}
-          </div>
-          <GoToAppList />
-        </div>
-        {/* 应用类别展示 */}
-        <div className="application-displayer py-5">
-          <div className="application-displayer-title text-2xl font-bold text-center text-foreground">
-          AI应用
-          </div>
-          <div className="text-sm pt-[8px] pb-[32px] text-muted-foreground text-center">
-            简化工作流程，提升效率
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {processedApplications.map((app, index) => (
-              app.isMore ? 
-                <MoreCard key={`more-app-${index}`} type="application" /> :
-                app.isComingSoon ? 
-                  <ComingSoonCard key={`coming-app-${index}`} /> :
-                  <AppCard key={app._id} data={app} />
-            ))}
-          </div>
-          <GoToAppList />
-        </div>
-
-    
-
-  
+            <CategorySection 
+              title="AI大模型" 
+              subtitle="强大的AI引擎，赋能各行各业" 
+              data={processedLlms} 
+              type="llm" 
+            />
+            {/* 应用类别展示 */}
+            <CategorySection 
+              title="AI应用" 
+              subtitle="简化工作流程，提升效率" 
+              data={processedApplications} 
+              type="application" 
+            />
       </div>
     </div>
   );

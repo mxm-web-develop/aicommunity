@@ -11,6 +11,10 @@ export async function GET(
   { params }: { params: { id: string, fileId: string } }
 ) {
   try {
+    const isGientechProd = process.env.NODE_ENV === 'production';
+    const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
+    const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
+
     // 1. 正确使用await获取params
     const bucketId = await params.id;
     const encodedFileName = await params.fileId;
@@ -21,24 +25,25 @@ export async function GET(
     fileName = fileName.replace(/^\//, '');
     // 移除可能重复的 bucket 路径
     fileName = fileName.replace(`${bucketId}/`, '');
+    const questUrl =  isGientechProd ? `https://developer.gientech.com/files/${bucketId}/${fileName}` : `http://${minioEndpoint}:${minioPort}/${bucketId}/${fileName}`;
 
     console.log('Bucket ID:', bucketId);
     console.log('File Name:', fileName);
 
     // 3. 构建正确的 Minio URL
-    const minioEndpoint = 'developer.gientech.com';
-    const minioUrl = `https://${minioEndpoint}/files/${bucketId}/${fileName}`;
-    console.log('Minio URL:', minioUrl);
+    // const minioEndpoint = 'developer.gientech.com';
+    // const minioUrl = `https://${minioEndpoint}/files/${bucketId}/${fileName}`;
+    // console.log('Minio URL:', minioUrl);
 
     // 4. 请求文件（使用agent忽略证书验证）
-    const response = await fetch(minioUrl,{
+    const response = await fetch(questUrl,{
       headers: {
         'Content-Type': 'application/octet-stream',
       }
     });
     
     if (!response.ok) {
-      throw new Error(`Minio fetch failed: ${response.status}`);
+      throw new Error(`Minio fetch failed: ${response.status} at ${questUrl}`);
     }
 
     // 5. 返回文件内容

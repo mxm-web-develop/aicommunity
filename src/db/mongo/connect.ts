@@ -16,7 +16,15 @@ for (const envVar of requiredEnvVars) {
     throw new Error(`Missing required environment variable: ${envVar}`);
   }
 }
-
+// 添加环境变量调试信息
+console.log('Minio connection environment variables:', {
+  NODE_ENV: process.env.NODE_ENV, 
+  host: process.env.NEXT_PUBLIC_MINIO_ENDPOINT,
+  port: process.env.NEXT_PUBLIC_MINIO_PORT,
+  db: process.env.NEXT_PUBLIC_MINIO_BUCKET,
+  accessKey: process.env.MINIO_ACCESS_KEY,
+  secretKey: process.env.MINIO_SECRET_KEY
+});
 // 添加环境变量调试信息
 console.log('MongoDB connection environment variables:', {
   NODE_ENV: process.env.NODE_ENV,

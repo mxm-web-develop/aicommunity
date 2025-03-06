@@ -1,6 +1,6 @@
 'use client'
 import dynamic from "next/dynamic";
-import { DialogNavigation } from "./Appnav"
+
 import { useState } from "react";
 import '@mxmweb/difychat/style.css'
 const ChatEs = dynamic(() =>
@@ -25,7 +25,7 @@ const Chatapp = ({ data, token, username }: any) => {
 
   return (
     <>
-      <DialogNavigation open={open} setOpen={setOpen} data={data} />
+     
       <ChatEs username={username} url='https://api.dify.ai/v1' token={token || 'app-VNDnXOOJfkUAz6gSorRXjbW4'} onActionEmmiter={(t) => handleAppToggle(t)} />
     </>
   )

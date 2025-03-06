@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import AppCard from "@/components/server/AppCard";
 import { Search } from "lucide-react";
 import debounce from "lodash/debounce";
@@ -30,6 +30,13 @@ const initialOrganizations: Organization[] = [
   { id: '67b291be1ad598b265fce6b6', name: 'AI+', checked: true },
 ];
 
+// 添加一个全局缓存对象，跨组件实例共享数据
+// 在模块级别声明，所有组件实例共享
+const applicationCache = {
+  data: null,
+  timestamp: 0
+};
+
 // 骨架屏组件
 const SkeletonCard = () => (
   <div className="bg-card rounded-lg p-4 shadow animate-pulse">
@@ -42,25 +49,64 @@ const SkeletonCard = () => (
 export default function AppControlList() {
   const [categories, setCategories] = useState(initialCategories);
   const [organizations, setOrganizations] = useState(initialOrganizations);
-  const [allApplications, setAllApplications] = useState([]); // 存储所有数据
+  const [allApplications, setAllApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // 添加请求标记 ref
+  const requestInProgressRef = useRef(false);
 
-  // 修改后的初始化加载逻辑
+  // 初始化时获取URL参数，设置初始过滤状态
+  useEffect(() => {
+    // 获取URL中的type参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeParam = urlParams.get('type');
+    
+    if (typeParam) {
+      // 更新分类选择状态
+      setCategories(prevCategories => prevCategories.map(cat => ({
+        ...cat,
+        checked: cat.id === 'all' ? false : cat.id === typeParam
+      })));
+    }
+  }, []);
+
+  // 改进的数据加载逻辑
   useEffect(() => {
     const fetchAllData = async () => {
+      // 如果已有请求正在进行，则不重复请求
+      if (requestInProgressRef.current) return;
+      
+      // 检查缓存是否有效 (10分钟有效期)
+      const now = Date.now();
+      if (applicationCache.data && now - applicationCache.timestamp < 10 * 60 * 1000) {
+        console.log('Using cached applications data');
+        setAllApplications(applicationCache.data);
+        setLoading(false);
+        return;
+      }
+      
       try {
-        // 改为单次请求获取所有数据
+        // 标记请求开始
+        requestInProgressRef.current = true;
+        
+        console.log('Fetching applications data');
         const response = await fetch('/api/applications');
         const result = await response.json();
         
         if (result.success && Array.isArray(result.data)) {
+          // 更新缓存
+          applicationCache.data = result.data;
+          applicationCache.timestamp = now;
+          
           setAllApplications(result.data);
         }
       } catch (error) {
         console.error('Failed to fetch applications:', error);
       } finally {
         setLoading(false);
+        // 请求完成，重置标记
+        requestInProgressRef.current = false;
       }
     };
 
@@ -129,7 +175,7 @@ export default function AppControlList() {
   }, [allApplications, organizations, categories, searchTerm]);
 
   return (
-    <ErrorBoundary fallback={<div className="container">加载应用列表时出错，请检查控制台或刷新页面。</div>}>
+    <ErrorBoundary fallback={<div className="container">加载应用列表时出错，请稍后再试。</div>}>
     <div className="container mx-auto px-4">
       {/* 主布局：移动端纵向，桌面端横向 */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-8">

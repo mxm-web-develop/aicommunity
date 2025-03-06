@@ -5,6 +5,9 @@ if (!process.env.NEXT_PUBLIC_MINIO_ENDPOINT) {
 }
 process.env.TZ = 'UTC'
 
+
+
+
 export const minioClient = new Client({
   endPoint: process.env.NEXT_PUBLIC_MINIO_ENDPOINT!,
   port: parseInt(process.env.NEXT_PUBLIC_MINIO_PORT!),
@@ -13,3 +16,4 @@ export const minioClient = new Client({
   secretKey: process.env.MINIO_SECRET_KEY!,
   region: 'us-east-1' // 必须与创建bucket时的region一致
 });
+
