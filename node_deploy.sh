@@ -104,86 +104,189 @@ echo "📄 复制环境文件到部署目录: $env_file -> .env"
 cp "$env_file" ./deploy/.env
 
 # 创建控制脚本
-echo "🛠️ 生成控制脚本..."
+# 创建更可靠的控制脚本
 cat > ./deploy/control.sh << 'EOL'
 #!/bin/bash
 
 # 默认端口
 DEFAULT_PORT=3000
+MAX_KILL_ATTEMPTS=3
+
+# 检查端口占用的函数
+check_port_usage() {
+  lsof -ti:$DEFAULT_PORT 2>/dev/null || netstat -tunlp 2>/dev/null | grep ":$DEFAULT_PORT " | awk '{print $7}' | cut -d'/' -f1
+}
 
 case "$1" in
   start)
-    # ... existing code ...
-    ;;
-  stop)
-    STOPPED_SOMETHING=false
+    echo "启动服务..."
+    # 加载环境变量
+    if [ -f ".env" ]; then
+      set -a
+      source .env
+      set +a
+    fi
     
+    # 先检查是否已有服务运行
+    RUNNING_PIDS=$(check_port_usage)
+    if [ -n "$RUNNING_PIDS" ]; then
+      echo "⚠️ 端口 $DEFAULT_PORT 已被占用，请先停止现有服务: ./control.sh stop"
+      exit 1
+    fi
+    
+    # 使用环境变量中的PORT，如果未设置则使用默认值
+    PORT=${PORT:-$DEFAULT_PORT}
+    echo "使用端口: $PORT"
+    
+    # 确保日志目录存在
+    mkdir -p logs
+    
+    echo "检查目录结构..."
+    if [ ! -f ".next/server/next-font-manifest.json" ]; then
+      echo "⚠️ 警告: 未找到字体清单文件，尝试从原始构建目录复制..."
+      mkdir -p .next/server
+      cp -f ../.next/server/next-font-manifest.json .next/server/ 2>/dev/null || echo "❌ 复制失败"
+    fi
+    
+    echo "启动服务器..."
+    # 改进日志记录方式，分离错误和标准输出
+    nohup node server.js > logs/server.log 2> logs/error.log &
+    NEW_PID=$!
+    echo $NEW_PID > server.pid
+    echo "✅ 服务已启动 (PID: $NEW_PID) 在端口 $PORT"
+    echo "请等待几秒钟后访问: http://localhost:$PORT"
+    echo "标准输出日志: logs/server.log"
+    echo "错误日志: logs/error.log"
+    ;;
+    
+  stop)
+    echo "🛑 停止运行中的服务..."
+    
+    # 1. 使用PID文件尝试停止
     if [ -f "server.pid" ]; then
       PID=$(cat server.pid)
-      echo "🛑 尝试停止服务 (PID: $PID)"
+      echo "📋 PID文件显示服务运行在进程 $PID"
       
-      # 检查PID是否真的存在
-      if ps -p $PID > /dev/null; then
-        # 先尝试正常终止
-        kill $PID 2>/dev/null || true
+      if ps -p $PID > /dev/null 2>&1; then
+        echo "🔍 进程 $PID 正在运行，尝试终止..."
+        kill $PID 2>/dev/null || kill -9 $PID 2>/dev/null
         sleep 2
-        
-        # 强制终止如果仍在运行
-        if ps -p $PID > /dev/null; then
-          echo "进程未响应，使用强制终止..."
-          kill -9 $PID 2>/dev/null || true
+        if ! ps -p $PID > /dev/null 2>&1; then
+          echo "✅ 成功终止进程 $PID"
+        else
+          echo "⚠️ 无法终止进程 $PID，尝试强制终止..."
+          kill -9 $PID 2>/dev/null
           sleep 1
         fi
-        
-        # 检查是否成功终止
-        if ! ps -p $PID > /dev/null; then
-          echo "✅ 进程 $PID 已成功停止"
-          STOPPED_SOMETHING=true
-        else
-          echo "❌ 无法停止进程 $PID"
-        fi
       else
-        echo "⚠️ PID文件包含无效进程ID：$PID（进程不存在）"
+        echo "⚠️ PID文件中的进程 $PID 不存在"
       fi
       rm -f server.pid
     else
-      echo "📝 没有找到PID文件，尝试根据端口停止服务..."
+      echo "⚠️ 未找到PID文件"
     fi
     
-    # 清理端口3000进程
-    PORT_PIDS=$(lsof -ti:$DEFAULT_PORT 2>/dev/null)
+    # 2. 根据端口检测并终止进程
+    echo "🔍 检查端口 $DEFAULT_PORT 上运行的进程..."
+    PORT_PIDS=$(check_port_usage)
+    
     if [ -n "$PORT_PIDS" ]; then
-      echo "🔍 检测到端口 $DEFAULT_PORT 上的进程："
-      for pid in $PORT_PIDS; do
-        echo " - 进程 $pid: $(ps -p $pid -o comm= 2>/dev/null || echo '未知')"
-        kill -9 $pid 2>/dev/null
-        echo "🚫 已终止进程 $pid"
-        STOPPED_SOMETHING=true
+      echo "⚠️ 发现端口 $DEFAULT_PORT 上仍有进程运行: $PORT_PIDS"
+      
+      for attempt in $(seq 1 $MAX_KILL_ATTEMPTS); do
+        echo "🔄 尝试终止进程，第 $attempt 次..."
+        
+        for pid in $PORT_PIDS; do
+          echo "终止进程 $pid..."
+          # 尝试使用常规终止信号
+          kill $pid 2>/dev/null || true
+        done
+        
+        sleep 2
+        
+        # 检查是否还有进程
+        PORT_PIDS=$(check_port_usage)
+        if [ -z "$PORT_PIDS" ]; then
+          echo "✅ 所有进程已终止，端口 $DEFAULT_PORT 已释放"
+          break
+        fi
+        
+        # 最后一次尝试使用强制终止
+        if [ "$attempt" -eq "$MAX_KILL_ATTEMPTS" ]; then
+          echo "⚠️ 常规终止失败，使用强制终止 (SIGKILL)..."
+          for pid in $PORT_PIDS; do
+            echo "强制终止进程 $pid..."
+            kill -9 $pid 2>/dev/null || true
+          done
+          sleep 1
+        fi
       done
       
-      # 再次检查端口是否释放
-      sleep 1
-      if [ -z "$(lsof -ti:$DEFAULT_PORT 2>/dev/null)" ]; then
-        echo "✅ 端口 $DEFAULT_PORT 已释放"
+      # 最终检查
+      PORT_PIDS=$(check_port_usage)
+      if [ -n "$PORT_PIDS" ]; then
+        echo "❌ 无法释放端口 $DEFAULT_PORT，可能需要手动处理以下进程: $PORT_PIDS"
+        echo "可以尝试: sudo kill -9 $PORT_PIDS"
       else
-        echo "⚠️ 无法完全释放端口 $DEFAULT_PORT"
+        echo "✅ 成功释放端口 $DEFAULT_PORT"
       fi
+    else
+      echo "✅ 端口 $DEFAULT_PORT 上没有运行中的进程"
+    fi
+    ;;
+    
+  status)
+    echo "🔍 检查服务状态..."
+    
+    # 检查PID文件
+    if [ -f "server.pid" ]; then
+      PID=$(cat server.pid)
+      if ps -p $PID > /dev/null 2>&1; then
+        echo "✅ 服务进程 (PID: $PID) 正在运行"
+        ps -f -p $PID
+      else
+        echo "⚠️ PID文件存在，但进程 $PID 未运行"
+      fi
+    else
+      echo "⚠️ 未找到PID文件"
     fi
     
-    # 最终状态报告
-    if [ "$STOPPED_SOMETHING" = false ]; then
-      echo "🔍 未发现任何运行中的服务进程"
+    # 检查端口
+    PORT_PIDS=$(check_port_usage)
+    if [ -n "$PORT_PIDS" ]; then
+      echo "✅ 端口 $DEFAULT_PORT 上有服务运行，进程ID: $PORT_PIDS"
+      for pid in $PORT_PIDS; do
+        echo "进程 $pid 详情:"
+        ps -f -p $pid 2>/dev/null || echo "无法获取进程详情"
+        
+        # 获取进程启动命令
+        cmd=$(ps -p $pid -o command= 2>/dev/null || echo "未知")
+        echo "命令: $cmd"
+      done
+    else
+      echo "⚠️ 端口 $DEFAULT_PORT 上没有服务运行"
+    fi
+    
+    # 检查日志
+    echo "📊 日志状态:"
+    if [ -f "logs/server.log" ]; then
+      echo "服务日志最后10行:"
+      tail -n 10 logs/server.log
+    fi
+    
+    if [ -f "logs/error.log" ]; then
+      echo "错误日志最后10行:"
+      tail -n 10 logs/error.log
     fi
     ;;
-  status)
-    # ... existing code ...
-    ;;
+    
   restart)
-    echo "重启服务..."
+    echo "🔄 重启服务..."
     $0 stop
-    sleep 2
+    sleep 3
     $0 start
     ;;
+    
   *)
     echo "用法: $0 {start|stop|status|restart}"
     exit 1
@@ -191,7 +294,6 @@ esac
 EOL
 
 chmod +x ./deploy/control.sh
-
 # 添加环境变量调试信息（移到这里确保创建）
 echo "🔍 添加环境变量调试脚本..."
 cat > ./deploy/check-env.sh << 'EOL'
