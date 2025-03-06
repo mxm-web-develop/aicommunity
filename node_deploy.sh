@@ -113,102 +113,76 @@ DEFAULT_PORT=3000
 
 case "$1" in
   start)
-    echo "启动服务..."
-    # 加载环境变量
-    if [ -f ".env" ]; then
-      set -a
-      source .env
-      set +a
-    fi
-    
-    # 使用环境变量中的PORT，如果未设置则使用默认值
-    PORT=${PORT:-$DEFAULT_PORT}
-    echo "使用端口: $PORT"
-    
-    # 确保日志目录存在
-    mkdir -p logs
-    
-    echo "检查目录结构..."
-    if [ ! -f ".next/server/next-font-manifest.json" ]; then
-      echo "⚠️ 警告: 未找到字体清单文件，尝试从原始构建目录复制..."
-      mkdir -p .next/server
-      cp -f ../.next/server/next-font-manifest.json .next/server/ 2>/dev/null || echo "❌ 复制失败"
-    fi
-    
-    echo "启动服务器..."
-    # 改进日志记录方式，分离错误和标准输出
-    nohup node server.js > logs/server.log 2> logs/error.log &
-    echo $! > server.pid
-    echo "✅ 服务已启动 (PID: $(cat server.pid)) 在端口 $PORT"
-    echo "请等待几秒钟后访问: http://localhost:$PORT"
-    echo "标准输出日志: logs/server.log"
-    echo "错误日志: logs/error.log"
+    # ... existing code ...
     ;;
   stop)
+    STOPPED_SOMETHING=false
+    
     if [ -f "server.pid" ]; then
       PID=$(cat server.pid)
       echo "🛑 尝试停止服务 (PID: $PID)"
       
-      # 先尝试正常终止
-      kill $PID 2>/dev/null || true
-      sleep 2
-      
-      # 强制终止如果仍在运行
+      # 检查PID是否真的存在
       if ps -p $PID > /dev/null; then
-        echo "进程未响应，使用强制终止..."
-        kill -9 $PID 2>/dev/null || true
-        sleep 1
+        # 先尝试正常终止
+        kill $PID 2>/dev/null || true
+        sleep 2
+        
+        # 强制终止如果仍在运行
+        if ps -p $PID > /dev/null; then
+          echo "进程未响应，使用强制终止..."
+          kill -9 $PID 2>/dev/null || true
+          sleep 1
+        fi
+        
+        # 检查是否成功终止
+        if ! ps -p $PID > /dev/null; then
+          echo "✅ 进程 $PID 已成功停止"
+          STOPPED_SOMETHING=true
+        else
+          echo "❌ 无法停止进程 $PID"
+        fi
+      else
+        echo "⚠️ PID文件包含无效进程ID：$PID（进程不存在）"
       fi
       rm -f server.pid
+    else
+      echo "📝 没有找到PID文件，尝试根据端口停止服务..."
     fi
     
     # 清理端口3000进程
-    PORT_PIDS=$(lsof -ti:$DEFAULT_PORT)
+    PORT_PIDS=$(lsof -ti:$DEFAULT_PORT 2>/dev/null)
     if [ -n "$PORT_PIDS" ]; then
-      echo "正在清理端口 $DEFAULT_PORT 的进程..."
+      echo "🔍 检测到端口 $DEFAULT_PORT 上的进程："
       for pid in $PORT_PIDS; do
+        echo " - 进程 $pid: $(ps -p $pid -o comm= 2>/dev/null || echo '未知')"
         kill -9 $pid 2>/dev/null
-        echo "已终止进程 $pid"
+        echo "🚫 已终止进程 $pid"
+        STOPPED_SOMETHING=true
       done
+      
+      # 再次检查端口是否释放
       sleep 1
-      [ -z "$(lsof -ti:$DEFAULT_PORT)" ] && echo "✅ 端口已释放"
-    else
-      echo "ℹ️ 未发现运行中的服务"
-    fi
-    ;;
-status)
-    # 首先检查PID文件
-    if [ -f "server.pid" ]; then
-      PID=$(cat server.pid)
-      if ps -p $PID > /dev/null; then
-        echo "✅ 服务正在运行 (PID: $PID)"
+      if [ -z "$(lsof -ti:$DEFAULT_PORT 2>/dev/null)" ]; then
+        echo "✅ 端口 $DEFAULT_PORT 已释放"
       else
-        echo "⚠️ PID文件存在，但进程 $PID 未运行"
-        PORT_CHECK=true
+        echo "⚠️ 无法完全释放端口 $DEFAULT_PORT"
       fi
-    else
-      PORT_CHECK=true
     fi
     
-    # 检查端口3000是否有服务在运行
-    if [ "$PORT_CHECK" = true ] || [ ! -f "server.pid" ]; then
-      PORT_PIDS=$(lsof -ti:$DEFAULT_PORT)
-      if [ -n "$PORT_PIDS" ]; then
-        echo "✅ 发现端口 $DEFAULT_PORT 上运行的服务:"
-        for pid in $PORT_PIDS; do
-          echo " - PID: $pid ($(ps -p $pid -o comm=))"
-          echo "   命令: $(ps -p $pid -o command= | head -c 100)..."
-        done
-        
-        # 创建或更新PID文件（如果只有一个进程）
-        if [ $(echo "$PORT_PIDS" | wc -w) -eq 1 ]; then
-          echo "$PORT_PIDS" > server.pid
-                echo "已更新PID文件"
-        fi
-      else
-        echo "ℹ️ 端口 $DEFAULT_PORT 上没有服务运行"
-      fi
+    # 最终状态报告
+    if [ "$STOPPED_SOMETHING" = false ]; then
+      echo "🔍 未发现任何运行中的服务进程"
     fi
+    ;;
+  status)
+    # ... existing code ...
+    ;;
+  restart)
+    echo "重启服务..."
+    $0 stop
+    sleep 2
+    $0 start
     ;;
   *)
     echo "用法: $0 {start|stop|status|restart}"
@@ -218,6 +192,24 @@ EOL
 
 chmod +x ./deploy/control.sh
 
+# 添加环境变量调试信息（移到这里确保创建）
+echo "🔍 添加环境变量调试脚本..."
+cat > ./deploy/check-env.sh << 'EOL'
+#!/bin/bash
+echo "环境文件内容:"
+cat .env
+
+echo -e "\n当前进程环境变量:"
+env | sort
+
+echo -e "\n测试加载环境变量:"
+set -a
+source .env
+set +a
+echo "PORT = $PORT"
+echo "NODE_ENV = $NODE_ENV"
+EOL
+chmod +x ./deploy/check-env.sh
 
 # 清理临时环境文件
 rm -f .env.local
@@ -227,7 +219,11 @@ echo -e "\n✅ 部署完成"
 echo -e "运行以下命令管理服务："
 echo -e "启动服务:   cd deploy && ./control.sh start"
 echo -e "停止服务:   cd deploy && ./control.sh stop"
-echo -e "查看日志:   tail -f deploy/error.log"
+echo -e "重启服务:   cd deploy && ./control.sh restart"
+echo -e "查看状态:   cd deploy && ./control.sh status"
+echo -e "调试环境:   cd deploy && ./check-env.sh"
+echo -e "查看标准日志: tail -f deploy/logs/server.log"
+echo -e "查看错误日志: tail -f deploy/logs/error.log"
 
 # 自动启动提示
 read -p "是否立即启动服务？ (y/N) " start_now
