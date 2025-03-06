@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import AppCard from "@/components/server/AppCard";
 import { Search } from "lucide-react";
 import debounce from "lodash/debounce";
+import { ErrorBoundary } from './ErrorBoundary';
 
 interface Category {
   id: string;
@@ -128,6 +129,7 @@ export default function AppControlList() {
   }, [allApplications, organizations, categories, searchTerm]);
 
   return (
+    <ErrorBoundary fallback={<div className="container">加载应用列表时出错，请检查控制台或刷新页面。</div>}>
     <div className="container mx-auto px-4">
       {/* 主布局：移动端纵向，桌面端横向 */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-8">
@@ -216,5 +218,6 @@ export default function AppControlList() {
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

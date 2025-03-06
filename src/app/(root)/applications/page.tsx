@@ -10,11 +10,9 @@ import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/client/ErrorBoundary';
 
 // 使用 dynamic 导入，确保客户端组件正确加载
-const AppControlListClient = dynamic(
-  () => import('@/components/client/AppControlList'),
-  { ssr: false }
-);
 
+
+import AppControlList from "@/components/client/AppControlList";
 interface ApplicationPageQueryProps {
   category?: string;
   scene?: string;
@@ -46,9 +44,8 @@ export default async function ApplicationsPage() {
         />
       </div>      
       
-      <ErrorBoundary fallback={<div className="container">加载应用列表时出错，请检查控制台或刷新页面。</div>}>
-        <AppControlListClient />
-      </ErrorBoundary>
+      <AppControlList />
+    
     
       </div>
     );
