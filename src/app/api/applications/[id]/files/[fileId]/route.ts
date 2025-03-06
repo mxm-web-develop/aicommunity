@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string, fileId: string } }
 ) {
   try {
-    const isGientechProd = process.env.NODE_ENV === 'production';
+    const isLocalServer = process.env.NEXT_PUBLIC_LOCAL_SERVER !== 'true';
     const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
     const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
 
@@ -25,21 +25,14 @@ export async function GET(
     fileName = fileName.replace(/^\//, '');
     // 移除可能重复的 bucket 路径
     fileName = fileName.replace(`${bucketId}/`, '');
-    const questUrl =  isGientechProd ? `https://developer.gientech.com/files/${bucketId}/${fileName}` : `http://${minioEndpoint}:${minioPort}/${bucketId}/${fileName}`;
+    const questUrl =  isLocalServer ? `https://developer.gientech.com/files/${bucketId}/${fileName}` : `http://${minioEndpoint}:${minioPort}/${bucketId}/${fileName}`;
 
-    console.log('Bucket ID:', bucketId);
-    console.log('File Name:', fileName);
-
-    // 3. 构建正确的 Minio URL
-    // const minioEndpoint = 'developer.gientech.com';
-    // const minioUrl = `https://${minioEndpoint}/files/${bucketId}/${fileName}`;
-    // console.log('Minio URL:', minioUrl);
 
     // 4. 请求文件（使用agent忽略证书验证）
     const response = await fetch(questUrl,{
       headers: {
         'Content-Type': 'application/octet-stream',
-      }
+      },
     });
     
     if (!response.ok) {
