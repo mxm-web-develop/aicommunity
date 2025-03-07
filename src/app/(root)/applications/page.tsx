@@ -2,28 +2,40 @@
 // // 设置 revalidate
 // export const revalidate = 43200  // 12小时缓存
 
+'use client';
 
 import Image from "next/image";
 import applicationsBanner from "@/static/img/applications_bg.png";
-
-import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/client/ErrorBoundary';
-import { Suspense } from 'react';
-
-// 使用 dynamic 导入，确保客户端组件正确加载
-
-
+import { Suspense, useEffect, useState } from 'react';
 import AppControlList from "@/components/client/AppControlList";
+
+// 添加加载状态组件
+const LoadingState = () => (
+  <div className="container text-center py-10">
+    <div className="flex flex-col items-center justify-center min-h-[300px]">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#3c78d8] mb-4"></div>
+      <p className="text-[#3c78d8]/80">正在加载应用列表...</p>
+    </div>
+  </div>
+);
+
 interface ApplicationPageQueryProps {
   category?: string;
   scene?: string;
   keyWord?: string;
 }
 
-export default async function ApplicationsPage() {
+export default function ApplicationsPage() {
+  // 添加客户端挂载检测
+  const [isClient, setIsClient] = useState(false);
   
-    return (
-      <div className="w-full">
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  return (
+    <div className="w-full">
       <div className="select-none h-[248px] relative w-full mb-10">
         <div className="absolute top-24 left-0 right-0 z-10">
           <div className="container">
@@ -44,10 +56,17 @@ export default async function ApplicationsPage() {
           priority
         />
       </div>
-      <Suspense fallback={<div className="container text-center py-10">加载中...</div>}>
-        <AppControlList key="app-control-list" />
-      </Suspense>
-      </div>
-    );
-  
+      
+      {/* 使用客户端检测确保组件仅在客户端渲染 */}
+      <ErrorBoundary fallback={<div className="container">加载应用失败，请刷新页面重试</div>}>
+        {isClient ? (
+          <Suspense fallback={<LoadingState />}>
+            <AppControlList key={`app-control-list-${Date.now()}`} />
+          </Suspense>
+        ) : (
+          <LoadingState />
+        )}
+      </ErrorBoundary>
+    </div>
+  );
 }
