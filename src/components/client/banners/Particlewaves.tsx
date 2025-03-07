@@ -13,7 +13,7 @@ export default function Particlewaves() {
   const waveRef = useRef<SVGPathElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
+  const svgTitleRef = useRef<SVGSVGElement>(null);
   const particleSystem = useRef<ParticleSystem | null>(null);
 
   useEffect(() => {
@@ -66,40 +66,61 @@ export default function Particlewaves() {
       particleSystem.current.init();
     }
 
-    // 确保文字动画正确执行
-    if (titleRef.current) {
-      const titleElement = titleRef.current;
+    // SVG 文字动画
+    if (svgTitleRef.current) {
+      // 获取所有路径元素
+      const paths = svgTitleRef.current.querySelectorAll('path');
       
-      // 初始确保所有字符可见
-      const chars = titleElement.querySelectorAll('.char');
-      chars.forEach(char => {
-        (char as HTMLElement).style.opacity = '1';
+      // 设置路径初始状态
+      paths.forEach(path => {
+        // 获取路径长度
+        const length = path.getTotalLength();
+        
+        // 设置初始样式 - 隐藏路径
+        path.style.strokeDasharray = `${length}`;
+        path.style.strokeDashoffset = `${length}`;
+        path.style.fillOpacity = '0';
       });
       
-      // 设置初始下划线宽度
-      const underline = titleElement.querySelector('#title-underline');
-      if (underline) {
-        (underline as HTMLElement).style.width = '0%';
-      }
+      // 创建动画时间轴
+      const timeline = anime.timeline({
+        easing: 'easeOutSine',
+        duration: 800,
+        complete: () => {
+          // 动画完成后添加发光效果
+          paths.forEach(path => {
+            path.style.filter = 'drop-shadow(0 0 2px rgba(79, 70, 229, 0.5))';
+          });
+        }
+      });
       
-      // 应用动画
-      setTimeout(() => {
-        anime.timeline({ easing: 'cubicBezier(0.16, 1, 0.3, 1)' })
-          .add({
-            targets: titleElement.querySelectorAll('.char'),
-            opacity: [0, 1],
-            translateY: [30, 0],
-            translateZ: 0,
-            duration: 1500,
-            delay: anime.stagger(60, { start: 300 })
-          })
-          .add({
-            targets: titleElement.querySelector('#title-underline'),
-            width: ['0%', '100%'],
-            duration: 1200,
-            easing: 'cubicBezier(0.33, 1, 0.68, 1)'
-          }, '-=800');
-      }, 100);
+      // 逐个描绘字符
+      paths.forEach((path, index) => {
+        timeline.add({
+          targets: path,
+          strokeDashoffset: [anime.setDashoffset, 0],
+          easing: 'cubicBezier(0.12, 0, 0.39, 0)',
+          duration: 1200,
+          delay: index * 150
+        });
+      });
+      
+      // 所有路径描绘完成后填充颜色
+      timeline.add({
+        targets: Array.from(paths),
+        fillOpacity: 1,
+        duration: 800,
+        delay: anime.stagger(50),
+        easing: 'easeOutQuad'
+      });
+      
+      // 添加下划线动画
+      timeline.add({
+        targets: '#title-underline',
+        width: ['0%', '100%'],
+        duration: 800,
+        easing: 'easeOutCirc'
+      }, '-=400');
     }
 
     // 高性能交互动画
@@ -196,22 +217,69 @@ export default function Particlewaves() {
         style={{ transform: 'translateZ(0)' }}
       />
 
-      {/* 修复的现代三维标题 */}
+      {/* SVG 标题 */}
       <div className="absolute top-1/3 left-[10%] z-30 max-w-md">
-        <div ref={titleRef} className="text-6xl font-bold tracking-tight">
-          <div className="bg-gradient-to-r from-[#4f46e5] via-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent drop-shadow-sm" style={{ opacity: 1 }}>
-            {/* 确保字符分开并可见 */}
-            {Array.from('源启AI+').map((char, i) => (
-              <span key={i} className="char inline-block will-change-transform" style={{ opacity: 1 }}>
-                {char}
-              </span>
-            ))}
-          </div>
-          <div 
-            id="title-underline"
-            className="h-[3px] bg-gradient-to-r from-[#4f46e5]/80 via-[#06b6d4] to-[#3b82f6]/80 rounded-full w-full"
+        <svg 
+          ref={svgTitleRef}
+          width="300" 
+          height="70" 
+          viewBox="0 0 300 70" 
+          xmlns="http://www.w3.org/2000/svg"
+          className="mb-2"
+        >
+          {/* 源 */}
+          <path 
+            d="M30,15 C35,15 40,20 40,30 C40,40 35,45 30,45 C25,45 20,40 20,30 C20,20 25,15 30,15 Z M30,20 C27,20 25,23 25,30 C25,37 27,40 30,40 C33,40 35,37 35,30 C35,23 33,20 30,20 Z M40,15 L55,15 L55,20 L45,20 L45,28 L50,28 L50,33 L45,33 L45,45 L40,45 Z" 
+            fill="url(#title-gradient)" 
+            stroke="#4f46e5" 
+            strokeWidth="1.5"
           />
-        </div>
+          {/* 启 */}
+          <path 
+            d="M75,15 L90,15 L90,20 L80,20 L80,28 L88,28 L88,33 L80,33 L80,45 L75,45 Z M90,25 L95,25 C100,25 105,28 105,35 C105,42 100,45 95,45 L90,45 Z M95,30 L95,40 C97,40 100,39 100,35 C100,31 97,30 95,30 Z" 
+            fill="url(#title-gradient)" 
+            stroke="#4f46e5" 
+            strokeWidth="1.5" 
+          />
+          {/* A */}
+          <path 
+            d="M120,15 L135,45 L129,45 L126,38 L114,38 L111,45 L105,45 L120,15 Z M124,33 L120,24 L116,33 L124,33 Z" 
+            fill="url(#title-gradient)" 
+            stroke="#4f46e5" 
+            strokeWidth="1.5"
+          />
+          {/* I */}
+          <path 
+            d="M145,15 L155,15 L155,45 L145,45 Z" 
+            fill="url(#title-gradient)" 
+            stroke="#4f46e5" 
+            strokeWidth="1.5"
+          />
+          {/* + */}
+          <path 
+            d="M175,25 L175,15 L180,15 L180,25 L190,25 L190,30 L180,30 L180,45 L175,45 L175,30 L165,30 L165,25 Z" 
+            fill="url(#title-gradient)" 
+            stroke="#4f46e5" 
+            strokeWidth="1.5"
+          />
+          
+          {/* 定义渐变 */}
+          <defs>
+            <linearGradient id="title-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#4f46e5" />
+              <stop offset="50%" stopColor="#06b6d4" />
+              <stop offset="100%" stopColor="#3b82f6" />
+            </linearGradient>
+          </defs>
+        </svg>
+        
+        {/* 下划线 */}
+        <div 
+          id="title-underline"
+          className="h-[3px] bg-gradient-to-r from-[#4f46e5]/80 via-[#06b6d4] to-[#3b82f6]/80 rounded-full"
+          style={{ width: "0%" }}
+        />
+        
         <div className="mt-6 text-2xl text-[#e0f2fe] font-light opacity-90 tracking-wide">
           源溯万象，智启未来
         </div>
