@@ -11,6 +11,7 @@ import { isCheckLogin } from "@/lib/auth";
 import { getHomeApplications } from "@/lib/service/getHomeApplications";
 import CategorySection from "@/components/client/CategorySection";
 import WaveBanner from "@/components/client/banners/Waves";
+import Particlewaves from "@/components/client/banners/Particlewaves";
 // 创建"查看更多"卡片 - 高级质感版本
 const MoreCard = ({ type }: { type: string }) => (
   <div className="h-[268px]">
@@ -152,7 +153,7 @@ export default async function Home() {
         className="object-cover"
         priority
       /> */}
-      <WaveBanner />
+      <Particlewaves />
     </div>
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
              {/* 平台展示 */}
