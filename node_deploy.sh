@@ -76,6 +76,16 @@ cp -r ./.next ./deploy/
 # 2. 复制 standalone 内容到根目录 
 cp -r ./.next/standalone/* ./deploy/
 
+# 确认server.js复制成功
+if [ ! -f "./deploy/server.js" ]; then
+  echo "❌ 错误: server.js 未能正确复制到部署目录"
+  exit 1
+else
+  echo "✅ server.js 已成功复制到部署目录"
+  # 显示文件内容前几行用于验证
+  head -n 5 ./deploy/server.js
+fi
+
 # 3. 复制公共资源
 cp -r ./public ./deploy/
 
