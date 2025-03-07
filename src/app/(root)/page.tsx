@@ -10,7 +10,7 @@ import RedirectCmp from "@/components/RedirectCmp";
 import { isCheckLogin } from "@/lib/auth";
 import { getHomeApplications } from "@/lib/service/getHomeApplications";
 import CategorySection from "@/components/client/CategorySection";
-
+import WaveBanner from "@/components/client/banners/Waves";
 // 创建"查看更多"卡片 - 高级质感版本
 const MoreCard = ({ type }: { type: string }) => (
   <div className="h-[268px]">
@@ -137,7 +137,7 @@ export default async function Home() {
     <div className="relative w-full h-full mb-12">
     {isCheckLogin ? <RedirectCmp /> : null}
     <div className="banner relative h-[280px] md:h-[420px] w-full">
-      <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
+      {/* <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
         <div className="container">
           <div className="flex flex-col text-foreground items-start justify-center h-full">
             <div className="text-2xl md:text-4xl font-bold">源启AI+</div>
@@ -151,7 +151,8 @@ export default async function Home() {
         fill
         className="object-cover"
         priority
-      />
+      /> */}
+      <WaveBanner />
     </div>
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
              {/* 平台展示 */}
