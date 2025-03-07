@@ -79,27 +79,7 @@ cp -r ./.next/standalone/* ./deploy/
 # 3. 复制公共资源
 cp -r ./public ./deploy/
 
-# 4. 确保 server.js 的路径配置正确
-cat > ./path-fix.js << 'EOL'
-const fs = require('fs');
-const path = require('path');
-
-// 读取 server.js
-const serverPath = path.join(__dirname, 'deploy', 'server.js');
-let content = fs.readFileSync(serverPath, 'utf8');
-
-// 修改路径引用，确保指向正确的 .next 目录
-content = content.replace(/\.next/g, `../.next`);
-
-// 写回文件
-fs.writeFileSync(serverPath, content);
-console.log('✅ server.js 路径已修复');
-EOL
-
-# 运行路径修复脚本
-node path-fix.js || echo "❌ 路径修复失败，请手动检查 server.js"
-
-# 复制环境文件到部署目录
+# 4. 复制环境文件到部署目录
 echo "📄 复制环境文件到部署目录: $env_file -> .env"
 cp "$env_file" ./deploy/.env
 
