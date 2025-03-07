@@ -55,6 +55,8 @@ export default function AppControlList() {
   
   // 添加请求标记 ref
   const requestInProgressRef = useRef(false);
+  // 添加类型参数引用
+  const typeParamRef = useRef(null);
 
   // 初始化时获取URL参数，设置初始过滤状态
   useEffect(() => {
@@ -62,11 +64,21 @@ export default function AppControlList() {
     const urlParams = new URLSearchParams(window.location.search);
     const typeParam = urlParams.get('type');
     
+    // 保存类型参数，后续在组织过滤中使用
+    typeParamRef.current = typeParam;
+    
     if (typeParam) {
+      console.log(`设置类型过滤: ${typeParam}`);
       // 更新分类选择状态
       setCategories(prevCategories => prevCategories.map(cat => ({
         ...cat,
         checked: cat.id === 'all' ? false : cat.id === typeParam
+      })));
+      
+      // 对于类型过滤，确保所有组织都被选中，避免组织过滤限制类型过滤
+      setOrganizations(prevOrgs => prevOrgs.map(org => ({
+        ...org,
+        checked: true
       })));
     }
   }, []);
@@ -95,6 +107,10 @@ export default function AppControlList() {
         const result = await response.json();
         
         if (result.success && Array.isArray(result.data)) {
+          // 添加调试日志
+          console.log(`获取到 ${result.data.length} 个应用`);
+          console.log('应用类型示例:', result.data.map(app => app.type).slice(0, 5));
+          
           // 更新缓存
           applicationCache.data = result.data;
           applicationCache.timestamp = now;
@@ -142,35 +158,83 @@ export default function AppControlList() {
     setSearchTerm(value);
   }, 500);
 
-  // 修改后的过滤逻辑
+  // 修改后的过滤逻辑，更可靠的实现
   const filteredApplications = useMemo(() => {
-    // 1. 按组织过滤（使用organizationId字段）
-    let filtered = allApplications.filter(app => 
-      organizations.find(org => org.id === app.organizationId && org.checked)
-    );
-
-    // 2. 按分类过滤
-    if (!categories.find(cat => cat.id === 'all')?.checked) {
-      const selectedCategories = categories
-        .filter(cat => cat.checked)
-        .map(cat => cat.id);
-      
-      if (selectedCategories.length > 0) {
-        filtered = filtered.filter(app => 
-          selectedCategories.includes(app.type)
-        );
-      }
+    // 如果没有数据，直接返回空数组
+    if (!allApplications || allApplications.length === 0) {
+      return [];
     }
-
+    
+    console.log(`过滤前应用数量: ${allApplications.length}`);
+    
+    // 需要检查应用的类型值是否标准化
+    const firstApp = allApplications[0];
+    console.log('首个应用示例:', {
+      id: firstApp._id || firstApp.id,
+      type: firstApp.type,
+      organizationId: firstApp.organizationId
+    });
+    
+    // 1. 获取要应用的过滤条件
+    const selectedCategories = categories
+      .filter(cat => cat.checked)
+      .map(cat => cat.id);
+    
+    const useAllCategories = categories.find(cat => cat.id === 'all')?.checked || 
+                            selectedCategories.length === 0;
+    
+    const selectedOrgs = organizations
+      .filter(org => org.checked)
+      .map(org => org.id);
+    
+    // 输出过滤条件
+    console.log('过滤条件:', {
+      categories: useAllCategories ? ['all'] : selectedCategories,
+      organizations: selectedOrgs
+    });
+    
+    // 2. 过滤逻辑 - 更加健壮和宽容的实现
+    let filtered = allApplications.filter(app => {
+      // 应对不同的数据结构
+      const appType = (app.type || '').toLowerCase();
+      const appOrgId = app.organizationId || '';
+      
+      // 组织过滤 - 如果没有organizationId或匹配任何选中的组织
+      const passesOrgFilter = 
+        !appOrgId || // 如果没有组织ID
+        selectedOrgs.length === 0 || // 如果没有选择组织
+        selectedOrgs.includes(appOrgId); // 如果组织匹配
+      
+      // 类型过滤 - 如果是全部或类型匹配任何选中的类别
+      const passesCatFilter = 
+        useAllCategories || // 如果选择全部类别
+        selectedCategories.some(cat => { 
+          // 类型匹配，处理大小写和变体
+          if (cat === 'llm' && (appType === 'llm' || appType === 'large language model' || appType.includes('model'))) {
+            return true;
+          }
+          if (cat === 'platform' && (appType === 'platform' || appType.includes('platform'))) {
+            return true;
+          }
+          if (cat === 'application' && (appType === 'application' || appType === 'app' || appType.includes('应用'))) {
+            return true;
+          }
+          return appType === cat;
+        });
+        
+      return passesOrgFilter && passesCatFilter;
+    });
+    
     // 3. 按搜索词过滤
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(app => 
-        app.name?.toLowerCase().includes(searchLower) ||
-        app.description?.toLowerCase().includes(searchLower)
+        (app.name?.toLowerCase() || '').includes(searchLower) ||
+        (app.description?.toLowerCase() || '').includes(searchLower)
       );
     }
-
+    
+    console.log(`过滤后应用数量: ${filtered.length}`);
     return filtered;
   }, [allApplications, organizations, categories, searchTerm]);
 
