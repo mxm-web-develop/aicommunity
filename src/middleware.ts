@@ -78,6 +78,49 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     // }
   }
 
+  // 检查是否是管理员路由
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // 获取 token
+    const token = request.cookies.get('admin_token')?.value;
+
+    // 如果是登录页面且已有有效token，重定向到管理后台
+    if (request.nextUrl.pathname === '/admin/login') {
+      if (token) {
+        try {
+          const decoded = JSON.parse(atob(token));
+          if (decoded.exp > Date.now()) {
+            return NextResponse.redirect(new URL('/admin', request.url));
+          }
+        } catch {
+          // token 无效，继续访问登录页
+        }
+      }
+      return NextResponse.next();
+    }
+
+    if (!token) {
+      // 没有 token，重定向到登录页
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+
+    try {
+      // 解析 token
+      const decoded = JSON.parse(atob(token));
+      
+      // 检查是否过期
+      if (decoded.exp < Date.now()) {
+        // token 过期，重定向到登录页
+        return NextResponse.redirect(new URL('/admin/login', request.url));
+      }
+
+      // token 有效，继续请求
+      return NextResponse.next();
+    } catch {
+      // token 无效，重定向到登录页
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -85,7 +128,8 @@ export const config = {
   matcher: [ 
     '/applications/:path*',
     '/auth/:path*',
-    '/((?!api|_next|static|images|favicon.ico).*)'
+    '/((?!api|_next|static|images|favicon.ico).*)',
+    '/admin/:path*'
   ]
   // matcher: ["/myproxy/:path*", "/:path*"]
 };

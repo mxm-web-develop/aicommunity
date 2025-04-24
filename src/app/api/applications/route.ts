@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     // 获取查询参数
     const id = request.nextUrl.searchParams.get('id');
     const giantechType = request.nextUrl.searchParams.get('giantechType');
+    const organizationId = request.nextUrl.searchParams.get('organizationId');
     
     if (id) {
       // 如果有 id 参数，查询单个应用
@@ -41,6 +42,9 @@ export async function GET(request: NextRequest) {
     const query: any = {};
     if (giantechType) {
       query.giantechType = giantechType;
+    }
+    if (organizationId) {
+      query.organizationId = organizationId;
     }
     
     // 使用查询条件返回应用列表

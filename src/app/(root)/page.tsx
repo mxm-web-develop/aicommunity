@@ -12,6 +12,7 @@ import { getHomeApplications } from "@/lib/service/getHomeApplications";
 import CategorySection from "@/components/client/CategorySection";
 import WaveBanner from "@/components/client/banners/Waves";
 import Particlewaves from "@/components/client/banners/Particlewaves";
+import SwiperBanner from "@/components/client/banners/SwiperBanner";
 // 创建"查看更多"卡片 - 高级质感版本
 const MoreCard = ({ type }: { type: string }) => (
   <div className="h-[268px]">
@@ -57,6 +58,31 @@ const GoToAppList = () => (
   </Link>
 </div>
  )
+
+// Banner数据
+const homeBanners = [
+  {
+    id: 1,
+    title: 'AI 创新峰会',
+    description: '探索人工智能最新发展趋势',
+    image: '/banners/banner1.jpg',
+    link: '/events/summit',
+  },
+  {
+    id: 2,
+    title: '开发者社区',
+    description: '加入我们的开发者社区，共同成长',
+    image: '/banners/banner2.jpg',
+    link: '/community',
+  },
+  {
+    id: 3,
+    title: 'AI 解决方案',
+    description: '为企业提供定制化 AI 解决方案',
+    image: '/banners/banner3.jpg',
+    link: '/solutions',
+  },
+];
 
 export default async function Home() {
   // 按类型获取应用
@@ -138,7 +164,7 @@ export default async function Home() {
     <div className="relative w-full h-full mb-12">
     {isCheckLogin ? <RedirectCmp /> : null}
     <div className="banner relative h-[280px] md:h-[420px] w-full">
-      {/* <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
+      <div className="absolute top-[100px] md:top-[140px] left-[30px] md:left-[80px] z-10 text-black">
         <div className="container">
           <div className="flex flex-col text-foreground items-start justify-center h-full">
             <div className="text-2xl md:text-4xl font-bold">源启AI+</div>
@@ -152,10 +178,21 @@ export default async function Home() {
         fill
         className="object-cover"
         priority
-      /> */}
-      <Particlewaves />
+      />
+      {/* <Particlewaves /> */}
     </div>
+
+    {/* 展示banner */}
+    {/* <div className="container mt-6">
+     
+    </div> */}
+
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
+        <SwiperBanner 
+          banners={homeBanners}
+          autoplayDelay={4000}
+          height={420}
+        />
              {/* 平台展示 */}
              <CategorySection 
                title="AI平台" 
