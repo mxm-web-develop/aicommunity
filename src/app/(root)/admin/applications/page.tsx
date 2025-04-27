@@ -2,11 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import DataTable from '@/components/admin/DataTable';
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+
+const APPLICATION_TYPES = [
+    { value: 'application', label: 'AI 应用' },
+    { value: 'llm', label: 'AI 大模型' },
+    { value: 'platform', label: 'AI 平台' },
+];
+
+const BANNER_STATUS_OPTIONS = [
+    { value: '', label: '全部' },
+    { value: 'published', label: '已发布' },
+    { value: 'unpublished', label: '未发布' },
+];
 
 interface Application {
     _id: string;
@@ -19,6 +31,7 @@ interface Application {
     };
     contact: string[];
     gientechType?: string;
+    type: string;
     classify: number;
     tags: string[];
     keywords?: string[];
@@ -38,13 +51,28 @@ interface Organization {
 }
 
 const columns = [
-    { key: 'name', title: '应用名称', sortable: true },
     { 
         key: 'organizationId', 
-        title: '所属组织',
+        title: '组织',
+        sortable: true,
         render: (value: string, record: any) => (
             <span className="text-gray-600">
                 {record.organizationName || '未知组织'}
+            </span>
+        )
+    },
+    { key: 'name', title: '应用名称',        render: (value: string, record: any) => (
+        <span className="text-gray-600 truncate max-w-[200px] inline-block">
+            {record.name || '未知应用'}
+        </span>
+    ) },
+  
+    {
+        key: 'type',
+        title: '应用类型',
+        render: (value: string) => (
+            <span className="text-gray-600">
+                {APPLICATION_TYPES.find(type => type.value === value)?.label || '未知类型'}
             </span>
         )
     },
@@ -60,16 +88,16 @@ const columns = [
             </span>
         )
     },
-    { 
-        key: 'createdAt', 
-        title: '创建时间', 
-        sortable: true,
-        render: (value: string) => (
-            <span className="text-gray-600">
-                {dayjs(value).format('YYYY-MM-DD HH:mm')}
-            </span>
-        )
-    },
+    // { 
+    //     key: 'createdAt', 
+    //     title: '创建时间', 
+    //     sortable: true,
+    //     render: (value: string) => (
+    //         <span className="text-gray-600">
+    //             {dayjs(value).format('YYYY-MM-DD HH:mm')}
+    //         </span>
+    //     )
+    // },
     { 
         key: 'updatedAt', 
         title: '更新时间', 
@@ -82,13 +110,23 @@ const columns = [
     },
 ];
 
+function getBannerStatus(app: any) {
+    if (app.banner && typeof app.banner === 'object') {
+        if (app.banner.status === 1) return 'published';
+        if (app.banner.status === 0) return 'unpublished';
+    }
+    return 'unpublished'; // 默认未发布
+}
+
 export default function ApplicationsPage() {
     const [data, setData] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedType, setSelectedType] = useState<string>('');
     const router = useRouter();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deletingApplication, setDeletingApplication] = useState<Application | null>(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [bannerStatus, setBannerStatus] = useState('');
 
     // 获取应用列表
     const fetchApplications = async () => {
@@ -125,7 +163,8 @@ export default function ApplicationsPage() {
                 };
                 return appData;
             });
-            
+            // 这里直接排序
+            applicationsWithOrgName.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
             setData(applicationsWithOrgName);
         } catch (error) {
             toast.error('获取应用列表失败');
@@ -164,7 +203,7 @@ export default function ApplicationsPage() {
             
             if (!response.ok) throw new Error('删除应用失败');
             
-            toast.success('删除成功');
+            toast.success(`应用"${deletingApplication.name}"已删除`);
             setDeleteDialogOpen(false);
             fetchApplications(); // 刷新列表
         } catch (error) {
@@ -176,6 +215,23 @@ export default function ApplicationsPage() {
         }
     };
 
+    // 处理类型过滤
+    const handleTypeChange = (type: string) => {
+        setSelectedType(type);
+    };
+
+    // 过滤数据
+    const filteredData = data.filter(item => {
+        if (selectedType && item.type !== selectedType) {
+            return false;
+        }
+        if (bannerStatus) {
+            const status = getBannerStatus(item);
+            if (bannerStatus !== status) return false;
+        }
+        return true;
+    });
+
     return (
         <>
             <div className="p-6">
@@ -183,11 +239,28 @@ export default function ApplicationsPage() {
                     title="应用管理"
                     description="管理和维护应用信息"
                     columns={columns}
-                    data={data}
+                    data={filteredData}
                     onAdd={handleAdd}
                     onEdit={handleView}
                     onDelete={handleDelete}
                     loading={loading}
+                    filters={[
+                        {
+                            label: '类型',
+                            value: selectedType,
+                            onChange: handleTypeChange,
+                            options: [
+                                { value: '', label: '全部' },
+                                ...APPLICATION_TYPES
+                            ]
+                        },
+                        {
+                            label: '广告牌',
+                            value: bannerStatus,
+                            onChange: setBannerStatus,
+                            options: BANNER_STATUS_OPTIONS
+                        }
+                    ]}
                 />
             </div>
 
@@ -253,6 +326,8 @@ export default function ApplicationsPage() {
                     </div>
                 </Dialog>
             </Transition>
+
+            <Toaster />
         </>
     );
 } 

@@ -1,9 +1,22 @@
 import type { NextConfig } from "next";
 import path from "node:path";
+import url from 'url';
 
 import CopyWebpackPlugin from "copy-webpack-plugin";
 const pdfjsDistPath = path.dirname(require.resolve("pdfjs-dist/package.json"));
 const cMapsDir = path.join(pdfjsDistPath, "cmaps");
+
+// 解析MinIO URL
+const minioUrl = process.env.NEXT_PUBLIC_MINIO_BASE_URL 
+  ? new URL(process.env.NEXT_PUBLIC_MINIO_BASE_URL)
+  : null;
+
+// 获取协议，确保类型正确
+const getProtocol = (url: URL | null): 'http' | 'https' => {
+  if (!url) return 'http';
+  return url.protocol === 'https:' ? 'https' : 'http';
+};
+
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
@@ -11,7 +24,18 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   env: {
     MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
-    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY
+    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
+  },
+  // 配置允许的图片域名
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: process.env.NEXT_PUBLIC_MINIO_ENDPOINT || '',
+        port: process.env.NEXT_PUBLIC_MINIO_PORT || '',
+        pathname: '/assets/**'
+      }
+    ]
   },
   // 确保静态资源路径正确
   typescript: {

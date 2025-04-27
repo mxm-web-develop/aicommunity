@@ -6,7 +6,14 @@ import { UserAvatar } from "@/components/client/UserAvatar";
 import Navbar from "@/components/server/Navbar";
 import { readJSONFile } from "@/lib/getdata";
 import Link from "next/link";
+export const metadata = {
+  title: '源启AI+社区',
+  description: '源启AI+社区网站，中电金信（中国电子）旗下，致力于AI+社区建设，提供AI+社区服务',
+  icons: {
+    icon: '/logo.png', // 这里指向 public/logo.png
+  },
 
+};
 export default async function AppLayout({
   children
 }: Readonly<{

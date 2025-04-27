@@ -10,6 +10,18 @@ interface Column {
     render?: (value: any, record: any) => React.ReactNode;
 }
 
+interface FilterOption {
+    value: string;
+    label: string;
+}
+
+interface Filter {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    options: FilterOption[];
+}
+
 interface DataTableProps {
     title: string;
     description?: string;
@@ -19,6 +31,7 @@ interface DataTableProps {
     onEdit?: (record: any) => void;
     onDelete?: (record: any) => void;
     loading?: boolean;
+    filters?: Filter[];
 }
 
 export default function DataTable({
@@ -29,7 +42,8 @@ export default function DataTable({
     onAdd,
     onEdit,
     onDelete,
-    loading = false
+    loading = false,
+    filters
 }: DataTableProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortKey, setSortKey] = useState('');
@@ -85,15 +99,39 @@ export default function DataTable({
                         </button>
                     )}
                 </div>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="搜索..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-3 py-1.5 pl-9 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <Search className="w-4 h-4 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <div className="flex items-center gap-4">
+                    <div className="relative w-[360px]">
+                        <input
+                            type="text"
+                            placeholder="搜索..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full px-3 py-1.5 pl-9 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <Search className="w-4 h-4 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    </div>
+
+                    {/* 过滤器部分 */}
+                    {filters && filters.length > 0 && (
+                        <div className="flex gap-4">
+                            {filters.map((filter, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <label className="text-sm text-gray-700">{filter.label}:</label>
+                                    <select
+                                        value={filter.value}
+                                        onChange={(e) => filter.onChange(e.target.value)}
+                                        className="px-3 py-1.5 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                        {filter.options.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 

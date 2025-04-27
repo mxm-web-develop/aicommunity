@@ -1,18 +1,19 @@
 export const dynamic = "force-static";
-export const revalidate = 43200; // 12小时缓存
+export const revalidate = 3600; // 12小时缓存
 
 import Image from "next/image";
 import homeBg from "@/static/img/home_bg.png";
 import AppCard from "@/components/server/AppCard";
 import Link from "next/link";
-import { getApplications } from "@/lib/service/getApplications";
 import RedirectCmp from "@/components/RedirectCmp";
 import { isCheckLogin } from "@/lib/auth";
 import { getHomeApplications } from "@/lib/service/getHomeApplications";
+import { getBanners } from "@/lib/service/getBanners";
 import CategorySection from "@/components/client/CategorySection";
 import WaveBanner from "@/components/client/banners/Waves";
 import Particlewaves from "@/components/client/banners/Particlewaves";
 import SwiperBanner from "@/components/client/banners/SwiperBanner";
+import ClientBanner from "@/components/client/banners/ClientBanner";
 // 创建"查看更多"卡片 - 高级质感版本
 const MoreCard = ({ type }: { type: string }) => (
   <div className="h-[268px]">
@@ -59,36 +60,13 @@ const GoToAppList = () => (
 </div>
  )
 
-// Banner数据
-const homeBanners = [
-  {
-    id: 1,
-    title: 'AI 创新峰会',
-    description: '探索人工智能最新发展趋势',
-    image: '/banners/banner1.jpg',
-    link: '/events/summit',
-  },
-  {
-    id: 2,
-    title: '开发者社区',
-    description: '加入我们的开发者社区，共同成长',
-    image: '/banners/banner2.jpg',
-    link: '/community',
-  },
-  {
-    id: 3,
-    title: 'AI 解决方案',
-    description: '为企业提供定制化 AI 解决方案',
-    image: '/banners/banner3.jpg',
-    link: '/solutions',
-  },
-];
-
 export default async function Home() {
   // 按类型获取应用
   const applications = await getHomeApplications({ type: 'application', limit: 8 });
   const llms = await getHomeApplications({ type: 'llm', limit: 8 });
   const platforms = await getHomeApplications({ type: 'platform', limit: 8 });
+  // 获取banner数据
+  const banners = await getBanners();
 
   // 序列化处理函数 - 添加这个函数
   const serializeData = (items) => {
@@ -188,11 +166,7 @@ export default async function Home() {
     </div> */}
 
     <div className="container bg-white/80 backdrop-blur-sm mt-6 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff] px-6 py-8 relative z-[1]">
-        <SwiperBanner 
-          banners={homeBanners}
-          autoplayDelay={4000}
-          height={420}
-        />
+        <ClientBanner />
              {/* 平台展示 */}
              <CategorySection 
                title="AI平台" 

@@ -24,27 +24,34 @@ const columns = [
     { key: 'label', title: '标签', sortable: true },
     { key: 'name', title: '姓名', sortable: true },
     { key: 'email', title: '邮箱', sortable: true },
-    // { key: 'department', title: '部门' },
-    { 
-        key: 'createdAt', 
-        title: '创建时间', 
-        sortable: true,
-        render: (value: string) => (
+    { key: 'department', title: '部门' ,
+
+    render: (value: string) => (
             <span className="text-gray-600">
-                {dayjs(value).format('YYYY-MM-DD HH:mm')}
+              {value || '无'}
             </span>
         )
     },
-    { 
-        key: 'updatedAt', 
-        title: '更新时间', 
-        sortable: true,
-        render: (value: string) => (
-            <span className="text-gray-600">
-                {dayjs(value).format('YYYY-MM-DD HH:mm')}
-            </span>
-        )
-    },
+    // { 
+    //     key: 'createdAt', 
+    //     title: '创建时间', 
+    //     sortable: true,
+    //     render: (value: string) => (
+    //         <span className="text-gray-600">
+    //             {dayjs(value).format('YYYY-MM-DD HH:mm')}
+    //         </span>
+    //     )
+    // },
+    // { 
+    //     key: 'updatedAt', 
+    //     title: '更新时间', 
+    //     sortable: true,
+    //     render: (value: string) => (
+    //         <span className="text-gray-600">
+    //             {dayjs(value).format('YYYY-MM-DD HH:mm')}
+    //         </span>
+    //     )
+    // },
 ];
 
 export default function ContactsPage() {
@@ -79,7 +86,7 @@ export default function ContactsPage() {
             const response = await fetch('/api/contacts');
             if (!response.ok) throw new Error('获取联系人列表失败');
             const result = await response.json();
-            setData(result);
+            setData(result.reverse());
         } catch (error) {
             toast.error('获取联系人列表失败');
             console.error('Error fetching contacts:', error);

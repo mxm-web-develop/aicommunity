@@ -3,21 +3,23 @@
 import { useEffect, useState } from 'react';
 import ApplicationForm from '@/components/admin/ApplicationForm';
 import { toast } from 'react-hot-toast';
+import { use } from 'react';
 
 interface Props {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 export default function EditApplicationPage({ params }: Props) {
+    const id = use(params);
     const [initialData, setInitialData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchApplication = async () => {
             try {
-                const response = await fetch(`/api/applications/${params.id}`);
+                const response = await fetch(`/api/applications/${id.id}`);
                 if (!response.ok) {
                     const error = await response.json();
                     throw new Error(error.error || '获取应用信息失败');
@@ -32,12 +34,12 @@ export default function EditApplicationPage({ params }: Props) {
             }
         };
 
-        if (params.id) {
-            fetchApplication();
+        if (id.id) {
+        fetchApplication();
         } else {
             setLoading(false);
         }
-    }, [params.id]);
+    }, [id.id]);
 
     if (loading) {
         return (
@@ -47,7 +49,7 @@ export default function EditApplicationPage({ params }: Props) {
         );
     }
 
-    if (!initialData && params.id) {
+    if (!initialData && id.id) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-red-500">未找到应用信息</div>
@@ -55,5 +57,5 @@ export default function EditApplicationPage({ params }: Props) {
         );
     }
 
-    return <ApplicationForm id={params.id} initialData={initialData} />;
+    return <ApplicationForm id={id.id} initialData={initialData} />;
 } 

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import https from 'node:https';
+import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
+import { connectToDatabase } from '@/db/mongo/connect';
 
 // 创建忽略证书验证的HTTPS代理
 const agent = new https.Agent({
@@ -15,18 +18,27 @@ export async function GET(
     const minioEndpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
     const minioPort = process.env.NEXT_PUBLIC_MINIO_PORT;
 
-    // 1. 正确使用await获取params
-    const bucketId = await params.id;
-    const encodedFileName = await params.fileId;
-    // const { bucketId, encodedFileName } = await params;
-    // 2. 解码文件名（移除可能的前导斜杠和重复的 bucket ID）
+    // 1. 获取参数
+    const bucketId = params.id;
+    const encodedFileName = params.fileId;
     let fileName = decodeURIComponent(encodedFileName);
-    // 移除可能的前导斜杠
     fileName = fileName.replace(/^\//, '');
-    // 移除可能重复的 bucket 路径
     fileName = fileName.replace(`${bucketId}/`, '');
-    const questUrl =  isLocalServer ? `https://developer.gientech.com/files/${bucketId}/${fileName}` : `http://${minioEndpoint}:${minioPort}/${bucketId}/${fileName}`;
 
+    // 2. 查询 MongoDB，校验 assets
+    await connectToDatabase();
+    const app = await mongoose.connection.db.collection('applications').findOne({ _id: new ObjectId(bucketId) });
+    if (!app) {
+      return new NextResponse('应用不存在', { status: 404 });
+    }
+    if (!app.assets || !Array.isArray(app.assets) || !app.assets.includes(fileName)) {
+      return new NextResponse('文件未授权', { status: 403 });
+    }
+
+    // 3. 拼接 MinIO 文件 URL
+    const questUrl =  isLocalServer 
+      ? `https://developer.gientech.com/files/${bucketId}/${fileName}` 
+      : `http://${minioEndpoint}:${minioPort}/${bucketId}/${fileName}`;
 
     // 4. 请求文件（使用agent忽略证书验证）
     const response = await fetch(questUrl,{

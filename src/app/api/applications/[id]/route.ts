@@ -11,7 +11,7 @@ export async function GET(
 ) {
     try {
         await connectToDatabase();
-        const id = params.id;
+        const { id } = await params;
 
         // 验证 ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -58,7 +58,7 @@ export async function PUT(
 ) {
     try {
         await connectToDatabase();
-        const id = params.id;
+        const { id } = await params;
         const data = await request.json();
 
         // 验证 ObjectId
@@ -109,7 +109,7 @@ export async function DELETE(
 ) {
     try {
         await connectToDatabase();
-        const id = params.id;
+        const { id } = await params;
 
         // 验证 ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {

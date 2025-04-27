@@ -1,129 +1,116 @@
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export interface Banner {
-  id: number | string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
+    _id: string;
+    title: string;
+    description: string;
+    coverImg: string;
+    url: string;
+    status: string;
 }
 
-interface SwiperBannerProps {
-  banners: Banner[];
-  autoplayDelay?: number;
-  height?: number;
+interface Props {
+    banners: Banner[];
+    autoplayDelay?: number;
+    height?: number;
 }
 
-export default function SwiperBanner({ 
-  banners,
-  autoplayDelay = 4000,
-  height = 420
-}: SwiperBannerProps) {
-  if (!banners || banners.length === 0) return null;
+export default function SwiperBanner({ banners, autoplayDelay = 3000, height = 400 }: Props) {
+    console.log('SwiperBanner received banners:', banners);
 
-  return (
-    <div 
-      className="relative w-full rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#e0ebff]"
-      style={{ height: `${height}px` }}
-    >
-      <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
-        slidesPerView={1}
-        loop={true}
-        autoplay={{
-          delay: autoplayDelay,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={false}
-        className="h-full relative"
-      >
-        {banners.map((banner) => (
-          <SwiperSlide key={banner.id}>
-            <div className="relative w-full h-full">
-              <Image
-                src={banner.image}
-                alt={banner.title}
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-              <div className="absolute left-12 top-1/2 -translate-y-1/2 text-white max-w-lg space-y-6">
-                <div className="space-y-4">
-                  <h2 className="text-4xl font-bold leading-tight tracking-tight">
-                    {banner.title}
-                  </h2>
-                  <p className="text-xl leading-relaxed opacity-90">
-                    {banner.description}
-                  </p>
-                </div>
-                <a
-                  href={banner.link}
-                  className="inline-flex items-center px-8 py-3 rounded-full bg-white/20 backdrop-blur-sm text-white font-medium text-base hover:bg-white/30 transition-all duration-300 group"
-                >
-                  了解更多
-                  <svg
-                    className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      <style jsx global>{`
-        .swiper-button-next,
-        .swiper-button-prev {
-          background-color: rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(4px);
-          padding: 2rem;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          transition: all 0.3s;
+    const isValidImageUrl = (url: string) => {
+        if (!url) return false;
+        // 只过滤掉包含 undefined 的 https URLs
+        if (url.startsWith('https://') && url.includes('undefined')) return false;
+        // 允许特定的 IP 地址
+        if (url.includes('45.77.12.232')) return true;
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
         }
+    };
 
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-          background-color: rgba(255, 255, 255, 0.3);
+    const getFullImageUrl = (coverImg: string) => {
+        if (!coverImg) return '';
+        if (coverImg.startsWith('http://') || coverImg.startsWith('https://')) {
+            return coverImg;
         }
+        const endpoint = process.env.NEXT_PUBLIC_MINIO_ENDPOINT;
+        const port = process.env.NEXT_PUBLIC_MINIO_PORT;
+        
+        if (!endpoint || !port) {
+            console.warn('MinIO configuration is incomplete');
+            return '';
+        }
+        
+        return `http://${endpoint}:${port}${coverImg}`;
+    };
 
-        .swiper-button-next::after,
-        .swiper-button-prev::after {
-          font-size: 1.2rem;
-          color: white;
-        }
+    const getSafeUrl = (url: string) => {
+        if (!url) return '#';
+        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+        return `https://${url}`;
+    };
 
-        .swiper-pagination-bullet {
-          background: rgba(255, 255, 255, 0.8);
-          backdrop-filter: blur(4px);
-        }
+    if (!banners.length) {
+        return null;
+    }
 
-        .swiper-pagination-bullet-active {
-          background: white;
-        }
-      `}</style>
-    </div>
-  );
+    return (
+        <div className="relative w-full overflow-hidden" style={{ height: `${height}px` }}>
+            <Swiper
+                modules={[Autoplay, Navigation, Pagination]}
+                autoplay={{
+                    delay: autoplayDelay,
+                    disableOnInteraction: false,
+                }}
+                // navigation
+                pagination={{ clickable: true }}
+                loop={banners.length > 1}
+                className="h-full"
+            >
+                {banners.map((banner) => {
+                    const imageUrl = getFullImageUrl(banner.coverImg);
+                    
+                    return (
+                        <SwiperSlide key={banner._id}>
+                            <Link href={getSafeUrl(banner.url)} target="_blank" rel="noopener noreferrer">
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={imageUrl || '/images/default.png'}
+                                        alt={banner.title || 'Banner图片'}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        priority
+                                    />
+                                    <div className="absolute bottom-0 left-0 right-0 h-full w-full text-white p-4" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0))' }}>
+                                        <div className='flex flex-col justify-center items-start pl-16 h-full w-full relative'>
+                                            <h3 className="text-3xl font-bold">{banner.title}</h3>
+                                            {banner.description && (
+                                                <p className="text-sm mt-2 text-gray-200">{banner.description}</p>
+                                            )}
+                                        <div className="mt-4 px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium hover:bg-white/30 transition-colors duration-200 cursor-pointer">
+                                            查看更多
+                                        </div>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
+                            </Link>
+                        </SwiperSlide>
+                    );
+                })}
+            </Swiper>
+        </div>
+    );
 } 

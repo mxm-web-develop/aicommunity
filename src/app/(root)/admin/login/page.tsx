@@ -76,7 +76,7 @@ export default function LoginPage() {
                                     onChange={(e) => setFormData({...formData, username: e.target.value})}
                                 />
                             </div>
-                            <div>
+        <div>
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                     密码
                                 </label>
