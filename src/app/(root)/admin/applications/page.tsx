@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+import { Flame } from 'lucide-react';
 
 const APPLICATION_TYPES = [
     { value: 'application', label: 'AI 应用' },
@@ -51,6 +52,18 @@ interface Organization {
 }
 
 const columns = [
+    { 
+        key: 'hot', 
+        title: '',
+        width: 30,
+        render: (_: any, record: any) => (
+            record.banner && record.banner.status === 1 ? (
+                <span title="已发布广告牌" className="mr-2 w-[30px]! text-red-500 align-middle">
+                    <Flame className="inline w-5 h-5" />
+                </span>
+            ) : null
+        ),
+    },
     { 
         key: 'organizationId', 
         title: '组织',
