@@ -318,9 +318,14 @@ export default function ApplicationForm({ initialData, id }: ApplicationFormProp
             // 提交时直接使用formData.banner，status只由Switch控制
             const submitData = {
                 ...formData,
-                // status: formData.status ? 1 : 0,
                 banner: formData.banner
             };
+
+            // 添加更多调试日志
+            console.log('提交前的 formData:', formData);
+            console.log('提交的数据:', submitData);
+            console.log('type 字段值:', submitData.type);
+            console.log('type 字段类型:', typeof submitData.type);
 
             const response = await fetch(url, {
                 method,
@@ -345,6 +350,8 @@ export default function ApplicationForm({ initialData, id }: ApplicationFormProp
     // 处理输入变化
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        console.log('handleChange called with:', { name, value });
+        
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
             setFormData(prev => {
@@ -361,10 +368,13 @@ export default function ApplicationForm({ initialData, id }: ApplicationFormProp
                 return prev;
             });
         } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
+            setFormData(prev => {
+                console.log('Updating formData:', { name, value, prevValue: prev[name as keyof FormData] });
+                return {
+                    ...prev,
+                    [name]: value
+                };
+            });
         }
     };
 

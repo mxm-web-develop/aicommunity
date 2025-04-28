@@ -1,10 +1,4 @@
 # 设置环境并构建
-export NODE_ENV="${environment}"
-echo "🔧 构建模式: $NODE_ENV"
-echo "🚀 开始构建 Next.js 应用..."
-
-
-
 # 询问部署环境
 read -p "请选择部署环境 (dev/prod): " env_input
 # 使用更兼容的方式转换为小写
@@ -14,15 +8,18 @@ if [[ "$environment" != "dev" && "$environment" != "prod" ]]; then
   exit 1
 fi
 
+# 设置正确的 NODE_ENV 值
+if [[ "$environment" == "dev" ]]; then
+  export NODE_ENV="development"
+  env_file=".env.development"
+elif [[ "$environment" == "prod" ]]; then
+  export NODE_ENV="production"
+  env_file=".env.production"
+fi
+
 echo "🔄 开始部署 $environment 环境..."
 echo "🧹 清理旧构建缓存..."
 rm -rf .next
-# 映射环境名称到环境文件名
-if [[ "$environment" == "dev" ]]; then
-  env_file=".env.development"
-elif [[ "$environment" == "prod" ]]; then
-  env_file=".env.production"
-fi
 
 # 检查环境文件是否存在
 if [ ! -f "$env_file" ]; then
@@ -54,7 +51,6 @@ else
 fi
 
 # 设置环境并构建
-export NODE_ENV="${environment}"
 echo "🔧 构建模式: $NODE_ENV"
 echo "🚀 开始构建 Next.js 应用..."
 

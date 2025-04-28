@@ -128,13 +128,7 @@ export default function LoginPage() {
                     </form>
                 </div>
 
-                {/* 页脚 */}
-                <p className="mt-8 text-center text-sm text-gray-500">
-                    遇到问题？ 
-                    <a href="#" className="font-medium text-blue-500 hover:text-blue-600 ml-1">
-                        联系管理员
-                    </a>
-                </p>
+      
             </div>
         </div>
     );

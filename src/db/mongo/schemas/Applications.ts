@@ -33,6 +33,7 @@ export interface IApplication extends Document {
   banner?: IBanner;
   contact: mongoose.Types.ObjectId[];
   gientechType?: string;
+  type?: string;
   classify: number;
   tags: string[];
   keywords?: string[];
@@ -63,6 +64,7 @@ const ApplicationSchema = new Schema<IApplication>(
     keywords: { type: [String], required: false },
     //类型
     gientechType: { type: String, required: false },
+    type: { type: String, required: false },
     //链接
     links: {
       website: { type: String, required: false },
