@@ -65,14 +65,14 @@ export default function AdminLayout({
       <div className={`${isSidebarOpen ? 'ml-64' : 'ml-0'} transition-all duration-300`}>
         {/* 顶部导航栏 */}
         <nav className="fixed  top-0 right-0 z-30 w-full h-16 bg-white border-b border-gray-200">
-          <div className="flex group  items-center justify-between h-full px-4">
+          <div className="flex    items-center justify-between h-full px-4">
             <button
              // onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="p-2 rounded-lg hover:bg-gray-100"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex  items-center space-x-4">
+            <div className="flex group  h-full items-center space-x-4">
               <span className="text-sm text-gray-600">管理员</span>
               {/* 静态用户头像菜单 */}
               <AdminAvatarMenu />
@@ -81,7 +81,7 @@ export default function AdminLayout({
         </nav>
 
         {/* 页面内容 */}
-        <main className="p-1 ">
+        <main className="p-1">
           {children}
         </main>
       </div>
