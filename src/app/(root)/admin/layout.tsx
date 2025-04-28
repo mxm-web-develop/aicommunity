@@ -67,7 +67,7 @@ export default function AdminLayout({
         <nav className="fixed  top-0 right-0 z-30 w-full h-16 bg-white border-b border-gray-200">
           <div className="flex    items-center justify-between h-full px-4">
             <button
-             // onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="p-2 rounded-lg hover:bg-gray-100"
             >
               <Menu className="w-5 h-5" />
