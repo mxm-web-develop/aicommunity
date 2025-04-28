@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Organization } from '@/db/mongo/schemas/Organization';
-import { connectToDatabase } from '@/db/mongo/connection';
+import { connectToDatabase } from '@/db/mongo/connect';
+
 
 export async function PUT(
     request: Request,
