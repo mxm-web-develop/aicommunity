@@ -1,4 +1,10 @@
 # 设置环境并构建
+export NODE_ENV="${environment}"
+echo "🔧 构建模式: $NODE_ENV"
+echo "🚀 开始构建 Next.js 应用..."
+
+
+
 # 询问部署环境
 read -p "请选择部署环境 (dev/prod): " env_input
 # 使用更兼容的方式转换为小写
@@ -8,18 +14,15 @@ if [[ "$environment" != "dev" && "$environment" != "prod" ]]; then
   exit 1
 fi
 
-# 设置正确的 NODE_ENV 值
-if [[ "$environment" == "dev" ]]; then
-  export NODE_ENV="development"
-  env_file=".env.development"
-elif [[ "$environment" == "prod" ]]; then
-  export NODE_ENV="production"
-  env_file=".env.production"
-fi
-
 echo "🔄 开始部署 $environment 环境..."
 echo "🧹 清理旧构建缓存..."
 rm -rf .next
+# 映射环境名称到环境文件名
+if [[ "$environment" == "dev" ]]; then
+  env_file=".env.development"
+elif [[ "$environment" == "prod" ]]; then
+  env_file=".env.production"
+fi
 
 # 检查环境文件是否存在
 if [ ! -f "$env_file" ]; then
@@ -51,6 +54,7 @@ else
 fi
 
 # 设置环境并构建
+export NODE_ENV="${environment}"
 echo "🔧 构建模式: $NODE_ENV"
 echo "🚀 开始构建 Next.js 应用..."
 
@@ -72,30 +76,20 @@ cp -r ./.next ./deploy/
 # 2. 复制 standalone 内容到根目录 
 cp -r ./.next/standalone/* ./deploy/
 
+# 确认server.js复制成功
+if [ ! -f "./deploy/server.js" ]; then
+  echo "❌ 错误: server.js 未能正确复制到部署目录"
+  exit 1
+else
+  echo "✅ server.js 已成功复制到部署目录"
+  # 显示文件内容前几行用于验证
+  head -n 5 ./deploy/server.js
+fi
+
 # 3. 复制公共资源
 cp -r ./public ./deploy/
 
-# 4. 确保 server.js 的路径配置正确
-cat > ./path-fix.js << 'EOL'
-const fs = require('fs');
-const path = require('path');
-
-// 读取 server.js
-const serverPath = path.join(__dirname, 'deploy', 'server.js');
-let content = fs.readFileSync(serverPath, 'utf8');
-
-// 修改路径引用，确保指向正确的 .next 目录
-content = content.replace(/\.next/g, `../.next`);
-
-// 写回文件
-fs.writeFileSync(serverPath, content);
-console.log('✅ server.js 路径已修复');
-EOL
-
-# 运行路径修复脚本
-node path-fix.js || echo "❌ 路径修复失败，请手动检查 server.js"
-
-# 复制环境文件到部署目录
+# 4. 复制环境文件到部署目录
 echo "📄 复制环境文件到部署目录: $env_file -> .env"
 cp "$env_file" ./deploy/.env
 
@@ -116,6 +110,11 @@ check_port_usage() {
 case "$1" in
   start)
     echo "启动服务..."
+    # 确保在脚本所在目录执行，解决路径问题
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    cd "$SCRIPT_DIR"
+    echo "工作目录: $(pwd)"
+    
     # 加载环境变量
     if [ -f ".env" ]; then
       set -a
@@ -137,16 +136,19 @@ case "$1" in
     # 确保日志目录存在
     mkdir -p logs
     
-    echo "检查目录结构..."
-    if [ ! -f ".next/server/next-font-manifest.json" ]; then
-      echo "⚠️ 警告: 未找到字体清单文件，尝试从原始构建目录复制..."
-      mkdir -p .next/server
-      cp -f ../.next/server/next-font-manifest.json .next/server/ 2>/dev/null || echo "❌ 复制失败"
+    # 检查server.js是否存在
+    if [ ! -f "./server.js" ]; then
+      echo "❌ 错误: 在$(pwd)中未找到server.js文件"
+      echo "目录内容:"
+      ls -la
+      exit 1
+    else
+      echo "✅ 已找到server.js: $(ls -la ./server.js)"
     fi
     
     echo "启动服务器..."
     # 改进日志记录方式，分离错误和标准输出
-    nohup node server.js > logs/server.log 2> logs/error.log &
+    nohup node ./server.js > logs/server.log 2> logs/error.log &
     NEW_PID=$!
     echo $NEW_PID > server.pid
     echo "✅ 服务已启动 (PID: $NEW_PID) 在端口 $PORT"
@@ -233,6 +235,10 @@ case "$1" in
     
   status)
     echo "🔍 检查服务状态..."
+    
+    # 确保在脚本所在目录执行
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    cd "$SCRIPT_DIR"
     
     # 检查PID文件
     if [ -f "server.pid" ]; then
