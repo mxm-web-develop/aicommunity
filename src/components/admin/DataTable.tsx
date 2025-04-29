@@ -188,7 +188,7 @@ export default function DataTable({
                                     {columns.map((column) => (
                                         <td
                                             key={column.key}
-                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
+                                            className="px-3 py-2 whitespace-nowrap  text-sm text-gray-600"
                                         >
                                             {column.render
                                                 ? column.render(record[column.key], record)
